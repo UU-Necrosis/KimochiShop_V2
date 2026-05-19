@@ -1,0 +1,191 @@
+:root [theme="light"] {
+  --bg: #f8f9fa;
+  --card: #ffffff;
+  --text: #0b2141;
+  --muted: #5b6b81;
+  --brand: #0d6efd; 
+  --accent: #20c997; 
+  --danger: #dc3545;
+  --border: #dee2e6;
+  --pink: #ff69b4;
+}
+
+:root [theme="dark"] {
+  --bg: #121212;
+  --card: #1e1e1e;
+  --text: #e4e6eb;
+  --muted: #a0a0a0;
+  --border: #333333;
+  --brand: #0d6efd; 
+  --accent: #20c997; 
+  --danger: #dc3545;
+  --border: #dee2e6;
+  --pink: #ff69b4;
+}
+
+  /******************************/
+ /* --- CÁC DỮ LIỆU ĐỔ MÀU --- */
+/******************************/
+
+/* --- ĐỔ MÀU BẢNG TÌM KIẾM (CHO CẢ LIGHT VÀ DARK THEME) --- */
+.search-box-dropdown {
+    background-color: var(--card) !important; /* Ép nhận màu nền đặc, không lo bị xuyên thấu */
+    border: 1px solid var(--border) !important;
+}
+
+.search-box-dropdown .form-control {
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+
+/* Khi đang gõ chữ, viền ô input đổi sang màu brand */
+.search-box-dropdown .form-control:focus {
+    border-color: var(--brand);
+}
+
+/* Đổ màu cho nút kính lúp phụ trách Tìm kiếm */
+.search-box-dropdown .btn-search-submit {
+    background-color: var(--brand);
+    border: 1px solid var(--brand);
+    color: #ffffff !important;
+}
+
+/* Hiệu ứng Hover nhẹ cho nút tìm kiếm */
+.search-box-dropdown .btn-search-submit:hover {
+    opacity: 0.9;
+}
+
+/* --- ĐỔ MÀU CHO SIDEBAR, BANNER VÀ CARD --- */
+.category-sidebar {
+    background-color: var(--card);
+    border: 1px solid var(--border);
+}
+
+.category-sidebar .category-title {
+    background-color: var(--brand); 
+    color: #ffffff; /* Tiêu đề giữ chữ trắng trên nền màu chủ đạo để nổi bật */
+}
+
+.category-sidebar .category-list li {
+    border-bottom: 1px solid var(--border);
+}
+
+.category-sidebar .category-list li:last-child {
+    border-bottom: none;
+}
+
+.category-sidebar .category-list a {
+    color: var(--text);
+}
+
+.category-sidebar .category-list a:hover {
+    background-color: var(--bg);
+    color: var(--brand);
+}
+
+.category-sidebar .arrow-icon {
+    color: var(--text);
+    opacity: 0.5;
+}
+
+.category-sidebar .category-list a:hover .arrow-icon {
+    opacity: 1;
+}
+
+/* Màu cho Banner bên phải */
+.custom-banner {
+    background-color: var(--card) !important;
+    border-color: var(--border) !important;
+}
+.custom-banner h1 {
+    color: var(--text) !important;
+}
+
+/* Màu cho Thẻ sản phẩm */
+.product-card {
+    background-color: var(--card) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border) !important;
+}
+
+  /****************************************/
+ /* --- CÁC HIỆU ỨNG CHUYỂN ĐỘNG NHẸ --- */
+/****************************************/
+
+/* --- KHUNG XƯƠNG SIDEBAR ALL CATEGORIES --- */
+.category-sidebar {
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.category-sidebar .category-title {
+    font-weight: bold;
+    padding: 15px 20px;
+    letter-spacing: 0.5px;
+}
+
+.category-sidebar .category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.category-sidebar .category-list a {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.category-sidebar .category-list a:hover {
+    padding-left: 25px; /* Hiệu ứng nhích nhẹ sang phải */
+}
+
+.category-sidebar .arrow-icon {
+    font-size: 0.8rem;
+    transition: transform 0.2s ease;
+}
+
+.category-sidebar .category-list a:hover .arrow-icon {
+    transform: translateX(3px);
+}
+
+/* --- KHUNG XƯƠNG BẢNG TÌM KIẾM THẢ XUỐNG --- */
+.search-box-dropdown {
+    width: 320px;
+    border-radius: 12px !important;
+    margin-top: 15px !important;
+    padding: 1rem !important;
+    
+    /* Tạo hoạt ảnh mượt mà khiDropdown mở ra */
+    display: block !important; 
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.25s ease-in-out;
+}
+
+/* Class này do Bootstrap tự động thêm vào khi ông click mở Dropdown */
+.search-box-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.search-box-dropdown .form-control {
+    border-radius: 6px 0 0 6px; /* Bo góc bên trái */
+}
+
+/* Nút kính lúp nhỏ bên trong ô tìm kiếm */
+.search-box-dropdown .btn-search-submit {
+    border-radius: 0 6px 6px 0; /* Bo góc bên phải */
+    border-left: none;
+}
+
+.search-box-dropdown .form-control:focus {
+    box-shadow: none;
+} 

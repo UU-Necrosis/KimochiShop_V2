@@ -1,0 +1,169 @@
+BẢN THIẾT KẾ TỔNG THỂ (MASTER BLUEPRINT V2) - HỆ THỐNG 4 PHÂN QUYỀN
+================================================================================
+
+--------------------------------------------------------------------------------
+PHẦN 1: CẤU TRÚC CÂY THƯ MỤC CHUẨN (4 ROLES SEPARATION)
+--------------------------------------------------------------------------------
+kimochi_shop_online/
+│
+├── config/                  
+│   ├── db_connect.php       
+│   └── constants.php        # Thêm cấu hình Turnstile & Các hằng số phân quyền
+│
+├── includes/                
+│   ├── header.php           
+│   ├── footer.php           
+│   ├── functions.php        # [CẬP NHẬT] Hàm check_role('admin'), check_role('seller')...
+│   └── flash_msg.php        
+│
+├── assets/                  # BIẾN THÀNH CACHE EVERYTHING TRÊN CLOUDFLARE
+│   ├── css/               # CHỈ CHỨA FILE CỦA ÔNG TỰ VIẾT
+│   │   ├── main.css       
+│   │   └── dashboard.css  
+│   ├── js/                # CHỈ CHỨA FILE CỦA ÔNG TỰ VIẾT
+│   │   ├── main.js
+│   │   ├── cart_ajax.js
+│   │   └── checkout.js
+│   │
+│   ├── vendor/            # THƯ MỤC CHỨA TẤT CẢ THƯ VIỆN ĐI MƯỢN
+│   │   ├── bootstrap/
+│   │   │   ├── bootstrap.min.css
+│   │   │   └── bootstrap.bundle.min.js
+│   │   │
+│   │   ├── fontawesome/   # (Mai mốt có thêm thì nhét vào đây)
+│   │   │   ├── css/
+│   │   │   │   └── all.min.css
+│   │   │   └── webfonts/
+│   │   │       ├── fa-solid-900.woff2
+│   │   │       ├── fa-regular-400.woff2
+│   │   │       └── fa-brands-400.woff2
+│   │   │
+│   │   └── chartjs/       # (Vẽ biểu đồ admin thì nhét vào đây)
+│   │       └── chart.umd.js
+│   │
+│   └── images/
+│       ├── system/
+│       └── products/
+│
+├── core_logic/              # NƠI XỬ LÝ BACK-END (BYPASS CLOUDFLARE CACHE)
+│   ├── auth_process.php     # Kiểm tra quyền đăng nhập, điều hướng về đúng trang quản trị
+│   ├── cart_process.php     
+│   ├── order_process.php    # Khi khách đặt, trạng thái mặc định là 'pending'
+│   ├── seller_process.php   # [MỚI] Seller duyệt đơn -> Chuyển trạng thái 'processing'
+│   └── shipper_process.php  # [MỚI] Shipper nhận đơn -> Đổi sang 'shipped' -> 'completed'
+│
+├── admin/                   # [MỚI] KHU VỰC TỐI CAO (Chỉ Admin hệ thống được vào)
+│   ├── index.php            # Thống kê toàn sàn, tổng số seller, shipper, doanh thu thuế
+│   ├── manage_sellers.php   # Duyệt/Khóa tài khoản Người Bán Hàng
+│   ├── manage_shippers.php  # Duyệt/Khóa tài khoản Người Vận Chuyển
+│   └── permissions.php      # Quản lý phân quyền hệ thống
+│
+├── seller/                  # KHU VỰC NGƯỜI BÁN HÀNG (Seller Dashboard)
+│   ├── index.php            # Thống kê doanh thu riêng của shop đó
+│   ├── products.php         # Thêm/Sửa/Xóa sản phẩm của chính mình
+│   ├── categories.php       # Xem danh mục chung được Admin cho phép
+│   └── orders.php           # Xem đơn khách đặt sản phẩm của mình -> Bấm chuẩn bị hàng
+│
+├── shipper/                 # [MỚI] KHU VỰC NGƯỜI VẬN CHUYỂN (Shipper App/Web)
+│   ├── index.php            # Danh sách đơn hàng đang chờ giao hoặc đã giao thành công
+│   ├── order_pickup.php     # Nhận đơn hàng từ các Seller để đi giao
+│   └── update_status.php    # Cập nhật: "Đang giao" hoặc "Giao thành công / Thất bại"
+│
+├── vendor/                  # Thư viện PHPMailer gửi mail hóa đơn
+│
+├── index.php                # TRANG CHỦ (Khách xem hàng)
+├── shop.php                 # TRANG CỬA HÀNG + BỘ LỌC
+├── product_detail.php       # CHI TIẾT SẢN PHẨM
+├── cart.php                 # GIỎ HÀNG 
+├── checkout.php             # THANH TOÁN
+├── order_success.php        # HOÀN TẤT ĐƠN HÀNG
+├── profile.php              # LỊCH SỬ ĐƠN HÀNG CỦA KHÁCH KHÀNG
+├── block_spam.php           # Phòng chờ Turnstile CAPTCHA
+├── cloudflare_rules.txt     # Hướng dẫn Page Rules cập nhật
+└── .htaccess                
+
+
+--------------------------------------------------------------------------------
+PHẦN 2: CẤU TRÚC CƠ SỞ DỮ LIỆU ĐÃ SỬA LỖI (FIXED DATABASE SCHEMA)
+--------------------------------------------------------------------------------
+# 1. BẢNG `users` (Quản lý toàn bộ tài khoản)
+- id (INT, PK, Auto)
+- full_name (VARCHAR)
+- email (VARCHAR, Unique)
+- password (VARCHAR, Hashed)
+- phone (VARCHAR)
+- address (TEXT)
+- role (ENUM: 'admin', 'seller', 'shipper', 'customer') <-- [ĐÃ SỬA: Đủ 4 quyền]
+- created_at (TIMESTAMP)
+
+# 2. BẢNG `categories` (Danh mục)
+- id (INT, PK, Auto)
+- name (VARCHAR)
+- slug (VARCHAR)
+- status (TINYINT)
+
+# 3. BẢNG `products` (Sản phẩm)
+- id (INT, PK, Auto)
+- seller_id (INT, FK)    <-- [MỚI: Biết sản phẩm này do Seller nào đăng bán]
+- category_id (INT, FK)  
+- name (VARCHAR)
+- price (DECIMAL)
+- stock (INT)            
+- status (TINYINT)       
+
+# 4. BẢNG `orders` (Quản lý trạng thái vòng đời của đơn hàng)
+- id (INT, PK, Auto)
+- order_code (VARCHAR)   
+- user_id (INT, FK)      (Người mua)
+- seller_id (INT, FK)    <-- [MỚI: Đơn này mua từ shop của Seller nào]
+- shipper_id (INT, FK)   <-- [MỚI: Shipper nào chịu trách nhiệm đi giao]
+- total_amount (DECIMAL) 
+- payment_method (VARCHAR) 
+- status (ENUM):         <-- [VÒNG ĐỜI ĐƠN HÀNG CHUẨN 4 BÊN]
+    * 'pending': Khách vừa đặt xong, chờ Seller chuẩn bị hàng.
+    * 'processing': Seller đã chuẩn bị xong, chờ Shipper đến lấy hàng.
+    * 'shipped': Shipper đang cầm hàng đi giao cho Khách.
+    * 'completed': Shipper giao thành công, khách nhận hàng, tiền về ví Seller.
+    * 'cancelled': Đơn bị hủy.
+- created_at (TIMESTAMP)
+
+# 5. BẢNG `order_items` (Chi tiết đơn)
+- id (INT, PK, Auto)
+- order_id (INT, FK)
+- product_id (INT, FK)
+- quantity (INT)
+- price (DECIMAL)
+
+
+--------------------------------------------------------------------------------
+PHẦN 3: LUỒNG HOẠT ĐỘNG PHỐI HỢP 4 BÊN (4-WAY USER FLOW)
+--------------------------------------------------------------------------------
+Bước 1 [Khách Hàng]: Chọn sản phẩm -> Đặt hàng thành công. 
+                     (Hệ thống tạo đơn `status = 'pending'`).
+
+Bước 2 [Người Bán - Seller]: Đăng nhập vào `/seller`, thấy đơn 'pending'.
+                             Chuẩn bị đóng gói hàng -> Bấm "Xác nhận gửi hàng". 
+                             (Đơn đổi sang `status = 'processing'`).
+
+Bước 3 [Người Giao Hàng - Shipper]: Đăng nhập `/shipper`, thấy danh sách đơn 'processing'.
+                                    Bấm "Nhận đơn này" rồi chạy qua kho Seller lấy hàng.
+                                    (Hệ thống lưu `shipper_id` và đổi `status = 'shipped'`).
+
+Bước 4 [Shipper -> Khách]: Shipper giao hàng tận tay khách -> Thu tiền (nếu là COD).
+                           Bấm "Xác nhận đã giao" trên giao diện của Shipper.
+                           (Đơn đổi sang `status = 'completed'`).
+
+Bước 5 [Quản Trị Viên - Admin]: Đăng nhập vào `/admin` bất cứ lúc nào để kiểm tra dòng tiền,
+                                giải quyết khiếu nại giữa Seller và Khách, hoặc khóa tài khoản 
+                                nếu phát hiện gian lận.
+
+
+--------------------------------------------------------------------------------
+PHẦN 4: CẬP NHẬT CẤU HÌNH CLOUDFLARE (CLOUDFLARE_RULES.TXT)
+--------------------------------------------------------------------------------
+Rule 1: domain.com/assets/*   -> Cache Level = Cache Everything
+Rule 2: domain.com/admin/*    -> Cache Level = Bypass (Tắt cache vùng Admin)
+Rule 3: domain.com/seller/*   -> Cache Level = Bypass (Tắt cache vùng Seller)
+Rule 4: domain.com/shipper/*  -> Cache Level = Bypass (Tắt cache vùng Shipper)
+Rule 5: domain.com/cart.php*  -> Cache Level = Bypass
+================================================================================
