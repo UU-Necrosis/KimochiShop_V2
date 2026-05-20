@@ -550,15 +550,6 @@ if (isset($_POST['btn-forgot'])) {
 
 </div>
 
-
-
-
-
-
-
-
-
-
 <script>
 // 1. Hàm dùng chung để ẩn/hiện form dựa theo tên Tab (login/register/forgot)
 function showForm(tabName) {
