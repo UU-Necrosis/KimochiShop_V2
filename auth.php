@@ -35,15 +35,25 @@ if (isset($_POST['btn-register'])) {
         $errors['register'] = "Tên đăng nhập hoặc Email này đã được sử dụng rồi ông giáo ơi!";
     }
 
-    // 3. Tiến hành bùa chú Postgres + Gửi Mail OTP nếu không có lỗi
+    // Chặn spam: Kiểm tra xem Username hoặc Email này đã có người xài chưa
     if (empty($errors)) {
         try {
             $check_sql = "SELECT id FROM users WHERE username = :username OR email = :email";
             $check_stmt = $conn->prepare($check_sql);
             $check_stmt->execute([':username' => $username, ':email' => $email]);
             $existing_user = $check_stmt->fetch(PDO::FETCH_ASSOC);
-        
 
+            if ($existing_user) {
+                $errors['register'] = "Tên đăng nhập hoặc Email này đã tồn tại trên hệ thống!";
+            }
+        } catch (PDOException $e) {
+            $errors['register'] = "Lỗi kiểm tra hệ thống: " . $e->getMessage();
+        }
+    }
+
+    // 3. Tiến hành bùa chú Postgres + Gửi Mail OTP nếu không có lỗi
+    if (empty($errors)) {
+        try {
             // Tạo mã OTP ngẫu nhiên 6 chữ số
             $otp_code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
             $hashed_password = password_hash($password, PASSWORD_DEFAULT); 
