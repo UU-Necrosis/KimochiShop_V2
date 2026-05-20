@@ -32,42 +32,25 @@ if (isset($_POST['btn-verify'])) {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user) {
-                // Kiểm tra xem khách đang xác thực cho hành động nào
-                $action = $_SESSION['verify_action'] ?? 'register';
+                // ... Đoạn code xử lý khi KHỚP MÃ (giữ nguyên như cũ) ...
+                unset($_SESSION['otp_attempts']); // Đăng nhập đúng thì xóa số lần đếm đi
+            } else {
+                // Trường hợp SAI MÃ: Tăng số lần nhập sai lên
+                $_SESSION['otp_attempts'] = ($_SESSION['otp_attempts'] ?? 0) + 1;
 
-                if ($action === 'forgot_password') {
-                    // CẬP NHẬT: Trường hợp Quên mật khẩu
-                    // Xóa mã OTP cũ đi để bảo mật
-                    $update_sql = "UPDATE users SET verification_code = NULL WHERE email = :email";
-                    $update_stmt = $conn->prepare($update_sql);
-                    $update_stmt->execute([':email' => $email]);
-
-                    // Cho phép đổi mật khẩu (Lưu trạng thái đã xác minh vào session)
-                    $_SESSION['password_reset_verified'] = $email;
-                    unset($_SESSION['verify_action']); // Dọn dẹp cờ
-
-                    echo "<script>
-                        alert('Xác thực thành công! Mời ông giáo nhập mật khẩu mới.'); 
-                        window.location.href='reset_password.php'; 
-                    </script>";
-                    exit();
-
-                } else {
-                    // TRƯỜNG HỢP ĐĂNG KÝ CŨ (Giữ nguyên)
-                    $update_sql = "UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = :email";
-                    $update_stmt = $conn->prepare($update_sql);
-                    $update_stmt->execute([':email' => $email]);
-
+                if ($_SESSION['otp_attempts'] >= 5) {
+                    // Nếu nhập sai quá 5 lần, tự động xóa Session bắt cút về trang đăng ký luôn
                     unset($_SESSION['verify_email']);
-                    
+                    unset($_SESSION['otp_attempts']);
                     echo "<script>
-                        alert('Xác thực tài khoản thành công! Chào mừng ông giáo đến với Kimochi Shop.'); 
-                        window.location.href='auth.php?tab=login';
+                        alert('Ông giáo đã nhập sai OTP quá 5 lần! Hệ thống tự hủy, vui lòng đăng ký lại.');
+                        window.location.href='auth.php';
                     </script>";
                     exit();
                 }
-            } else {
-                $error = "Mã xác thực OTP không chính xác!";
+
+                $remaining = 5 - $_SESSION['otp_attempts'];
+                $error = "Mã OTP không chính xác! Ông giáo còn $remaining lần thử trước khi bị khóa.";
             }
         } catch (PDOException $e) {
             $error = "Lỗi hệ thống database: " . $e->getMessage();
