@@ -30,7 +30,7 @@ if (isset($_POST['btn-register'])) {
     }
 
     // Chặn spam & Check trùng: Kiểm tra Username hoặc Email trong PostgreSQL
-    if (empty($errors)) {
+
         try {
             // 1. Kiểm tra Username trước
             $check_user = $conn->prepare("SELECT id FROM users WHERE username = :username");
