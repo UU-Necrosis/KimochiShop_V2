@@ -119,28 +119,28 @@ if (isset($_POST['btn-register'])) {
 // ==================== XỬ LÝ LOGIC ĐĂNG NHẬP POSTGRESQL ====================
 
 if (isset($_POST['btn-login'])) {
-    $username = trim($_POST['username'] ?? '');
+    // Đổi tên biến thành $login_input để đại diện cho cả Username lẫn Email
+    $login_input = trim($_POST['username'] ?? ''); 
     $password = $_POST['password'] ?? '';
 
-    if (empty($username) || empty($password)) {
-        $errors['login'] = "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!";
+    if (empty($login_input) || empty($password)) {
+        $errors['login'] = "Vui lòng nhập đầy đủ tên đăng nhập/Email và mật khẩu!";
     }
 
     if (empty($errors)) {
         try {
-            // Kiểm tra tài khoản bằng Username hoặc Email
-            $sql = "SELECT * FROM users WHERE username = :username OR email = :username";
+            // Thay đổi SQL ở đây để check cả 2 cột username HOẶC email
+            $sql = "SELECT * FROM users WHERE username = :login_input OR email = :login_input";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([':username' => $username]);
+            $stmt->execute([':login_input' => $login_input]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user && password_verify($password, $user['password'])) {
                 
-                // 🛠️ ĐOẠN CHECK CHUẨN: Đồng bộ key 'login' cho mảng $errors
+                // Kiểm tra trạng thái kích hoạt tài khoản
                 if ($user['is_verified'] === false || $user['is_verified'] === 0 || $user['is_verified'] == 'f') {
-                    
-                    $_SESSION['verify_email'] = $user['email']; // Lưu lại email để sang verify.php dùng luôn
-                    $_SESSION['verify_action'] = 'register';   // Gắn cờ hành động kích hoạt đăng ký
+                    $_SESSION['verify_email'] = $user['email']; 
+                    $_SESSION['verify_action'] = 'register';   
                     
                     $errors['login'] = "Tài khoản chưa kích hoạt! <a href='verify.php' class='text-pink fw-bold text-decoration-underline'>Nhấp vào đây để nhập mã OTP kích hoạt</a>";
                 } else {
@@ -154,7 +154,7 @@ if (isset($_POST['btn-login'])) {
                 }
                 
             } else {
-                $errors['login'] = "Tên đăng nhập hoặc mật khẩu không chính xác!";
+                $errors['login'] = "Tên đăng nhập/Email hoặc mật khẩu không chính xác!";
             }
         } catch (PDOException $e) {
             $errors['login'] = "Lỗi hệ thống database: " . $e->getMessage();
