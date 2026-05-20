@@ -93,7 +93,7 @@ if (isset($_POST['btn-register'])) {
                     <p style='color: #555; font-size: 14px;'>Xin chào <strong>$username</strong>,</p>
                     <p style='color: #555; font-size: 14px;'>Cảm ơn bạn vì đã tin tưởng và lựa chọn Kimochi Shop. Mã xác thực tài khoản của bạn là: $otp_code</p>
                     <div style='text-align: center; margin: 35px 0;'>
-                        <span style=' font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #222; background: #fff5f8; padding: 12px 25px; border-radius: 8px; border: 2px dashed #c0c0c0; display: inline-block;'>Xác thực Mã OTP</span>
+                        <span style='link= font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #222; background: #fff5f8; padding: 12px 25px; border-radius: 8px; border: 2px dashed #c0c0c0; display: inline-block;'>Xác thực Mã OTP</span>
                     </div>
                     <p style='font-size: 12px; color: #999; text-align: center;'>
                     Nếu bạn không yêu cầu đăng ký, vui lòng bỏ qua email này. Mã này có hiệu lực trong vòng 15 phút. Tuyệt đối không chia sẻ mã này cho ai.
