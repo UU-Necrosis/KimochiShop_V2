@@ -417,7 +417,7 @@ if (isset($_POST['btn-forgot'])) {
                 <form action="auth.php" method="POST">
                     <?php if (isset($errors['register'])): ?>
                         <div class="alert alert-danger py-2 small shadow-sm text-center">
-                            <?php echo $errors['register'] ?>
+                            <?php echo $errors['register'];?>
                         </div>
                     <?php endif; ?>
                     <div class="mb-3">
