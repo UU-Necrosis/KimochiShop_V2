@@ -115,6 +115,14 @@ require_once __DIR__ . '/functions.php';
                                     <i class="fa-solid fa-bars"></i>
                                 </a>
 
+                                
+                                <ul class="dropdown-menu dropdown-menu-end shadow">
+                                    <li><a class="dropdown-item" href="#">Trang chủ</a></li>
+                                    <li><a class="dropdown-item" href="#">Sản phẩm</a></li>
+                                    <li><a class="dropdown-item" href="#">Giới thiệu</a></li>
+                                    <li><a class="dropdown-item" href="#">Liên hệ</a></li>
+                                </ul>
+                            </div>
 
 
                             
