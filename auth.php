@@ -412,7 +412,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
         <h5 class="fw-semibold text-white mb-4" style="opacity: 0.9;">Chào mừng bạn đến với thế giới người lớn</h5>
         
         <p class="lead fs-6 lh-lg mb-4" style="max-width: 600px; color: #b0b3b8 !important;">
-            Tại Kimochi Shop, chúng tôi cam kết mang đến những sản phẩm người lớn chất lượng cao, an toàn và tinh tế. 
+            Tại Kimochi Shop, chúng tôi cam kết mang đến những sản phẩm chất lượng cao, an toàn và tinh tế. 
             Chúng tôi tin rằng mọi người đều xứng đáng được tận hưởng những giây phục thăng hoa và tự tin.
         </p>
         <p class="lead fs-6 lh-lg" style="max-width: 600px; color: #b0b3b8 !important;">
