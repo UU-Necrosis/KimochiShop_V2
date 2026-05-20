@@ -1,20 +1,7 @@
 <?php
 // Kiểm tra xem URL đang yêu cầu tab nào (Mặc định là login nếu không có)
 $tab = isset($_GET['tab']) ? $_GET['tab'] : 'login';
-// 1. Nhúng file kết nối database vào
-require_once 'config/db_connect.php';
 
-// Khởi tạo session để lưu trạng thái đăng nhập
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
-$tab = isset($_GET['tab']) ? $_GET['tab'] : 'login';
-// Thay đổi $errors thành một mảng có khóa rõ ràng
-$errors = [];
-$success = "";
-
-<?php
 // === ĐOẠN NÀY ĐẶT TRÊN ĐỈNH ĐẦU FILE AUTH.PHP - NƠI XỬ LÝ LOGIC ĐĂNG KÝ ===
 session_start();
 require_once 'config/db_connect.php'; // Tui thấy file kết nối của ông tên là db_connect.php nè!
