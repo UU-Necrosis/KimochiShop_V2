@@ -171,3 +171,5 @@ Rule 3: domain.com/seller/*   -> Cache Level = Bypass (Tắt cache vùng Seller)
 Rule 4: domain.com/shipper/*  -> Cache Level = Bypass (Tắt cache vùng Shipper)
 Rule 5: domain.com/cart.php*  -> Cache Level = Bypass
 ================================================================================
+
+
