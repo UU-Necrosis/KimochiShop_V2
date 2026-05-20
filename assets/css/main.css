@@ -151,7 +151,7 @@
     background-color: var(--icon-active-bg);
 }
 
-/* Đổ màu và giữ màu cho Menhi đang mở bảng tìm kiếm */
+/* Đổ màu và giữ màu cho Menu khi đang mở bảng tìm kiếm */
 .nav-icon-link#searchDropdown[aria-expanded="true"] {
     color: var(--brand) !important;
     background-color: var(--icon-opened-bg) !important;
