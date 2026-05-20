@@ -111,7 +111,7 @@ require_once __DIR__ . '/functions.php';
                             </a>
                             
                             <div class="dropdown">
-                                <a class="nav-icon-link" href="#" role="button" id="userMenuDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                <a class="nav-icon-link dropdown-toggle no-caret" href="#" role="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Tài khoản" style="cursor: pointer;">
                                     <i class="fa-solid fa-bars"></i>
                                 </a>
 
