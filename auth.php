@@ -275,9 +275,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
                 </h4>
             </div>
         </div>
-
         <div class="form-container-box">
-            
+            <?php if (!empty($errors)): ?>
+                <div class="alert alert-danger py-2 small shadow-sm mb-3">
+                    <ul class="mb-0 ps-3">
+                        <?php foreach ($errors as $error) echo "<li>$error</li>"; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
+
+            <?php if (!empty($success)): ?>
+                <div class="alert alert-success py-2 small shadow-sm mb-3 text-center">
+                    <?php echo $success; ?>
+                </div>
+            <?php endif; ?>
             <div id="login-box" class="form-box-fade <?php echo $tab !== 'login' ? 'd-none' : ''; ?>">
                 <h4 class="dynamic-title mb-1">ĐĂNG NHẬP</h4>
                 <p class="text-muted small text-center mb-3">Chào mừng bạn quay lại!</p>
