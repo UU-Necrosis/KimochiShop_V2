@@ -111,11 +111,11 @@ require_once __DIR__ . '/functions.php';
                             </a>
                             
                             <div class="dropdown">
-                                <a class="nav-icon-link no-caret" href="#" role="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Tài khoản">
+                                <a class="nav-icon-link dropdown-toggle no-caret" href="#" role="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Tài khoản">
                                     <i class="fa-solid fa-bars"></i>
                                 </a>
 
-                                <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 animate slideIn" aria-labelledby="userMenuDropdown" style="background-color: #1a1a1a;">
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 animate slideIn" aria-labelledby="userMenuDropdown" style="background-color: #1a1a1a; min-width: 200px;">
                                     <?php if (isset($_SESSION['username'])): ?>
                                         <li>
                                             <div class="dropdown-header text-white-50 border-bottom border-secondary pb-2 mb-2">
@@ -132,7 +132,7 @@ require_once __DIR__ . '/functions.php';
                                                 <a class="dropdown-item text-white py-2" href="admin/dashboard.php">
                                                     <i class="fa-solid fa-user-gear me-2 text-warning"></i> Trang quản trị
                                                 </a>
-                                            </tr>
+                                            </li>
                                         <?php endif; ?>
                                         <li><hr class="dropdown-divider border-secondary"></li>
                                         <li>
