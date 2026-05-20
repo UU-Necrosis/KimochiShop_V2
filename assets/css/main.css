@@ -193,12 +193,13 @@
 }
 
 /* Hiệu ứng Highlight viền O vuông lan tỏa khi click hoặc khi đang mở */
-.nav-icon-link:focus, .nav-icon-link[aria-expanded="true"] {
+.nav-icon-link:focus,
+.nav-icon-link[aria-expanded="true"] {
     outline: none;
     box-shadow: 0 0 0 3px var(--icon-highlight-shadow); 
 }
 
 /* Chuông và Ba gạch khi click xong thả ra thì tắt hiệu ứng shadow ngay */
-.nav-icon-link:not(#searchDropdown):focus {
+.nav-icon-link:not(#searchDropdown,#):focus {
     box-shadow: none;
 }
