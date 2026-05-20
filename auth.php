@@ -32,13 +32,14 @@ if (isset($_POST['btn-register'])) {
     }
 
     // 3. Tiến hành bùa chú Postgres + Gửi Mail OTP nếu không có lỗi
+// 3. Tiến hành bùa chú Postgres + Gửi Mail OTP nếu không có lỗi
     if (empty($errors)) {
         try {
             // Tạo mã OTP ngẫu nhiên 6 chữ số
             $otp_code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
             $hashed_password = password_hash($password, PASSWORD_DEFAULT); 
 
-            // Câu lệnh INSERT tài khoản mới vào PostgreSQL (Mặc định is_verified = FALSE)
+            // Cập nhật câu lệnh INSERT: Phải ném cả $otp_code vào cột verification_code
             $sql = "INSERT INTO users (username, email, password, verification_code, is_verified) 
                     VALUES (:username, :email, :password, :otp, FALSE)";
             
@@ -47,44 +48,46 @@ if (isset($_POST['btn-register'])) {
                 ':username' => $username,
                 ':email'    => $email,
                 ':password' => $hashed_password,
-                ':otp'      => $otp_code
+                ':otp'      => $otp_code // Lưu mã OTP này vào database
             ]);
 
-            // ==================== CẤU HÌNH GỬI MAIL OTP ====================
+            // Triệu hồi PHPMailer gửi thư (Dùng mảng $_ENV từ hàm loadEnv tự chế của ông giáo)
             $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
-
+            
             $mail->isSMTP();
-            $mail->Host       = $_ENV['SMTP_HOST'] ?? 'smtp.gmail.com'; // Đọc từ file .env tự chế của ông giáo
+            $mail->Host       = $_ENV['SMTP_HOST'] ?? 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = $_ENV['SMTP_USER'] ?? '';               // Đọc từ file .env
-            $mail->Password   = $_ENV['SMTP_PASS'] ?? '';               // Đọc từ file .env
+            $mail->Username   = $_ENV['SMTP_USER'] ?? '';
+            $mail->Password   = $_ENV['SMTP_PASS'] ?? '';
             $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = $_ENV['SMTP_PORT'] ?? 587;
             $mail->CharSet    = 'UTF-8';
 
+            // Người nhận & Người gửi
             $mail->setFrom($mail->Username, 'Kimochi Shop');
-            $mail->addAddress($email); // Gửi tới mail người dùng nhập lúc đăng ký
+            $mail->addAddress($email);
 
-            // Nội dung bức thư tri ân trân trọng quý khách
+            // Nội dung bức thư gửi OTP
             $mail->isHTML(true);
             $mail->Subject = '🔑 Mã xác thực tài khoản Kimochi Shop';
             $mail->Body    = "
                 <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #f0f0f0; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);'>
                     <h2 style='color: #ff69b4; text-align: center; font-size: 26px; margin-bottom: 5px;'>Kimochi Shop</h2>
-                    <p style='color: #555; font-size: 14px; line-height: 1.6;'>Chào bạn,</p>
-                    <p style='color: #555; font-size: 14px; line-height: 1.6;'>Cảm ơn bạn vì đã tin tưởng và lựa chọn Kimochi Shop! Để hoàn tất quá trình thiết lập tài khoản, vui lòng sử dụng mã OTP dưới đây để xác thực:</p>
+                    <p style='color: #555; font-size: 14px;'>Chào bạn,</p>
+                    <p style='color: #555; font-size: 14px;'>Cảm ơn bạn vì đã tin tưởng và lựa chọn Kimochi Shop! Mã xác thực tài khoản của bạn là:</p>
                     <div style='text-align: center; margin: 35px 0;'>
                         <span style='font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #222; background: #fff5f8; padding: 12px 25px; border-radius: 8px; border: 2px dashed #ff69b4; display: inline-block;'>$otp_code</span>
                     </div>
-                    <p style='font-size: 12px; color: #999; text-align: center; margin-top: 30px; border-top: 1px solid #f7f7f7; padding-top: 15px;'>Mã xác thực có hiệu lực trong vòng 15 phút. Vì lý do bảo mật, vui lòng tuyệt đối không chia sẻ mã này cho ai.</p>
+                    <p style='font-size: 12px; color: #999; text-align: center;'>Mã này có hiệu lực trong vòng 15 phút. Tuyệt đối không chia sẻ mã này cho ai.</p>
                 </div>
             ";
 
             $mail->send();
 
-            // Lưu email vào Session để chuyển tiếp sang verify.php
+            // Lưu email vào Session để trang verify.php nhận diện được đang check cho ai
             $_SESSION['verify_email'] = $email;
             
+            // Đẩy sang trang nhập OTP
             header("Location: verify.php");
             exit();
 
@@ -92,7 +95,6 @@ if (isset($_POST['btn-register'])) {
             $errors['register'] = "Có lỗi xảy ra: " . $e->getMessage();
         }
     }
-}
 ?>
 
 <?php
