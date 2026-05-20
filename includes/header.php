@@ -103,18 +103,21 @@ require_once __DIR__ . '/functions.php';
                                         
                                     </form>
                                 </div>
-                                
-                            </div> <a class="nav-icon-link position-relative" href="#" title="Thông báo">
-                                <i class="fa-solid fa-bell"></i><span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                            </div> 
+
+                            <a class="nav-icon-link position-relative" href="#" title="Thông báo">
+                                <i class="fa-solid fa-bell"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
                             </a>
                             
-                            <a class="nav-icon-link" href="#" title="Danh mục phụ">
-                                <i class="fa-solid fa-bars"></i>
-                            </a>
+                            <div class="dropdown">
+                                <a class="nav-icon-link" href="#" title="Danh mục phụ">
+                                    <i class="fa-solid fa-bars"></i>
+                                </a>
 
 
 
-
+                            
                         </div>
 
                     </div>
