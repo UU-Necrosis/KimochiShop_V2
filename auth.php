@@ -287,12 +287,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
                     <div class="text-end mb-4">
                         <a href="auth.php?tab=forgot" class="switch-btn small text-decoration-none text-muted" data-target="forgot" style="font-size: 0.85rem;">Quên mật khẩu?</a>
                     </div>
-                    <button type="submit" name="btn-login" class="btn btn-pink w-100 fw-bold py-2 mb-3 shadow-sm">Đăng Nhập</button>
+                    <button type="submit" name="btn-login" class="btn btn-pink w-100 fw-bold py-2 mb-1 shadow-sm">Đăng Nhập</button>
                 </form>
+
+                <div class="text-center mt-3 mb-2">
+                    <p class="text-muted mb-0 small" style="font-style: italic;">
+                        <i class="fa-solid fa-heart text-pink me-1" style="font-size: 0.75rem;"></i>
+                        Cảm ơn vì đã tin tưởng và lựa chọn Kimochi Shop!
+                    </p>
+                </div>
+
                 <div class="text-center mt-3">
                     <p class="small text-muted">
                         Chưa có tài khoản? 
-                        <a href="auth.php?tab=register" class="switch-btn text-pink fw-bold text-decoration-none transition-link" data-target="register">Đăng ký ngay</a>
+                        <a href="auth.php?tab=register" class="switch-btn text-pink fw-bold text-decoration-none transition-link" data-target="register">Đăng ký thành viên</a>
                     </p>
                 </div>
             </div>
