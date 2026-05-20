@@ -17,7 +17,7 @@ if (!isset($_SESSION['verify_email'])) {
 if (isset($_POST['btn-verify'])) {
     $otp_input = trim($_POST['otp_code'] ?? '');
     $email = $_SESSION['verify_email'];
-
+session_start()
     if (empty($otp_input)) {
         $error = "Vui lòng nhập đủ 6 số xác thực!";
     } else {
