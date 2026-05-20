@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-require_once __DIR__ . '/config/database.php'; 
+require_once __DIR__ . '/config/db_connect.php'; 
 
 $user_id = $_SESSION['user_id'];
 $success_msg = "";
@@ -125,7 +125,7 @@ try {
         html, body { 
             height: 100%; 
             overflow: hidden; 
-            background-color: #111214; 
+            background-color: #adadad; 
             color: #f2f3f5; 
             font-family: 'Segoe UI', Tahoma, sans-serif; 
         }
