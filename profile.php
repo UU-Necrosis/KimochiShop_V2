@@ -207,7 +207,7 @@ try {
             border-radius: 4px; 
             padding: 7px 10px; 
             font-size: 14px;
-        }USER
+        }
         .input-custom:focus { border-color: #5865f2 !important; box-shadow: none !important; }
         .form-label-custom { color: #949ba4; font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 4px; }
         
