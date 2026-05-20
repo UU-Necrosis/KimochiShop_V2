@@ -333,15 +333,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
                     </div>
 
                     <button type="submit" name="btn-register" class="btn btn-pink w-100 fw-bold py-2 mb-3 shadow-sm">Đăng Ký</button>
-    </form>
-    
-    <div class="text-center mt-3">
-        <p class="small text-muted">
-            Đã có tài khoản? 
-            <a href="auth.php?tab=login" class="text-pink fw-bold text-decoration-none transition-link">Đăng nhập ngay</a>
-        </p>
-    </div>
-</div>
+                </form>
+                
+                <div class="text-center mt-3">
+                    <p class="small text-muted">
+                        Đã có tài khoản? 
+                        <a href="auth.php?tab=login" class="text-pink fw-bold text-decoration-none transition-link">Đăng nhập ngay</a>
+                    </p>
+                </div>
             </div>
 
             <div id="forgot-box" class="form-box-fade <?php echo $tab !== 'forgot' ? 'd-none' : ''; ?>">
