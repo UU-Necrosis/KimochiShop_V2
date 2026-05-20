@@ -309,29 +309,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
             <div id="register-box" class="form-box-fade <?php echo $tab !== 'register' ? 'd-none' : ''; ?>">
                 <h4 class="dynamic-title mb-1">ĐĂNG KÝ TÀI KHOẢN</h4>
                 <p class="text-muted small text-center mb-2">Cảm ơn vì đã tin tưởng và lựa chọn Kimochi Shop!</p>
+                
                 <form action="auth.php" method="POST">
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-secondary">Tên đăng nhập <span class="text-danger">*</span></label>
-                        <input type="text" name="reg_username" class="form-control py-2" placeholder="Tối thiểu 5 ký tự..." required>
+                        <input type="text" name="reg_username" class="form-control py-2 <?php echo isset($errors['username']) ? 'is-invalid' : ''; ?>" placeholder="Tối thiểu 5 ký tự..." value="<?php echo htmlspecialchars($username ?? ''); ?>" required>
+                        <?php if (isset($errors['username'])): ?>
+                            <div class="invalid-feedback small fw-semibold"><?php echo $errors['username']; ?></div>
+                        <?php endif; ?>
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-secondary">Địa chỉ Email <span class="text-danger">*</span></label>
-                        <input type="email" name="reg_email" class="form-control py-2" placeholder="example@gmail.com" required>
+                        <input type="email" name="reg_email" class="form-control py-2 <?php echo isset($errors['email']) ? 'is-invalid' : ''; ?>" placeholder="example@gmail.com" value="<?php echo htmlspecialchars($email ?? ''); ?>" required>
+                        <?php if (isset($errors['email'])): ?>
+                            <div class="invalid-feedback small fw-semibold"><?php echo $errors['email']; ?></div>
+                        <?php endif; ?>
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-secondary">Mật khẩu <span class="text-danger">*</span></label>
                         <input type="password" name="reg_password" class="form-control py-2" placeholder="Nhập mật khẩu bảo mật..." required>
                     </div>
+
                     <div class="mb-4">
                         <label class="form-label small fw-bold text-secondary">Xác nhận mật khẩu <span class="text-danger">*</span></label>
-                        <input type="password" name="reg_password_confirm" class="form-control py-2" placeholder="Nhập lại mật khẩu..." required>
+                        <input type="password" name="reg_password_confirm" class="form-control py-2 <?php echo isset($errors['password_confirm']) ? 'is-invalid' : ''; ?>" placeholder="Nhập lại mật khẩu..." required>
+                        <?php if (isset($errors['password_confirm'])): ?>
+                            <div class="invalid-feedback small fw-semibold"><?php echo $errors['password_confirm']; ?></div>
+                        <?php endif; ?>
                     </div>
+
                     <button type="submit" name="btn-register" class="btn btn-pink w-100 fw-bold py-2 mb-3 shadow-sm">Đăng Ký</button>
                 </form>
-                <div class="text-center mt-3">
-                    <span class="small text-muted">Đã có tài khoản rồi? </span>
-                    <a href="auth.php?tab=login" class="switch-btn small fw-bold text-decoration-none text-pink" data-target="login">Đăng nhập</a>
-                </div>
+                ...
             </div>
 
             <div id="forgot-box" class="form-box-fade <?php echo $tab !== 'forgot' ? 'd-none' : ''; ?>">
