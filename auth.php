@@ -28,26 +28,25 @@ if (isset($_POST['btn-register'])) {
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors['email'] = "Địa chỉ email không đúng định dạng!";
     }
-    // Check xem Username hoặc Email đã tồn tại trong PostgreSQL chưa
-    $check_stmt = $conn->prepare("SELECT id FROM users WHERE username = :username OR email = :email");
-    $check_stmt->execute([':username' => $username, ':email' => $email]);
-    if ($check_stmt->fetch()) {
-        $errors['register'] = "Tên đăng nhập hoặc Email này đã được sử dụng rồi ông giáo ơi!";
-    }
-
-    // Chặn spam: Kiểm tra xem Username hoặc Email này đã có người xài chưa
+    
+    // Chặn spam & Check trùng: Kiểm tra Username hoặc Email trong PostgreSQL
     if (empty($errors)) {
         try {
-            $check_sql = "SELECT id FROM users WHERE username = :username OR email = :email";
-            $check_stmt = $conn->prepare($check_sql);
-            $check_stmt->execute([':username' => $username, ':email' => $email]);
-            $existing_user = $check_stmt->fetch(PDO::FETCH_ASSOC);
+            // 1. Kiểm tra Username trước
+            $check_user = $conn->prepare("SELECT id FROM users WHERE username = :username");
+            $check_user->execute([':username' => $username]);
+            if ($check_user->fetch()) {
+                $errors['username'] = "Tên đăng nhập này đã có người sử dụng rồi!";
+            }
 
-            if ($existing_user) {
-                $errors['register'] = "Tên đăng nhập hoặc Email này đã tồn tại trên hệ thống!";
+            // 2. Kiểm tra Email sau
+            $check_email = $conn->prepare("SELECT id FROM users WHERE email = :email");
+            $check_email->execute([':email' => $email]);
+            if ($check_email->fetch()) {
+                $errors['email'] = "Địa chỉ Email này đã được đăng ký rồi!";
             }
         } catch (PDOException $e) {
-            $errors['register'] = "Lỗi kiểm tra hệ thống: " . $e->getMessage();
+            $errors['register'] = "Lỗi hệ thống kiểm tra dữ liệu: " . $e->getMessage();
         }
     }
 
