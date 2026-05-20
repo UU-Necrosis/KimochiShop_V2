@@ -1,0 +1,97 @@
+<?php
+session_start();
+require_once 'config/connect.php'; // Gọi file kết nối CSDL PostgreSQL của ông giáo vào đây
+
+$error = '';
+
+// Nếu không có session chứng tỏ chưa qua bước đăng ký, đá về trang auth luôn
+if (!isset($_SESSION['verify_email'])) {
+    header("Location: auth.php");
+    exit();
+}
+
+if (isset($_POST['btn-verify'])) {
+    $otp_input = trim($_POST['otp_code']);
+    $email = $_SESSION['verify_email'];
+
+    try {
+        // 1. Kiểm tra mã OTP trong PostgreSQL
+        $sql = "SELECT * FROM users WHERE email = :email AND verification_code = :otp";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([
+            ':email' => $email, 
+            ':otp' => $otp_input
+        ]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user) {
+            // 2. Khớp mã! Kích hoạt trạng thái tài khoản thành TRUE và dọn sạch cột OTP
+            $update_sql = "UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = :email";
+            $update_stmt = $conn->prepare($update_sql);
+            $update_stmt->execute([':email' => $email]);
+
+            // Xóa session chờ xác thực
+            unset($_SESSION['verify_email']);
+            
+            // Hiện thông báo popup thành công rồi tự động đẩy sang tab Login
+            echo "<script>
+                alert('Xác thực tài khoản thành công! Chào mừng bạn đã tham gia Kimochi Shop.'); 
+                window.location.href='auth.php?tab=login';
+            </script>";
+            exit();
+        } else {
+            $error = "Mã xác thực OTP không chính xác. Ông giáo check lại kỹ trong hòm thư xem!";
+        }
+    } catch (PDOException $e) {
+        $error = "Lỗi hệ thống database: " . $e->getMessage();
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác thực tài khoản - Kimochi Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; min-height: 100vh; }
+        .btn-pink { background-color: #ff69b4 !important; color: white !important; border: none !important; transition: 0.2s; }
+        .btn-pink:hover { background-color: #ff4fa3 !important; opacity: 0.9; }
+        .text-pink { color: #ff69b4 !important; }
+    </style>
+</head>
+<body class="d-flex align-items-center justify-content-center">
+
+    <div class="card p-4 shadow border-0" style="max-width: 420px; width: 100%; border-radius: 16px;">
+        <div class="text-center mb-4">
+            <h3 class="fw-bold text-dark mb-1">Xác Thực OTP</h3>
+            <p class="text-muted small px-3">Mã xác nhận bảo mật đã được gửi trực tiếp vào hòm thư <strong class="text-dark"><?php echo htmlspecialchars($_SESSION['verify_email']); ?></strong></p>
+        </div>
+        
+        <form action="verify.php" method="POST">
+            <div class="mb-4">
+                <label class="form-label small fw-bold text-secondary text-uppercase" style="letter-spacing: 0.5px;">Nhập 6 số xác thực</label>
+                <input type="text" name="otp_code" class="form-control text-center fw-bold fs-3 py-2" placeholder="• • • • • •" maxlength="6" required autocomplete="off" style="letter-spacing: 6px; border-radius: 10px;">
+                
+                <?php if(!empty($error)): ?>
+                    <div class="text-danger small mt-2 text-center fw-semibold">
+                        <i class="fa-solid fa-circle-exclamation me-1"></i> <?php echo $error; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+            
+            <button type="submit" name="btn-verify" class="btn btn-pink w-100 fw-bold py-2.5 fs-6 shadow-sm mb-3" style="border-radius: 10px;">
+                Xác Nhận Tài Khoản
+            </button>
+            
+            <div class="text-center">
+                <a href="auth.php" class="text-decoration-none text-secondary small fw-semibold"><i class="fa-solid fa-arrow-left me-1"></i> Quay lại Đăng ký</a>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>
