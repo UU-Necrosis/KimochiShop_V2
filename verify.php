@@ -1,49 +1,57 @@
 <?php
-session_start();
-require_once 'config/db_connect.php'; // Gọi file kết nối CSDL PostgreSQL của ông giáo vào đây
+if (session_status() == PHP_SESSION_NONE) { 
+    session_start();
+}
+
+// Gọi file kết nối CSDL PostgreSQL (Nơi đã có hàm loadEnv() tự chế của ông giáo)
+require_once 'config/db_connect.php'; 
 
 $error = '';
 
-// Nếu không có session chứng tỏ chưa qua bước đăng ký, đá về trang auth luôn
+// Nếu không có session chứng tỏ chưa qua bước đăng ký hoặc đăng nhập thất bại, đá về trang auth luôn
 if (!isset($_SESSION['verify_email'])) {
     header("Location: auth.php");
     exit();
 }
 
 if (isset($_POST['btn-verify'])) {
-    $otp_input = trim($_POST['otp_code']);
+    $otp_input = trim($_POST['otp_code'] ?? '');
     $email = $_SESSION['verify_email'];
 
-    try {
-        // 1. Kiểm tra mã OTP trong PostgreSQL
-        $sql = "SELECT * FROM users WHERE email = :email AND verification_code = :otp";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            ':email' => $email, 
-            ':otp' => $otp_input
-        ]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (empty($otp_input)) {
+        $error = "Vui lòng nhập đủ 6 số xác thực!";
+    } else {
+        try {
+            // 1. Kiểm tra mã OTP trong PostgreSQL (Dùng biến $conn từ db_connect.php)
+            $sql = "SELECT * FROM users WHERE email = :email AND verification_code = :otp";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':email' => $email, 
+                ':otp' => $otp_input
+            ]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user) {
-            // 2. Khớp mã! Kích hoạt trạng thái tài khoản thành TRUE và dọn sạch cột OTP
-            $update_sql = "UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = :email";
-            $update_stmt = $conn->prepare($update_sql);
-            $update_stmt->execute([':email' => $email]);
+            if ($user) {
+                // 2. Khớp mã! Kích hoạt trạng thái tài khoản thành TRUE và dọn sạch cột OTP
+                $update_sql = "UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = :email";
+                $update_stmt = $conn->prepare($update_sql);
+                $update_stmt->execute([':email' => $email]);
 
-            // Xóa session chờ xác thực
-            unset($_SESSION['verify_email']);
-            
-            // Hiện thông báo popup thành công rồi tự động đẩy sang tab Login
-            echo "<script>
-                alert('Xác thực tài khoản thành công! Chào mừng bạn đã tham gia Kimochi Shop.'); 
-                window.location.href='auth.php?tab=login';
-            </script>";
-            exit();
-        } else {
-            $error = "Mã xác thực OTP không chính xác. Ông giáo check lại kỹ trong hòm thư xem!";
+                // Xác thực xong thì xóa session chờ xác thực đi cho sạch máy
+                unset($_SESSION['verify_email']);
+                
+                // Hiện thông báo popup thành công rồi tự động đẩy sang tab Đăng Nhập
+                echo "<script>
+                    alert('Xác thực tài khoản thành công! Chào mừng ông giáo đến với Kimochi Shop.'); 
+                    window.location.href='auth.php?tab=login';
+                </script>";
+                exit();
+            } else {
+                $error = "Mã xác thực OTP không chính xác. Kiểm tra lại hòm thư đi ông giáo!";
+            }
+        } catch (PDOException $e) {
+            $error = "Lỗi hệ thống database: " . $e->getMessage();
         }
-    } catch (PDOException $e) {
-        $error = "Lỗi hệ thống database: " . $e->getMessage();
     }
 }
 ?>
@@ -61,14 +69,18 @@ if (isset($_POST['btn-verify'])) {
         .btn-pink { background-color: #ff69b4 !important; color: white !important; border: none !important; transition: 0.2s; }
         .btn-pink:hover { background-color: #ff4fa3 !important; opacity: 0.9; }
         .text-pink { color: #ff69b4 !important; }
+        .card-verify { max-width: 420px; width: 100%; border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body class="d-flex align-items-center justify-content-center">
 
-    <div class="card p-4 shadow border-0" style="max-width: 420px; width: 100%; border-radius: 16px;">
+    <div class="card p-4 card-verify">
         <div class="text-center mb-4">
+            <div class="mb-3">
+                <i class="fa-solid fa-envelope-circle-check fa-3x text-pink"></i>
+            </div>
             <h3 class="fw-bold text-dark mb-1">Xác Thực OTP</h3>
-            <p class="text-muted small px-3">Mã xác nhận bảo mật đã được gửi trực tiếp vào hòm thư <strong class="text-dark"><?php echo htmlspecialchars($_SESSION['verify_email']); ?></strong></p>
+            <p class="text-muted small px-3">Mã xác nhận bảo mật đã được gửi trực tiếp vào hòm thư:<br> <strong class="text-dark"><?php echo htmlspecialchars($_SESSION['verify_email']); ?></strong></p>
         </div>
         
         <form action="verify.php" method="POST">
@@ -88,7 +100,7 @@ if (isset($_POST['btn-verify'])) {
             </button>
             
             <div class="text-center">
-                <a href="auth.php" class="text-decoration-none text-secondary small fw-semibold"><i class="fa-solid fa-arrow-left me-1"></i> Quay lại Đăng ký</a>
+                <a href="auth.php" class="text-decoration-none text-secondary small fw-semibold"><i class="fa-solid fa-arrow-left me-1"></i> Quay lại trang chủ</a>
             </div>
         </form>
     </div>
