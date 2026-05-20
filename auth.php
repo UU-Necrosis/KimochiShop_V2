@@ -256,7 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
     <div class="auth-right">
         
         <div class="auth-header">
-            <a href="index.php" class="back-to-home" title="Quay lại trang chủ">
+            <a href="index.php" class="back-to-home text-decoration-none d-inline-flex align-items-center gap-2" title="Quay lại trang chủ" style="position: static !important; transform: translateY(-3px); transition: 0.2s;">
                 <i class="fa-solid fa-house text-secondary" style="font-size: 0.95rem;"></i>
                 <span class="d-none d-sm-inline small fw-semibold text-secondary">Home Page</span>
             </a>
