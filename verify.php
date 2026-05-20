@@ -32,22 +32,42 @@ if (isset($_POST['btn-verify'])) {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user) {
-                // 2. Khớp mã! Kích hoạt trạng thái tài khoản thành TRUE và dọn sạch cột OTP
-                $update_sql = "UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = :email";
-                $update_stmt = $conn->prepare($update_sql);
-                $update_stmt->execute([':email' => $email]);
+                // Kiểm tra xem khách đang xác thực cho hành động nào
+                $action = $_SESSION['verify_action'] ?? 'register';
 
-                // Xác thực xong thì xóa session chờ xác thực đi cho sạch máy
-                unset($_SESSION['verify_email']);
-                
-                // Hiện thông báo popup thành công rồi tự động đẩy sang tab Đăng Nhập
-                echo "<script>
-                    alert('Xác thực tài khoản thành công! Chào mừng ông giáo đến với Kimochi Shop.'); 
-                    window.location.href='auth.php?tab=login';
-                </script>";
-                exit();
+                if ($action === 'forgot_password') {
+                    // CẬP NHẬT: Trường hợp Quên mật khẩu
+                    // Xóa mã OTP cũ đi để bảo mật
+                    $update_sql = "UPDATE users SET verification_code = NULL WHERE email = :email";
+                    $update_stmt = $conn->prepare($update_sql);
+                    $update_stmt->execute([':email' => $email]);
+
+                    // Cho phép đổi mật khẩu (Lưu trạng thái đã xác minh vào session)
+                    $_SESSION['password_reset_verified'] = $email;
+                    unset($_SESSION['verify_action']); // Dọn dẹp cờ
+
+                    echo "<script>
+                        alert('Xác thực thành công! Mời ông giáo nhập mật khẩu mới.'); 
+                        window.location.href='reset_password.php'; 
+                    </script>";
+                    exit();
+
+                } else {
+                    // TRƯỜNG HỢP ĐĂNG KÝ CŨ (Giữ nguyên)
+                    $update_sql = "UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = :email";
+                    $update_stmt = $conn->prepare($update_sql);
+                    $update_stmt->execute([':email' => $email]);
+
+                    unset($_SESSION['verify_email']);
+                    
+                    echo "<script>
+                        alert('Xác thực tài khoản thành công! Chào mừng ông giáo đến với Kimochi Shop.'); 
+                        window.location.href='auth.php?tab=login';
+                    </script>";
+                    exit();
+                }
             } else {
-                $error = "Mã xác thực OTP không chính xác. Kiểm tra lại hòm thư đi ông giáo!";
+                $error = "Mã xác thực OTP không chính xác!";
             }
         } catch (PDOException $e) {
             $error = "Lỗi hệ thống database: " . $e->getMessage();
