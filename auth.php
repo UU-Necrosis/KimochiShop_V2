@@ -118,11 +118,10 @@ if (isset($_POST['btn-register'])) {
 
 // ==================== XỬ LÝ LOGIC ĐĂNG NHẬP POSTGRESQL ====================
 
-// ==================== XỬ LÝ LOGIC ĐĂNG NHẬP POSTGRESQL ====================
-
 if (isset($_POST['btn-login'])) {
-    $login_input = trim($_POST['username'] ?? ''); // Ô này nhận cả Username hoặc Email từ form gửi lên
-    $password = $_POST['password'] ?? '';         // Lấy mật khẩu từ form gửi lên
+    // 1. Dùng trim() triệt để cho cả 2 đầu dữ liệu để loại bỏ dấu cách thừa
+    $login_input = isset($_POST['username']) ? trim($_POST['username']) : ''; 
+    $password = isset($_POST['password']) ? trim($_POST['password']) : '';
 
     if (empty($login_input) || empty($password)) {
         $errors['login'] = "Vui lòng nhập đầy đủ tên đăng nhập/Email và mật khẩu!";
@@ -130,7 +129,6 @@ if (isset($_POST['btn-login'])) {
 
     if (empty($errors)) {
         try {
-            // Kiểm tra tài khoản bằng Username HOẶC Email dựa trên biến $login_input
             $sql = "SELECT * FROM users WHERE username = :login_input OR email = :login_input";
             $stmt = $conn->prepare($sql);
             $stmt->execute([':login_input' => $login_input]);
@@ -138,24 +136,26 @@ if (isset($_POST['btn-login'])) {
 
             if ($user && password_verify($password, $user['password'])) {
                 
-                // Kiểm tra xem tài khoản đã được xác thực OTP chưa
-                if ($user['is_verified'] === false || $user['is_verified'] === 0 || $user['is_verified'] == 'f') {
-                    
-                    $_SESSION['verify_email'] = $user['email']; // Lưu lại email để sang verify.php dùng
-                    $_SESSION['verify_action'] = 'register';   // Gắn cờ hành động kích hoạt đăng ký
-                    
-                    $errors['login'] = "Tài khoản chưa kích hoạt! <a href='verify.php' class='text-pink fw-bold text-decoration-underline'>Nhấp vào đây để nhập mã OTP kích hoạt</a>";
+                // Kiểm tra trạng thái kích hoạt tài khoản linh hoạt hơn
+                if ($user['is_verified'] === false || $user['is_verified'] === 'f' || $user['is_verified'] == 0) {
+                    $_SESSION['verify_email'] = $user['email'];
+                    $_SESSION['verify_action'] = 'register';
+                    $errors['login'] = "Tài khoản chưa kích hoạt! <a href='verify.php' class='text-pink fw-bold'>Nhấp vào đây để kích hoạt</a>";
                 } else {
-                    // ĐĂNG NHẬP THÀNH CÔNG -> Lưu thông tin vào Session
+                    // ĐĂNG NHẬP THÀNH CÔNG
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['role'] = $user['role'] ?? 'user';
 
-                    // Đá bay về trang chủ
-                    header("Location: index.php");
-                    exit();
+                    // 2. GIẢI PHÁP AN TOÀN: Dùng JavaScript làm phương án dự phòng nếu header() bị lỗi đã gửi content trước
+                    if (!headers_sent()) {
+                        header("Location: index.php");
+                        exit();
+                    } else {
+                        echo "<script>window.location.href='index.php';</script>";
+                        exit();
+                    }
                 }
-                
             } else {
                 $errors['login'] = "Tên đăng nhập/Email hoặc mật khẩu không chính xác!";
             }
