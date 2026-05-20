@@ -42,12 +42,7 @@ if (isset($_POST['btn-register'])) {
             $check_stmt = $conn->prepare($check_sql);
             $check_stmt->execute([':username' => $username, ':email' => $email]);
             $existing_user = $check_stmt->fetch(PDO::FETCH_ASSOC);
-            if ($existing_user) {
-                $errors['register'] = "Tên đăng nhập hoặc Email này đã tồn tại trên hệ thống!";
-            }
-        } catch (PDOException $e) {
-            $errors['register'] = "Lỗi kiểm tra hệ thống: " . $e->getMessage();
-        }
+            
 
             // Tạo mã OTP ngẫu nhiên 6 chữ số
             $otp_code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
@@ -104,7 +99,12 @@ if (isset($_POST['btn-register'])) {
             // Đẩy sang trang nhập OTP
             header("Location: verify.php");
             exit();
-
+            if ($existing_user) {
+                $errors['register'] = "Tên đăng nhập hoặc Email này đã tồn tại trên hệ thống!";
+            }
+        } catch (PDOException $e) {
+            $errors['register'] = "Lỗi kiểm tra hệ thống: " . $e->getMessage();
+        }
         } catch (\Exception $e) {
             $errors['register'] = "Có lỗi xảy ra: " . $e->getMessage();
         }
