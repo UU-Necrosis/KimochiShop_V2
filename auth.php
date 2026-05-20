@@ -302,7 +302,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
 
             <div id="register-box" class="form-box-fade <?php echo $tab !== 'register' ? 'd-none' : ''; ?>">
                 <h4 class="dynamic-title mb-1">ĐĂNG KÝ TÀI KHOẢN</h4>
-                <?php// p class="text-muted small text-center mb-2" Cảm ơn vì đã tin tưởng và lựa chọn Kimochi Shop! /p ?>
+                <?php// p class="text-muted small text-center mb-2" Cảm ơn vì đã tin tưởng và lựa chọn Kimochi Shop!/p ?>
                 
                 <form action="auth.php" method="POST">
 
