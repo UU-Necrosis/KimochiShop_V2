@@ -148,7 +148,7 @@
 
 
 /* Đổ màu nhấp nháy lẹ làng cho Chuông và Ba gạch khi click chuột */
-.nav-icon-link:not(#searchDropdown,#userMenuDropdown):active {
+.nav-icon-link:not(#searchDropdown,#userMenuDropdown,#cartMenuIcon):active {
     color: var(--brand) !important;
     background-color: var(--icon-active-bg);
 }
@@ -202,6 +202,6 @@
 }
 
 /* Chuông và Ba gạch khi click xong thả ra thì tắt hiệu ứng shadow ngay */
-.nav-icon-link:not(#searchDropdown,#userMenuDropdown):focus {
+.nav-icon-link:not(#searchDropdown,#userMenuDropdown,#cartMenuIcon):focus {
     box-shadow: none;
 }
