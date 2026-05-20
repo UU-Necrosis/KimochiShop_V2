@@ -20,6 +20,13 @@ $dbname   = $_ENV['DB_NAME'] ?? 'KimochiShop_V2';
 $user     = $_ENV['DB_USER'] ?? 'postgres';
 $password = $_ENV['DB_PASSWORD'] ?? '';
 
+// --- CẤU HÌNH CONFIG MAIL SMTP ---
+define('SMTP_HOST', 'smtp.gmail.com');
+define('SMTP_PORT', 587);
+define('SMTP_USER', 'email_cua_ong_giao@gmail.com'); // Điền Email Gmail của ông vào đây
+define('SMTP_PASS', 'abcd efgh ijkl mnop');          // Mật khẩu ứng dụng 16 ký tự (App Password)
+define('SHOP_NAME', 'Kimochi Shop');
+
 try {
     $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;";
     $conn = new PDO($dsn, $user, $password, [
