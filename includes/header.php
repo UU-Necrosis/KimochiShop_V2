@@ -56,8 +56,7 @@ require_once __DIR__ . '/functions.php';
                     <div class="ms-auto d-flex flex-column flex-lg-row align-items-center">
                         
                         <ul class="navbar-nav align-items-center">
-                            <?php if (not isset($_SESSION['user_id'])): ?>
-
+                            <?php if (isset($_SESSION['user_id'])): ?>
                                 <li class="nav-item me-2">
                                     <a class="btn btn-outline-light btn-sm" href="auth.php?tab=login">Đăng nhập</a>
                                 </li>
@@ -70,7 +69,17 @@ require_once __DIR__ . '/functions.php';
                         <hr class="text-white-50 d-lg-none my-2 w-100">
 
                         <div class="nav-icons-group d-flex align-items-center gap-3">
-                            
+                                                            
+
+
+                                <a class="nav-icon-link position-relative me-3" href="cart.php" title="Giỏ hàng" id="cartMenuIcon">
+                                    <i class="fa-solid fa-shopping-cart"></i>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger" style="font-size: 10px; padding: 4px 6px;">
+                                        2
+                                    </span>
+                                </a>
+                            <
+
                             <div class="dropdown">
                                 <a class="nav-icon-link" href="#" title="Tìm kiếm" id="searchDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                                     <i class="fa-solid fa-magnifying-glass"></i>
