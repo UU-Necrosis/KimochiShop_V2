@@ -18,35 +18,32 @@ if (!isset($_SESSION['verify_email'])) {
 }
 
 if (isset($_POST['btn-verify'])) {
-    $otp_input = trim($_POST['otp_code'] ?? '');
-    $email = $_SESSION['verify_email'];
+    $otp_input = trim($_POST['otp_code'] ?? ''); // Nhớ check kỹ tên name ở form HTML là 'otp' hay 'otp_code' nha ông
+    $email = $_SESSION['verify_email'] ?? '';
+
     if (empty($otp_input)) {
         $error = "Vui lòng nhập đủ 6 số xác thực!";
     } else {
         try {
-            // 1. Kiểm tra mã OTP trong PostgreSQL (Dùng biến $conn từ db_connect.php)
+            // Tìm user dựa vào Email trong Session và mã OTP nhập vào
             $sql = "SELECT * FROM users WHERE email = :email AND verification_code = :otp";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([
-                ':email' => $email, 
-                ':otp' => $otp_input
-            ]);
+            $stmt->execute([':email' => $email, ':otp' => $otp_input]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user) {
                 // =============== TRƯỜNG HỢP 1: KHỚP MÃ OTP (THÀNH CÔNG) ===============
                 unset($_SESSION['otp_attempts']); 
 
-                // 1. Cập nhật trạng thái kích hoạt tài khoản trong PostgreSQL
+                // Kích hoạt tài khoản lên TRUE
                 $update_sql = "UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = :email";
                 $update_stmt = $conn->prepare($update_sql);
                 $update_stmt->execute([':email' => $email]);
 
-                // 2. Dọn dẹp Session
                 unset($_SESSION['verify_email']);
                 unset($_SESSION['verify_action']);
 
-                // 3. Bốc đầu bay thẳng về trang Login cùng thông báo thành công
+                // Đẩy sang trang Login kèm thông báo
                 header("Location: auth.php?tab=login&success=verified");
                 exit();
 
@@ -55,7 +52,6 @@ if (isset($_POST['btn-verify'])) {
                 $_SESSION['otp_attempts'] = ($_SESSION['otp_attempts'] ?? 0) + 1;
 
                 if ($_SESSION['otp_attempts'] >= 3) {
-                    // Nhập sai quá 3 lần: Trục xuất luôn, xóa session bắt đăng ký lại
                     unset($_SESSION['verify_email']);
                     unset($_SESSION['otp_attempts']);
                     echo "<script>
@@ -65,9 +61,8 @@ if (isset($_POST['btn-verify'])) {
                     exit();
                 }
 
-                // Nếu chưa quá 3 lần thì tính số lần còn lại và báo lỗi ra form
                 $remaining = 3 - $_SESSION['otp_attempts'];
-                $error = "Mã OTP không chính xác! Bạn còn $remaining lần thử trước khi bị khóa.";
+                $error = "Mã OTP không chính xác! Bạn còn $remaining lần thử.";
             }
         } catch (PDOException $e) {
             $error = "Lỗi hệ thống database: " . $e->getMessage();
