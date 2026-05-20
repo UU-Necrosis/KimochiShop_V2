@@ -303,34 +303,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
                 <p class="text-muted small text-center mb-2">Cảm ơn vì đã tin tưởng và lựa chọn Kimochi Shop!</p>
                 
                 <form action="auth.php" method="POST">
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold text-secondary">Tên đăng nhập <span class="text-danger">*</span></label>
-                        <input type="text" name="reg_username" class="form-control py-2 <?php echo isset($errors['username']) ? 'is-invalid' : ''; ?>" placeholder="Tối thiểu 5 ký tự..." value="<?php echo htmlspecialchars($username ?? ''); ?>" required>
-                        <?php if (isset($errors['username'])): ?>
-                            <div class="invalid-feedback small fw-semibold"><?php echo $errors['username']; ?></div>
-                        <?php endif; ?>
+                    <div class="mb-4 position-relative"> <label class="form-label small fw-bold text-secondary">Tên đăng nhập <span class="text-danger">*</span></label>
+                <input type="text" name="reg_username" class="form-control py-2 <?php echo isset($errors['username']) ? 'is-invalid' : ''; ?>" placeholder="Tối thiểu 5 ký tự..." value="<?php echo htmlspecialchars($username ?? ''); ?>" required>
+                
+                <?php if (isset($errors['username'])): ?>
+                    <div class="invalid-feedback small fw-semibold position-absolute" style="bottom: -20px; left: 0; margin: 0; line-height: 1;">
+                        <?php echo $errors['username']; ?>
                     </div>
+                <?php endif; ?>
+            </div>
 
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold text-secondary">Địa chỉ Email <span class="text-danger">*</span></label>
-                        <input type="email" name="reg_email" class="form-control py-2 <?php echo isset($errors['email']) ? 'is-invalid' : ''; ?>" placeholder="example@gmail.com" value="<?php echo htmlspecialchars($email ?? ''); ?>" required>
-                        <?php if (isset($errors['email'])): ?>
-                            <div class="invalid-feedback small fw-semibold"><?php echo $errors['email']; ?></div>
-                        <?php endif; ?>
+            <div class="mb-4 position-relative">
+                <label class="form-label small fw-bold text-secondary">Địa chỉ Email <span class="text-danger">*</span></label>
+                <input type="email" name="reg_email" class="form-control py-2 <?php echo isset($errors['email']) ? 'is-invalid' : ''; ?>" placeholder="example@gmail.com" value="<?php echo htmlspecialchars($email ?? ''); ?>" required>
+                
+                <?php if (isset($errors['email'])): ?>
+                    <div class="invalid-feedback small fw-semibold position-absolute" style="bottom: -20px; left: 0; margin: 0; line-height: 1;">
+                        <?php echo $errors['email']; ?>
                     </div>
+                <?php endif; ?>
+            </div>
 
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold text-secondary">Mật khẩu <span class="text-danger">*</span></label>
-                        <input type="password" name="reg_password" class="form-control py-2" placeholder="Nhập mật khẩu bảo mật..." required>
+            <div class="mb-4 position-relative">
+                <label class="form-label small fw-bold text-secondary">Xác nhận mật khẩu <span class="text-danger">*</span></label>
+                <input type="password" name="reg_password_confirm" class="form-control py-2 <?php echo isset($errors['password_confirm']) ? 'is-invalid' : ''; ?>" placeholder="Nhập lại mật khẩu..." required>
+                
+                <?php if (isset($errors['password_confirm'])): ?>
+                    <div class="invalid-feedback small fw-semibold position-absolute" style="bottom: -20px; left: 0; margin: 0; line-height: 1;">
+                        <?php echo $errors['password_confirm']; ?>
                     </div>
-
-                    <div class="mb-4">
-                        <label class="form-label small fw-bold text-secondary">Xác nhận mật khẩu <span class="text-danger">*</span></label>
-                        <input type="password" name="reg_password_confirm" class="form-control py-2 <?php echo isset($errors['password_confirm']) ? 'is-invalid' : ''; ?>" placeholder="Nhập lại mật khẩu..." required>
-                        <?php if (isset($errors['password_confirm'])): ?>
-                            <div class="invalid-feedback small fw-semibold"><?php echo $errors['password_confirm']; ?></div>
-                        <?php endif; ?>
-                    </div>
+                <?php endif; ?>
+            </div>
 
                     <button type="submit" name="btn-register" class="btn btn-pink w-100 fw-bold py-2 mb-1 shadow-sm">Đăng Ký</button>
                 </form>
