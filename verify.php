@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'config/connect.php'; // Gọi file kết nối CSDL PostgreSQL của ông giáo vào đây
+require_once 'config/db_connect.php'; // Gọi file kết nối CSDL PostgreSQL của ông giáo vào đây
 
 $error = '';
 
