@@ -478,7 +478,7 @@ window.addEventListener('popstate', function() {
 
 
 <script>
-// Hiển thị password khi bấm vào nút mắt, dựa vào data-target để biết được input nào cần đổi
+// Hiển thị password khi bấm vào, dựa vào data-target để biết được input nào cần đổi
 document.querySelectorAll('.toggle-password').forEach(button => {
     button.addEventListener('click', function() {
         // Lấy ra cái ô input mục tiêu dựa vào thuộc tính data-target
