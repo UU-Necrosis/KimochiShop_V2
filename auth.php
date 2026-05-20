@@ -432,6 +432,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
 
 </div>
 
+
+
+
+
+
+
+
+
+
 <script>
 // 1. Hàm dùng chung để ẩn/hiện form dựa theo tên Tab (login/register/forgot)
 function showForm(tabName) {
