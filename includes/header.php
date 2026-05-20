@@ -57,12 +57,16 @@ require_once __DIR__ . '/functions.php';
                         
                         <ul class="navbar-nav align-items-center">
                             <?php if (isset($_SESSION['user_id'])): ?>
+
+                                
                                 <li class="nav-item text-white me-3">
                                     Xin chào, <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong>
                                 </li>
                                 <li class="nav-item">
                                     <a class="btn btn-outline-danger btn-sm" href="auth.php?action=logout">Đăng xuất</a>
                                 </li>
+
+
                             <?php else: ?>
                                 <li class="nav-item me-2">
                                     <a class="btn btn-outline-light btn-sm" href="auth.php?tab=login">Đăng nhập</a>
