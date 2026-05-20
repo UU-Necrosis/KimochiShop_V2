@@ -345,23 +345,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
                         <input type="password" name="reg_password" class="form-control py-2" placeholder="Nhập mật khẩu bảo mật..." required>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label small fw-bold text-secondary">Xác nhận mật khẩu <span class="text-danger">*</span></label>
-                        <input type="password" name="reg_password_confirm" class="form-control py-2 <?php echo isset($errors['password_confirm']) ? 'is-invalid' : ''; ?>" placeholder="Nhập lại mật khẩu..." required>
-                        <?php if (isset($errors['password_confirm'])): ?>
-                            <div class="invalid-feedback small fw-semibold"><?php echo $errors['password_confirm']; ?></div>
-                        <?php endif; ?>
-                    </div>
-
-
-
-
-
-
-                    
-
-                    
-
                     <div class="mb-4 position-relative">
                         <label class="form-label small fw-bold text-secondary">Xác nhận mật khẩu <span class="text-danger">*</span></label>
                         <input type="password" name="reg_password_confirm" class="form-control py-2 <?php echo isset($errors['password_confirm']) ? 'is-invalid' : ''; ?>" placeholder="Nhập lại mật khẩu..." required>
@@ -372,6 +355,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
                             </div>
                         <?php endif; ?>
                     </div>
+
+
+
+
+
+
+                    
+
+                    
+
 
 
 
