@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-require_once __DIR__ . '/config/db_connect.php'; 
+require_once __DIR__ . '/config/database.php'; 
 
 $user_id = $_SESSION['user_id'];
 $success_msg = "";
@@ -117,61 +117,106 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hồ sơ cá nhân - <?php echo htmlspecialchars($user['username']); ?></title>
+    <title>Cài đặt tài khoản - <?php echo htmlspecialchars($user['username']); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* Ép toàn bộ trang vừa khít viewport không sinh thanh cuộn dọc */
+        /* Khóa cứng chiều cao trang chuẩn app Desktop */
         html, body { 
             height: 100%; 
             overflow: hidden; 
+            background-color: #111214; 
             color: #f2f3f5; 
             font-family: 'Segoe UI', Tahoma, sans-serif; 
         }
         
-        /* Layout flex-column linh hoạt trừ đi chiều cao của thanh Header */
         .page-wrapper {
             display: flex;
             flex-direction: column;
             height: 100vh;
         }
 
-        .main-content {
+        /* Container chia 2 cột */
+        .discord-container {
             flex: 1;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 20px; /* Thu hẹp padding */
+            height: calc(100vh - 56px); /* Trừ đi thanh Header */
         }
 
-        /* Discord Card Compact Profile */
-        .profile-card { 
+        /* --- 1/5 CỘT TRÁI: MENU MỤC LỤC --- */
+        .discord-sidebar {
+            flex: 0 0 20%; /* Chiếm đúng 1/5 chiều rộng */
+            background-color: #2b2d31;
+            padding: 40px 10px 20px 30px;
+            border-right: 1px solid #1f2023;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar-title {
+            color: #949ba4;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            padding-left: 10px;
+        }
+
+        .sidebar-menu-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #949ba4;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            transition: 0.2s;
+        }
+        .sidebar-menu-item i { margin-right: 8px; width: 16px; text-align: center; }
+        .sidebar-menu-item:hover { background-color: #35373c; color: #dbdee1; }
+        .sidebar-menu-item.active { background-color: #404249; color: #fff; }
+
+        /* --- 4/5 CỘT PHẢI: BẢNG THÔNG TIN CHI TIẾT --- */
+        .discord-main-panel {
+            flex: 0 0 80%; /* Chiếm đúng 4/5 chiều rộng */
+            background-color: #313338;
+            padding: 40px 40px 20px 40px;
+            overflow-y: auto; /* Nếu nội dung dài tự cuộn bên trong box phải */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        /* Discord Card Form */
+        .discord-card { 
             background-color: #1e1f22; 
-            border-radius: 12px; 
+            border-radius: 8px; 
             overflow: hidden; 
             border: 1px solid #2b2d31; 
             width: 100%;
-            max-width: 580px; /* Định kích cỡ vừa vặn sang xịn mịn */
+            max-width: 660px;
         }
         
-        /* Hạ chiều cao banner xuống để tiết kiệm diện tích */
-        .profile-banner { 
-            height: 75px; 
+        .discord-banner { 
+            height: 80px; 
             background: linear-gradient(135deg, #ff69b4, #b9bbbe); 
             position: relative; 
         }
         
-        .profile-avatar-container { 
+        .discord-avatar-container { 
             position: relative; 
             display: inline-block; 
-            margin-top: -38px; 
+            margin-top: -40px; 
             margin-left: 20px; 
         }
         
-        /* Thu nhỏ kích cỡ avatar */
-        .profile-avatar { 
-            width: 76px; 
-            height: 76px; 
+        .discord-avatar { 
+            width: 80px; 
+            height: 80px; 
             border-radius: 50%; 
             object-fit: cover; 
             border: 4px solid #1e1f22; 
@@ -196,27 +241,27 @@ try {
         }
         .avatar-edit-badge:hover { background: #4e5058; color: #fff; }
 
-        .profile-body { padding: 15px 20px 20px 20px; background-color: #1e1f22; }
-        .profile-info-box { background-color: #2b2d31; border-radius: 8px; padding: 12px 16px; margin-top: 10px; }
+        .discord-body { padding: 20px; background-color: #1e1f22; }
+        .discord-info-box { background-color: #2b2d31; border-radius: 8px; padding: 16px; margin-top: 12px; }
         
-        /* Custom Input thanh thoát, form nhỏ lại */
+        /* Custom Input */
         .input-custom { 
             background-color: #111214 !important; 
             border: 1px solid #111214 !important; 
             color: #f2f3f5 !important; 
             border-radius: 4px; 
-            padding: 7px 10px; 
+            padding: 8px 12px; 
             font-size: 14px;
         }
         .input-custom:focus { border-color: #5865f2 !important; box-shadow: none !important; }
-        .form-label-custom { color: #949ba4; font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 4px; }
+        .form-label-custom { color: #949ba4; font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 6px; }
         
-        .btn-profile-save { background-color: #248046; color: white; font-weight: 500; border: none; padding: 6px 18px; border-radius: 3px; font-size: 14px; transition: 0.2s; }
-        .btn-profile-save:hover { background-color: #1a6535; }
-        .btn-profile-logout { background-color: transparent; color: #da373c; border: 1px solid #da373c; padding: 6px 18px; border-radius: 3px; font-size: 14px; transition: 0.2s; text-decoration: none; }
-        .btn-profile-logout:hover { background-color: #da373c; color: white; }
+        .btn-discord-save { background-color: #248046; color: white; font-weight: 500; border: none; padding: 8px 24px; border-radius: 3px; font-size: 14px; transition: 0.2s; }
+        .btn-discord-save:hover { background-color: #1a6535; }
+        .btn-discord-logout { background-color: transparent; color: #da373c; border: 1px solid #da373c; padding: 6px 16px; border-radius: 3px; font-size: 14px; transition: 0.2s; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-discord-logout:hover { background-color: #da373c; color: white; }
         
-        .alert-toast { position: absolute; top: 75px; right: 20px; z-index: 9999; max-width: 350px; }
+        .alert-toast { position: absolute; top: 70px; right: 20px; z-index: 9999; max-width: 320px; }
     </style>
 </head>
 <body>
@@ -224,80 +269,102 @@ try {
 <div class="page-wrapper">
     <?php include 'includes/header.php'; ?>
 
-    <main class="main-content">
+    <div class="discord-container">
         
-        <div class="alert-toast">
-            <?php if(!empty($success_msg)): ?>
-                <div class="alert alert-success bg-success text-white border-0 py-2 small shadow shadow-sm"><i class="fa-solid fa-circle-check me-2"></i><?php echo $success_msg; ?></div>
-            <?php endif; ?>
-            <?php if(!empty($error_msg)): ?>
-                <div class="alert alert-danger bg-danger text-white border-0 py-2 small shadow shadow-sm"><i class="fa-solid fa-circle-exclamation me-2"></i><?php echo $error_msg; ?></div>
-            <?php endif; ?>
-        </div>
-
-        <form action="profile.php" method="POST" enctype="multipart/form-data" class="w-100 d-flex justify-content-center">
-            <div class="profile-card shadow-lg">
-                <div class="profile-banner"></div>
-                
-                <div class="profile-avatar-container">
-                    <?php if(!empty($user['avatar']) && file_exists(__DIR__ . '/' . $user['avatar'])): ?>
-                        <img src="<?php echo htmlspecialchars($user['avatar']); ?>?t=<?php echo time(); ?>" class="profile-avatar" id="avatarImage">
-                    <?php else: ?>
-                        <div class="profile-avatar d-flex align-items-center justify-content-center text-white fs-4" id="avatarPlaceholder" style="background-color: #ff69b4;"><i class="fa-solid fa-user"></i></div>
-                    <?php endif; ?>
-                    
-                    <label for="avatarInput" class="avatar-edit-badge" title="Thay đổi ảnh đại diện">
-                        <i class="fa-solid fa-pencil text-white" style="font-size: 10px;"></i>
-                    </label>
-                    <input type="file" id="avatarInput" name="avatar" class="d-none" accept="image/*" onchange="previewImage(this)">
-                </div>
-
-                <div class="profile-body">
-                    <div class="d-flex align-items-center justify-content-between mb-2">
-                        <div>
-                            <h5 class="fw-bold m-0 text-white"><?php echo htmlspecialchars($user['username']); ?></h5>
-                            <p class="text-secondary m-0" style="font-size: 12px;">Gia nhập: <?php echo date('d/m/Y', strtotime($user['created_at'])); ?></p>
-                        </div>
-                        <span class="badge bg-dark border border-secondary text-white px-2 py-1" style="font-size: 11px;"><i class="fa-solid fa-skull me-1 text-pink"></i><?php echo strtoupper(htmlspecialchars($user['role'] ?? 'USER')); ?></span>
-                    </div>
-
-                    <div class="profile-info-box">
-                        <div class="mb-2">
-                            <label class="form-label-custom">Địa chỉ Email</label>
-                            <input type="text" class="form-control input-custom text-white-50" value="<?php echo htmlspecialchars($user['email']); ?>" style="cursor: not-allowed;" readonly>
-                        </div>
-
-                        <div class="mb-2">
-                            <label class="form-label-custom">Tên hiển thị / Tên đăng nhập</label>
-                            <input type="text" name="username" class="form-control input-custom" value="<?php echo htmlspecialchars($user['username']); ?>" required>
-                        </div>
-
-                        <hr class="border-secondary my-2">
-
-                        <div class="row">
-                            <div class="col-md-6 mb-2">
-                                <label class="form-label-custom">Mật khẩu mới</label>
-                                <input type="password" name="new_password" class="form-control input-custom" placeholder="Bỏ trống nếu không đổi">
-                            </div>
-                            <div class="col-md-6 mb-2">
-                                <label class="form-label-custom">Mật khẩu hiện tại</label>
-                                <input type="password" name="old_password" class="form-control input-custom" placeholder="Nhập pass cũ để lưu">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <a href="index.php" class="text-white-50 text-decoration-none small" style="font-size: 13px;"><i class="fa-solid fa-arrow-left me-1"></i> Quay lại trang chủ</a>
-                        <div>
-                            <a href="logout.php" class="btn-profile-logout me-2">Đăng xuất</a>
-                            <button type="submit" class="btn-profile-save">Lưu thay đổi</button>
-                        </div>
-                    </div>
-
-                </div>
+        <aside class="discord-sidebar">
+            <div>
+                <div class="sidebar-title">Cài đặt người dùng</div>
+                <a href="profile.php" class="sidebar-menu-item active">
+                    <i class="fa-solid fa-user-gear"></i> Thông tin tài khoản
+                </a>
+                <a href="#" class="sidebar-menu-item" onclick="alert('Tính năng đang cập nhật cập nhật!')">
+                    <i class="fa-solid fa-user-shield"></i> Cập nhật nâng cao
+                </a>
+                <a href="index.php" class="sidebar-menu-item">
+                    <i class="fa-solid fa-house"></i> Quay lại trang chủ
+                </a>
             </div>
-        </form>
-    </main>
+            
+            <div>
+                <a href="logout.php" class="btn-discord-logout w-100">
+                    <i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất
+                </a>
+            </div>
+        </aside>
+
+        <main class="discord-main-panel">
+            
+            <div class="alert-toast">
+                <?php if(!empty($success_msg)): ?>
+                    <div class="alert alert-success bg-success text-white border-0 py-2 small shadow-sm"><i class="fa-solid fa-circle-check me-2"></i><?php echo $success_msg; ?></div>
+                <?php endif; ?>
+                <?php if(!empty($error_msg)): ?>
+                    <div class="alert alert-danger bg-danger text-white border-0 py-2 small shadow-sm"><i class="fa-solid fa-circle-exclamation me-2"></i><?php echo $error_msg; ?></div>
+                <?php endif; ?>
+            </div>
+
+            <h4 class="fw-bold mb-4" style="color: #fff;">Hồ sơ của tôi</h4>
+
+            <form action="profile.php" method="POST" enctype="multipart/form-data" class="w-100">
+                <div class="discord-card shadow-lg">
+                    <div class="discord-banner"></div>
+                    
+                    <div class="discord-avatar-container">
+                        <?php if(!empty($user['avatar']) && file_exists(__DIR__ . '/' . $user['avatar'])): ?>
+                            <img src="<?php echo htmlspecialchars($user['avatar']); ?>?t=<?php echo time(); ?>" class="discord-avatar" id="avatarImage">
+                        <?php else: ?>
+                            <div class="discord-avatar d-flex align-items-center justify-content-center text-white fs-4" id="avatarPlaceholder" style="background-color: #ff69b4;"><i class="fa-solid fa-user"></i></div>
+                        <?php endif; ?>
+                        
+                        <label for="avatarInput" class="avatar-edit-badge" title="Thay đổi ảnh đại diện">
+                            <i class="fa-solid fa-pencil text-white" style="font-size: 10px;"></i>
+                        </label>
+                        <input type="file" id="avatarInput" name="avatar" class="d-none" accept="image/*" onchange="previewImage(this)">
+                    </div>
+
+                    <div class="discord-body">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div>
+                                <h5 class="fw-bold m-0 text-white"><?php echo htmlspecialchars($user['username']); ?></h5>
+                                <p class="text-secondary m-0" style="font-size: 12px;">Thành viên từ: <?php echo date('d/m/Y', strtotime($user['created_at'])); ?></p>
+                            </div>
+                            <span class="badge bg-dark border border-secondary text-white px-2 py-1" style="font-size: 11px;"><i class="fa-solid fa-skull me-1 text-pink"></i><?php echo strtoupper(htmlspecialchars($user['role'] ?? 'USER')); ?></span>
+                        </div>
+
+                        <div class="discord-info-box">
+                            <div class="mb-3">
+                                <label class="form-label-custom">Địa chỉ Email</label>
+                                <input type="text" class="form-control input-custom text-white-50" value="<?php echo htmlspecialchars($user['email']); ?>" style="cursor: not-allowed;" readonly>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label-custom">Tên hiển thị / Tên đăng nhập</label>
+                                <input type="text" name="username" class="form-control input-custom" value="<?php echo htmlspecialchars($user['username']); ?>" required>
+                            </div>
+
+                            <hr class="border-secondary my-3">
+
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label-custom">Mật khẩu mới</label>
+                                    <input type="password" name="new_password" class="form-control input-custom" placeholder="Bỏ trống nếu không đổi">
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label-custom">Mật khẩu hiện tại</label>
+                                    <input type="password" name="old_password" class="form-control input-custom" placeholder="Nhập pass cũ để lưu">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-3">
+                            <button type="submit" class="btn-discord-save">Lưu thay đổi</button>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
 </div>
 
 <script>
@@ -310,7 +377,7 @@ function previewImage(input) {
             if(img) {
                 img.src = e.target.result;
             } else if(placeholder) {
-                placeholder.outerHTML = '<img src="'+e.target.result+'" class="profile-avatar" id="avatarImage">';
+                placeholder.outerHTML = '<img src="'+e.target.result+'" class="discord-avatar" id="avatarImage">';
             }
         }
         reader.readAsDataURL(input.files[0]);
