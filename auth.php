@@ -200,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
             transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
             transform: translateY(0);
         }
-            
+
         .form-box-fade.d-none {
             display: none !important;
             opacity: 0;
@@ -275,6 +275,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
                     </ul>
                 </div>
             <?php endif; ?>
+
+
+
+<?php if (!empty($errors)): ?>
+    <div class="alert alert-danger py-2 small shadow-sm mb-3">
+        <ul class="mb-0 ps-3">
+            <?php foreach ($errors as $error) echo "<li>$error</li>"; ?>
+        </ul>
+    </div>
+<?php endif; ?>    
+
+
 
             <?php if (!empty($success)): ?>
                 <div class="alert alert-success py-2 small shadow-sm mb-3 text-center">
