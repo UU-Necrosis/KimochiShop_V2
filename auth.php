@@ -11,45 +11,40 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 $tab = isset($_GET['tab']) ? $_GET['tab'] : 'login';
+// Thay đổi $errors thành một mảng có khóa rõ ràng
 $errors = [];
 $success = "";
 
-// ========================================================
-//  XỬ LÝ LOGIC ĐĂNG KÝ TÀI KHOẢN
-// ========================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-register'])) {
-    $tab = 'register'; // Giữ người dùng ở lại tab register nếu có lỗi hoặc thành công
+    $tab = 'register'; 
     
-    // Lấy dữ liệu theo đúng thuộc tính name="…" trong file HTML gốc của ông giáo
-    $username         = trim($_POST['username'] ?? '');
-    $email            = trim($_POST['email'] ?? '');
-    $password         = $_POST['password'] ?? '';
-    $password_confirm = $_POST['re_password'] ?? ''; // Fix theo name="re_password"
+    $username         = trim($_POST['reg_username'] ?? '');
+    $email            = trim($_POST['reg_email'] ?? '');
+    $password         = $_POST['reg_password'] ?? '';
+    $password_confirm = $_POST['reg_password_confirm'] ?? ''; 
 
-    // Validate cơ bản
+    // CHỈ ĐỊNH RÕ LỖI NẰM Ở CỘT NÀO
     if (strlen($username) < 5) {
-        $errors[] = "Tên đăng nhập phải chứa ít nhất 5 ký tự!";
+        $errors['username'] = "Tên đăng nhập phải chứa ít nhất 5 ký tự!";
     }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = "Địa chỉ email không hợp lệ!";
+        $errors['email'] = "Địa chỉ email không hợp lệ!";
     }
     if ($password !== $password_confirm) {
-        $errors[] = "Mật khẩu xác nhận không trùng khớp!";
+        $errors['password_confirm'] = "Mật khẩu xác nhận không trùng khớp!";
     }
 
     if (empty($errors)) {
         try {
-            // Kiểm tra xem username hoặc email đã tồn tại trong database kimochi_shop chưa
             $stmt = $conn->prepare("SELECT id FROM users WHERE username = :user OR email = :email");
             $stmt->execute(['user' => $username, 'email' => $email]);
             
             if ($stmt->rowCount() > 0) {
-                $errors[] = "Tên đăng nhập hoặc Email đã được sử dụng!";
+                // Nếu trùng thì báo lỗi chung lên ô Username hoặc tạo một lỗi hệ thống
+                $errors['username'] = "Tên đăng nhập hoặc Email đã được sử dụng!";
             } else {
-                //  Băm mật khẩu bảo mật trước khi ném vào DB
                 $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-                // Insert dữ liệu vào bảng users của ông giáo (cột password)
                 $insertStmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (:user, :email, :pass)");
                 $insertStmt->execute([
                     'user'  => $username,
@@ -58,13 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-register'])) {
                 ]);
 
                 $success = "Đăng ký tài khoản thành công! Đang chuyển sang Đăng nhập...";
-                $tab = 'login'; // Đăng ký xong tự nhảy về form đăng nhập
-                
-                // Reset form trống
+                $tab = 'login'; 
                 $username = $email = "";
             }
         } catch (PDOException $e) {
-            $errors[] = "Có lỗi xảy ra với hệ thống: " . $e->getMessage();
+            $errors['system'] = "Có lỗi xảy ra với hệ thống: " . $e->getMessage();
         }
     }
 }
