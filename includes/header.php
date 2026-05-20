@@ -111,50 +111,10 @@ require_once __DIR__ . '/functions.php';
                             </a>
                             
                             <div class="dropdown">
-                            <a class="nav-icon-link dropdown-toggle no-caret" href="#" role="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Tài khoản">
-                                <i class="fa-solid fa-bars"></i>
-                            </a>
-
-                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 animate slideIn" aria-labelledby="userMenuDropdown" style="background-color: #1a1a1a;">
-                                <?php if (isset($_SESSION['username'])): ?>
-                                    <li>
-                                        <div class="dropdown-header text-white-50 border-bottom border-secondary pb-2 mb-2">
-                                            Xin chào: <strong class="text-pink"><?php echo htmlspecialchars($_SESSION['username']); ?></strong>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item text-white py-2" href="profile.php">
-                                            <i class="fa-solid fa-user me-2 text-secondary"></i> Trang cá nhân
-                                        </a>
-                                    </li>
-                                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                                        <li>
-                                            <a class="dropdown-item text-white py-2" href="admin/dashboard.php">
-                                                <i class="fa-solid fa-user-gear me-2 text-warning"></i> Trang quản trị
-                                            </a>
-                                        </tr>
-                                    <?php endif; ?>
-                                    <li><hr class="dropdown-divider border-secondary"></li>
-                                    <li>
-                                        <a class="dropdown-item text-danger py-2" href="logout.php">
-                                            <i class="fa-solid fa-right-from-bracket me-2"></i> Đăng xuất
-                                        </a>
-                                    </li>
-
-                                <?php else: ?>
-                                    <li>
-                                        <a class="dropdown-item text-white py-2" href="auth.php?tab=login">
-                                            <i class="fa-solid fa-right-to-bracket me-2 text-pink"></i> Đăng nhập
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item text-white py-2" href="auth.php?tab=register">
-                                            <i class="fa-solid fa-user-plus me-2 text-pink"></i> Đăng ký tài khoản
-                                        </a>
-                                    </li>
-                                <?php endif; ?>
-                            </ul>
-                        </div>
+                                <a class="nav-icon-link" href="#" title="Danh mục phụ">
+                                    <i class="fa-solid fa-bars"></i>
+                                </a>
+                            
 
 
                             
