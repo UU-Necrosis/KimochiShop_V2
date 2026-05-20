@@ -310,15 +310,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
 
 
 
-
-
-
-
-
-
-
-
-
                     <div class="mb-4 position-relative"> <label class="form-label small fw-bold text-secondary">Tên đăng nhập <span class="text-danger">*</span></label>
                         <input type="text" name="reg_username" class="form-control py-2 <?php echo isset($errors['username']) ? 'is-invalid' : ''; ?>" placeholder="Tối thiểu 5 ký tự..." value="<?php echo htmlspecialchars($username ?? ''); ?>" required>
                         
@@ -338,6 +329,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
                             </div>
                         <?php endif; ?>
                     </div>
+
+
+
+
+
+
+
 
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-secondary">Mật khẩu <span class="text-danger">*</span></label>
@@ -359,7 +357,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
 
 
 
+                    <div class="mb-4 position-relative">
+                        <label class="form-label small fw-bold text-secondary">Mật khẩu <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input type="password" id="reg_password" name="reg_password" class="form-control py-2" placeholder="Nhập mật khẩu bảo mật..." value="<?php echo htmlspecialchars($password ?? ''); ?>" required style="border-radius:  0.375rem 0 0 0.375rem;">
+                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="reg_password" style="border-radius: 0 0.375rem 0.375rem 0; border-color: #ced4da;">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
 
+                    <div class="mb-4 position-relative">
+                        <label class="form-label small fw-bold text-secondary">Xác nhận mật khẩu <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input type="password" id="reg_password_confirm" name="reg_password_confirm" class="form-control py-2 <?php echo isset($errors['password_confirm']) ? 'is-invalid' : ''; ?>" placeholder="Nhập lại mật khẩu..." value="<?php echo htmlspecialchars($password_confirm ?? ''); ?>" required style="border-radius:  0.375rem 0 0 0.375rem;">
+                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="reg_password_confirm" style="border-radius: 0 0.375rem 0.375rem 0; border-color: #ced4da;">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                        
+                        <?php if (isset($errors['password_confirm'])): ?>
+                            <div class="invalid-feedback small fw-semibold position-absolute" style="bottom: -20px; left: 0; margin: 0; line-height: 1; display: block;">
+                                <?php echo $errors['password_confirm']; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                     
 
                     
