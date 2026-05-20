@@ -148,6 +148,77 @@ if (isset($_POST['btn-login'])) {
 }
 ?>
 
+<?php
+// ==================== XỬ LÝ LOGIC QUÊN MẬT KHẨU ====================
+if (isset($_POST['btn-forgot'])) {
+    $email = trim($_POST['forgot_email'] ?? '');
+
+    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors['forgot'] = "Vui lòng nhập địa chỉ email hợp lệ!";
+    }
+
+    if (empty($errors)) {
+        try {
+            // 1. Kiểm tra xem Email có tồn tại trong hệ thống PostgreSQL không
+            $sql = "SELECT * FROM users WHERE email = :email";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([':email' => $email]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user) {
+                // 2. Nếu có tồn tại, sinh mã OTP mới 6 chữ số
+                $otp_code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+
+                // Cập nhật mã OTP này vào cột verification_code của user đó
+                $update_sql = "UPDATE users SET verification_code = :otp WHERE email = :email";
+                $update_stmt = $conn->prepare($update_sql);
+                $update_stmt->execute([':otp' => $otp_code, ':email' => $email]);
+
+                // 3. Gửi Mail chứa OTP về cho khách
+                $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+                $mail->isSMTP();
+                $mail->Host       = $_ENV['SMTP_HOST'] ?? 'smtp.gmail.com';
+                $mail->SMTPAuth   = true;
+                $mail->Username   = $_ENV['SMTP_USER'] ?? '';
+                $mail->Password   = $_ENV['SMTP_PASS'] ?? '';
+                $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port       = $_ENV['SMTP_PORT'] ?? 587;
+                $mail->CharSet    = 'UTF-8';
+
+                $mail->setFrom($mail->Username, 'Kimochi Shop');
+                $mail->addAddress($email);
+
+                $mail->isHTML(true);
+                $mail->Subject = '🔑 Mã đặt lại mật khẩu ' . ($_ENV['SHOP_NAME'] ?? 'Kimochi Shop');
+                $mail->Body    = "
+                    <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #f0f0f0; padding: 25px; border-radius: 12px;'>
+                        <h2 style='color: #ff69b4; text-align: center;'>Kimochi Shop</h2>
+                        <p style='color: #555; font-size: 14px;'>Bạn đã yêu cầu đặt lại mật khẩu. Mã OTP xác nhận của bạn là:</p>
+                        <div style='text-align: center; margin: 30px 0;'>
+                            <span style='font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #222; background: #fff5f8; padding: 12px 25px; border-radius: 8px; border: 2px dashed #ff69b4; display: inline-block;'>$otp_code</span>
+                        </div>
+                        <p style='font-size: 12px; color: #999; text-align: center;'>Mã này có hiệu lực trong vòng 15 phút. Nếu không phải bạn yêu cầu, vui lòng bỏ qua email này.</p>
+                    </div>
+                ";
+                $mail->send();
+
+                // Lưu email và gắn thêm một cái "Cờ" (Flag) để phân biệt với Đăng ký
+                $_SESSION['verify_email'] = $email;
+                $_SESSION['verify_action'] = 'forgot_password'; // Đánh dấu hành động là quên mật khẩu
+
+                // Đá sang trang verify.php
+                header("Location: verify.php");
+                exit();
+
+            } else {
+                $errors['forgot'] = "Địa chỉ email này không tồn tại trên hệ thống!";
+            }
+        } catch (\Exception $e) {
+            $errors['forgot'] = "Có lỗi xảy ra: " . $e->getMessage();
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
