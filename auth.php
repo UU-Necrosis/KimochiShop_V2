@@ -112,18 +112,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
         $stmt->execute(['user' => $username]);
         $user = $stmt->fetch();
 
-        // 🛠️ ĐÃ FIX: So sánh mật khẩu băm dựa vào cột $user['password']
         if ($user && password_verify($password, $user['password'])) {
-            // Lưu thông tin vào Session
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
+    
+    //  CHÈN THÊM ĐOẠN CHECK XÁC THỰC NÀY VÀO:
+            if ($user['is_verified'] === false || $user['is_verified'] === 0) {
+                $errors[] = "Tài khoản này chưa kích hoạt Email. Vui lòng kiểm tra hộp thư để xác thực OTP!";
+            } else {
+                // Nếu đã xác thực thành công (TRUE) thì cho vào như cũ:
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['role'] = $user['role'] ?? 'user'; 
+                
+                header("Location: index.php");
+                exit();
+            }
             
-            // Nếu bảng cũ của ông chưa có cột role thì tạm thời comment dòng này lại hoặc để mặc định
-            $_SESSION['role'] = $user['role'] ?? 'user'; 
-
-            // Đăng nhập xong, nhảy về trang chủ index.php
-            header("Location: index.php");
-            exit();
         } else {
             $errors[] = "Tên đăng nhập hoặc mật khẩu không chính xác!";
         }
