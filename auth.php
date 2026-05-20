@@ -391,7 +391,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
                 <div class="text-center mt-3">
                     <p class="small text-muted">
                         Đã có tài khoản? 
-                        <a href="auth.php?tab=login" class="text-pink fw-bold text-decoration-none transition-link">Đăng nhập ngay</a>
+                        <a href="auth.php?tab=login" class="switch-btn text-pink fw-bold text-decoration-none transition-link" data-target="login">Đăng nhập ngay</a>
                     </p>
                 </div>
             </div>
