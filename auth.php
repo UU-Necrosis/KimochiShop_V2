@@ -256,8 +256,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
     <div class="auth-right">
         
         <div class="auth-header">
-            <a href="index.php" class="back-to-home text-decoration-none d-inline-flex align-items-center gap-2" title="Quay lại trang chủ" style="position: static !important; transform: translateY(-3px); transition: 0.2s;">
-                <i class="fa-solid fa-house text-secondary" style="font-size: 0.95rem;"></i>
+            <a href="index.php" class="back-to-home" title="Quay lại trang chủ">
+                <i class="fa-solid fa-house text-secondary" style="font-size: 0.95rem;"></i>>
                 <span class="d-none d-sm-inline small fw-semibold text-secondary">Home Page</span>
             </a>
 
@@ -277,6 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
             <div id="login-box" class="form-box-fade <?php echo $tab !== 'login' ? 'd-none' : ''; ?>">
                 <h4 class="dynamic-title mb-1">ĐĂNG NHẬP</h4>
                 <p class="text-muted small text-center mb-3">Chào mừng bạn quay lại!</p>
+
                 <form action="auth.php" method="POST">
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-secondary">Tên đăng nhập</label>
@@ -427,11 +428,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
         <p class="lead fs-6 lh-lg" style="max-width: 600px; color: #b0b3b8 !important;">
             Hãy khám phá bộ sưu tập đa dạng của chúng tôi để tìm kiếm những món đồ phù hợp với sở thích của bạn.
         </p>
-            </div>
-            <div class="position-absolute top-0 start-0 w-100 h-100" style="background: radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.4) 100%); pointer-events: none;"></div>
-        </div>
-
     </div>
+
 </div>
 
 <script>
