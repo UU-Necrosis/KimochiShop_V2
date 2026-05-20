@@ -61,7 +61,6 @@ if (isset($_POST['btn-verify'])) {
                     header("Location: auth.php?tab=login&success=verified");
                     exit(); 
                 }
-                }
 
                 $remaining = 3 - $_SESSION['otp_attempts'];
                 $error = "Mã OTP không chính xác! Bạn còn $remaining lần thử trước khi bị khóa.";
