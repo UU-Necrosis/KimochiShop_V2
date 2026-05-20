@@ -255,11 +255,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
     
     <div class="auth-right">
         
-        <div class="auth-header d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom" style="border-color: rgba(0,0,0,0.05) !important;">
-            
-            <a href="index.php" class="back-to-home text-decoration-none d-inline-flex align-items-center gap-2" title="Quay lại trang chủ" style="transition: 0.2s;">
-                <i class="fa-solid fa-house text-secondary" style="font-size: 0.95rem; transform: translateY(-1px);"></i>
-                <span class="d-none d-sm-inline small fw-semibold text-secondary">Home Page</span>
+        <div class="auth-header">
+            <a href="index.php" class="back-to-home" title="Quay lại trang chủ">
+                <i class="fa-solid"><span class="fa-right-to-bracket me-2"></span><span class="d-none d-sm-inline small text-center">  Home Page</span></i>
+
             </a>
 
             <div class="text-end">
@@ -479,7 +478,7 @@ window.addEventListener('popstate', function() {
 
 
 <script>
-// Hiển thị password khi bấm vào, dựa vào data-target để biết được input nào cần đổi
+// Hiển thị password khi bấm vào nút mắt, dựa vào data-target để biết được input nào cần đổi
 document.querySelectorAll('.toggle-password').forEach(button => {
     button.addEventListener('click', function() {
         // Lấy ra cái ô input mục tiêu dựa vào thuộc tính data-target
