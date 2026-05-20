@@ -268,10 +268,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
             </div>
         </div>
         <div class="form-container-box">
-
-
-
-
             <?php if (!empty($success)): ?>
                 <div class="alert alert-success py-2 small shadow-sm mb-3 text-center">
                     <?php echo $success; ?>
