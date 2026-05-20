@@ -145,15 +145,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
 
         /* CỤM LOGO SÁT NÓC PHẢI + DÒNG HIGHLIGHT HỒNG */
         .auth-header {
-            position: relative !important; /* Đổi hoàn toàn từ absolute sang relative */
-            width: 100% !important;
+            position: absolute !important;
+            top: 1.5rem !important;    
+            left: 2rem !important;   /* Mở rộng sang bên trái để chứa nút quay lại */
+            right: 2rem !important;  /* Ghim sát lề phải */
             display: flex !important;
-            justify-content: space-between !important; /* Đẩy Home Page sang trái, Kimochi Shop sang phải */
-            align-items: center !important; /* Căn cho hai bên thẳng hàng ngang */
+            justify-content: space-between !important; /* Đẩy nút sang trái, logo sang phải */
+            align-items: center !important; /* Căn chỉnh hai bên nằm thẳng hàng ngang */
             z-index: 10;
-            border-bottom: 1px solid rgba(0,0,0,0.08) !important; /* Đường kẻ mờ ngăn cách */
-            padding-bottom: 15px !important;
-            margin-bottom: 30px !important; /* Tạo khoảng cách an toàn với chữ ĐĂNG KÝ bên dưới */
+            
+            /* Di chuyển thanh line hồng sang ôm trọn lề phải của Header */
+            border-right: 4px solid var(--pink-primary) !important; 
+            padding-right: 15px !important; 
         }
 
         /* Style nút quay lại hình dáng số 0 (Oval/Pill) */
@@ -287,16 +290,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
                     <div class="text-end mb-4">
                         <a href="auth.php?tab=forgot" class="switch-btn small text-decoration-none text-muted" data-target="forgot" style="font-size: 0.85rem;">Quên mật khẩu?</a>
                     </div>
-                    <button type="submit" name="btn-login" class="btn btn-pink w-100 fw-bold py-2 mb-1 shadow-sm">Đăng Nhập</button>
+                    <button type="submit" name="btn-login" class="btn btn-pink w-100 fw-bold py-2 mb-3 shadow-sm">Đăng Nhập</button>
                 </form>
-
-                <div class="text-center mt-3 mb-2">
-                    <p class="text-muted mb-0 small" style="font-style: italic;">
-                        <i class="fa-solid fa-heart text-pink me-1" style="font-size: 0.75rem;"></i>
-                        Cảm ơn vì đã tin tưởng và lựa chọn Kimochi Shop!
-                    </p>
-                </div>
-
                 <div class="text-center mt-3">
                     <p class="small text-muted">
                         Chưa có tài khoản? 
@@ -358,14 +353,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
                     </div>
                     <button type="submit" name="btn-register" class="btn btn-pink w-100 fw-bold py-2 mb-1 shadow-sm">Đăng Ký</button>
                 </form>
-
-                <div class="text-center mt-3 mb-2">
-                    <p class="text-muted mb-0 small" style="font-style: italic;">
-                        <i class="fa-solid fa-heart text-pink me-1" style="font-size: 0.75rem;"></i>
-                        Cảm ơn vì đã tin tưởng và lựa chọn Kimochi Shop!
-                    </p>
-                </div>
-
+                
                 <div class="text-center mt-3">
                     <p class="small text-muted">
                         Đã có tài khoản? 
