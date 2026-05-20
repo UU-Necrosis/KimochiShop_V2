@@ -407,7 +407,13 @@ if (isset($_POST['btn-forgot'])) {
         </div>
         <div class="form-container-box">
 
-            <?php if (!empty($success)): ?>
+            <?php 
+            // Nếu có session success hoặc có tham số success từ URL truyền về
+            if (isset($_GET['success']) && $_GET['success'] == 'verified') {
+                $success = "Kích hoạt tài khoản thành công! Ông giáo có thể đăng nhập ngay bây giờ.";
+            }
+            if (!empty($success)): 
+            ?>
                 <div class="alert alert-success py-2 small shadow-sm mb-3 text-center">
                     <?php echo $success; ?>
                 </div>
