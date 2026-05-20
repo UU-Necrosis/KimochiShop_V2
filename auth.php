@@ -260,7 +260,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
                 <i class="fa-solid fa-house text-secondary" style="font-size: 0.95rem;"></i>
                 <span class="d-none d-sm-inline small fw-semibold text-secondary">Home Page</span>
             </a>
-m
+
             <div class="text-end">
                 <h4 class="fw-bold text-dark mb-0" style="font-size: 1.35rem; letter-spacing: 0.5px;">
                     Kimochi <span class="text-pink">Shop</span>
@@ -306,12 +306,6 @@ m
                 
                 <form action="auth.php" method="POST">
 
-
-
-
-
-
-
                     <div class="mb-4 position-relative"> <label class="form-label small fw-bold text-secondary">Tên đăng nhập <span class="text-danger">*</span></label>
                         <input type="text" name="reg_username" class="form-control py-2 <?php echo isset($errors['username']) ? 'is-invalid' : ''; ?>" placeholder="Tối thiểu 5 ký tự..." value="<?php echo htmlspecialchars($username ?? ''); ?>" required>
                         
@@ -331,13 +325,6 @@ m
                             </div>
                         <?php endif; ?>
                     </div>
-
-
-
-
-
-
-
 
                     <div class="mb-4 position-relative">
                         <label class="form-label small fw-bold text-secondary">Mật khẩu <span class="text-danger">*</span></label>
@@ -364,29 +351,6 @@ m
                             </div>
                         <?php endif; ?>
                     </div>
-
-
-
-
-
-
-                        
-
-                    
-
-                    
-
-
-
-
-
-
-
-
-
-
-
-
                     <button type="submit" name="btn-register" class="btn btn-pink w-100 fw-bold py-2 mb-1 shadow-sm">Đăng Ký</button>
                 </form>
                 
