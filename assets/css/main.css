@@ -214,3 +214,7 @@
 .nav-icon-link:not(#searchDropdown):focus {
     box-shadow: none;
 }
+
+.nav-icon-link:not(#userMenuDropdown):focus {
+    box-shadow: none;
+}
