@@ -146,6 +146,7 @@ if (isset($_POST['btn-login'])) {
         }
     }
 }
+?>
 
 <!DOCTYPE html>
 <html lang="vi">
