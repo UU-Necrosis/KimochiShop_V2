@@ -331,9 +331,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
 
                     <div class="mb-4 position-relative">
                         <label class="form-label small fw-bold text-secondary">Địa chỉ Email <span class="text-danger">*</span></label>
-                        
                         <input type="text" name="reg_email" class="form-control py-2 <?php echo isset($errors['email']) ? 'is-invalid' : ''; ?>" placeholder="example@gmail.com" value="<?php echo htmlspecialchars($email ?? ''); ?>" required>
-                        
                         <?php if (isset($errors['email'])): ?>
                             <div class="invalid-feedback small fw-semibold position-absolute" style="bottom: -20px; left: 0; margin: 0; line-height: 1;">
                                 <?php echo $errors['email']; ?>
