@@ -293,8 +293,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
                     <button type="submit" name="btn-login" class="btn btn-pink w-100 fw-bold py-2 mb-3 shadow-sm">Đăng Nhập</button>
                 </form>
                 <div class="text-center mt-3">
-                    <span class="small text-muted">Chưa có tài khoản? </span>
-                    <a href="auth.php?tab=register" class="switch-btn small fw-bold text-decoration-none text-pink" data-target="register">Đăng ký ngay</a>
+                    <p class="small text-muted">
+                        Chưa có tài khoản? 
+                        <a href="auth.php?tab=register" class="switch-btn text-pink fw-bold text-decoration-none transition-link" data-target="register">Đăng ký ngay</a>
+                    </p>
                 </div>
             </div>
 
