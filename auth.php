@@ -86,7 +86,7 @@ if (isset($_POST['btn-register'])) {
 
             // Nội dung bức thư gửi OTP
             $mail->isHTML(true);
-            $mail->Subject = '🔑 Mã xác thực tài khoản Kimochi Shop';
+            $mail->Subject = ' Mã xác thực tài khoản Kimochi Shop';
             $mail->Body    = "
                 <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #f0f0f0; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);'>
                     <h2 style='color: #ff69b4; text-align: center; font-size: 26px; margin-bottom: 5px;'>Kimochi Shop</h2>
