@@ -77,7 +77,6 @@ kimochi_shop_online/
 ├── index.php                # TRANG CHỦ (Khách xem hàng)
 ├── shop.php                 # TRANG CỬA HÀNG + BỘ LỌC
 ├── product_detail.php       # CHI TIẾT SẢN PHẨM
-
 ├── cart.php                 # GIỎ HÀNG 
 ├── checkout.php             # THANH TOÁN
 ├── order_success.php        # HOÀN TẤT ĐƠN HÀNG
@@ -85,6 +84,7 @@ kimochi_shop_online/
 ├── block_spam.php           # Phòng chờ Turnstile CAPTCHA
 ├── cloudflare_rules.txt     # Hướng dẫn Page Rules cập nhật
 ├── auth.php                 # Xác thực người dùng
+├── logout.php               # Đăng xuất người dùng
 └── .htaccess                
 
 
