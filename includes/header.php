@@ -57,8 +57,9 @@ require_once __DIR__ . '/functions.php';
                         
                         <ul class="navbar-nav align-items-center">
                             <?php if (isset($_SESSION['user_id'])): ?>
-
                                 
+
+
                                 <li class="nav-item text-white me-3">
                                     Xin chào, <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong>
                                 </li>
@@ -104,13 +105,16 @@ require_once __DIR__ . '/functions.php';
                                 </div>
                                 
                             </div> <a class="nav-icon-link position-relative" href="#" title="Thông báo">
-                                <i class="fa-solid fa-bell"></i>
-                                <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                                <i class="fa-solid fa-bell"></i><span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
                             </a>
                             
                             <a class="nav-icon-link" href="#" title="Danh mục phụ">
                                 <i class="fa-solid fa-bars"></i>
                             </a>
+
+
+
+
                         </div>
 
                     </div>
