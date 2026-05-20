@@ -341,7 +341,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
 
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-secondary">Mật khẩu <span class="text-danger">*</span></label>
-                        <input type="password" name="reg_password" class="form-control py-2" placeholder="Nhập mật khẩu bảo mật..." required>
+                    <input type="password" name="reg_password" class="form-control py-2" placeholder="Nhập mật khẩu bảo mật..." value="<?php echo htmlspecialchars($password ?? ''); ?>" required>
                     </div>
 
                     <div class="mb-4 position-relative">
