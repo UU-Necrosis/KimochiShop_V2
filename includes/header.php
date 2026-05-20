@@ -43,7 +43,7 @@ require_once __DIR__ . '/functions.php';
     <body>
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-            <div class="container">
+            <div class="container-fluid ps-md-5 pe-md-4 d-flex align-items-center justify-content-between">
                 <a class="navbar-brand" href="index.php">
                     <i class="fa-solid fa-store me-2"></i>Kimochi Shop
                 </a>
@@ -65,35 +65,41 @@ require_once __DIR__ . '/functions.php';
                                 </li>
                             <?php else: ?>
                                 <li class="nav-item me-2">
-                                    <a class="btn btn-outline-light btn-sm" href="register.php">Đăng nhập</a>
+                                    <a class="btn btn-outline-light btn-sm" href="auth.php?tab=login">Đăng nhập</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="btn btn-danger btn-sm" href="register.php?tab=register">Đăng ký</a>
+                                    <a class="btn btn-danger btn-sm" href="auth.php?tab=register">Đăng ký</a>
                                 </li>
                             <?php endif; ?>
                         </ul>
 
                         <hr class="text-white-50 d-lg-none my-2 w-100">
 
-                        <div class="nav-icons-group">
+                        <div class="nav-icons-group d-flex align-items-center gap-3">
+                            
                             <div class="dropdown">
                                 <a class="nav-icon-link" href="#" title="Tìm kiếm" id="searchDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                                     <i class="fa-solid fa-magnifying-glass"></i>
                                 </a>
-                                <div class="dropdown-menu dropdown-menu-end p-3 shadow border-0 search-box-dropdown" aria-labelledby="searchDropdown">
-                                    <form action="index.php" method="GET" class="d-flex flex-column gap-2">
-                                        <label class="form-label small fw-bold text-secondary mb-1">TÌM KIẾM SẢN PHẨM</label>
-                                        <div class="input-group">
-                                            <input type="text" name="search" class="form-control form-control-sm" placeholder="Nhập tên sản phẩm cần tìm..." required>
-                                            <button class="btn btn-brand btn-sm" type="submit">
-                                                <i class="fa-solid fa-magnifying-glass text-white"></i>
+                                
+                                <div class="dropdown-menu dropdown-menu-end shadow search-box-dropdown p-3" aria-labelledby="searchDropdown" style="width: 320px !important;">
+                                    <form action="index.php" method="GET" class="m-0 p-0">
+                                        <label class="form-label small fw-bold text-secondary mb-2">TÌM KIẾM SẢN PHẨM</label>
+                                        
+                                        <div class="input-group input-group-sm custom-search-box">
+                                            <input type="text" name="search" class="form-control" placeholder="Nhập tên sản phẩm cần tìm..." required style="border-radius: 6px 0 0 6px !important;">
+                                            
+                                            <button class="btn btn-search-submit-pink" type="submit">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                                                </svg>
                                             </button>
                                         </div>
+                                        
                                     </form>
                                 </div>
-                            </div>
-
-                            <a class="nav-icon-link position-relative" href="#" title="Thông báo">
+                                
+                            </div> <a class="nav-icon-link position-relative" href="#" title="Thông báo">
                                 <i class="fa-solid fa-bell"></i>
                                 <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
                             </a>

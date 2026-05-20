@@ -14,7 +14,6 @@ include_once 'includes/header.php';
 
                     <h3 class="mb-4"><i class="fa-solid fa-fire text-danger me-2"></i>Sản phẩm được ưa chuộng</h3>
 
-                    
 
                     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3">
                         

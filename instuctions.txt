@@ -8,6 +8,8 @@ kimochi_shop_online/
 │
 ├── config/                  
 │   ├── db_connect.php       
+│   ├── .env                 # thông tin đăng nhập sql
+│   ├── .gitignore           # Không git push (.env)
 │   └── constants.php        # Thêm cấu hình Turnstile & Các hằng số phân quyền
 │
 ├── includes/                
@@ -80,6 +82,7 @@ kimochi_shop_online/
 ├── profile.php              # LỊCH SỬ ĐƠN HÀNG CỦA KHÁCH KHÀNG
 ├── block_spam.php           # Phòng chờ Turnstile CAPTCHA
 ├── cloudflare_rules.txt     # Hướng dẫn Page Rules cập nhật
+├── auth.php                 # Xác thực người dùng
 └── .htaccess                
 
 

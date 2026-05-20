@@ -1,3 +1,7 @@
+  /********************************/
+ /* --- CÁC DỮ LIỆU CHỨA MÀU --- */
+/********************************/
+
 :root [theme="light"] {
   --bg: #f8f9fa;
   --card: #ffffff;
@@ -23,37 +27,50 @@
   --pink: #ff69b4;
 }
 
+:root {
+    /* --- Hệ sinh thái màu sắc chung cho toàn bộ trang --- */
+    --default-white: #ffffff;                 /* Màu trắng tinh khiết cho nền và chữ */
+    --pink-primary: #ff69b4;
+    /* --- Hệ sinh thái màu sắc của Icon Navbar --- */
+    --icon-default-color: #ffffff;             /* Màu trắng mặc định cho icon */
+    --icon-hover-bg: rgba(234, 234, 234, 0.08);   /* Nền hồng mờ 8% khi hover */
+    --icon-active-bg: rgba(224, 30, 91, 0.529);  /* Nền hồng mờ 20% khi click mạnh */
+    --icon-opened-bg: rgb(255, 255, 255);  /* Nền hồng mờ 15% khi giữ trạng thái mở */
+    --icon-highlight-shadow: rgba(30, 217, 224, 0.444); /* Vòng shadow mờ 30% lan tỏa xung quanh */
+    /* --- Hệ sinh thái màu sắc của Bảng Tìm Kiếm --- */
+    --search-bg: #7c7c7c;
+    --search-border: rgba(224, 30, 90, 0.15);
+    --search-shadow: rgba(0, 0, 0, 0.12);
+    --search-label: #6c757d;
+    --search-btn-bg: #4d5cff; 
+    --search-btn-color: #ffffff; /* Màu trắng cho icon kính lúp */
+}
+
   /******************************/
  /* --- CÁC DỮ LIỆU ĐỔ MÀU --- */
 /******************************/
 
-/* --- ĐỔ MÀU BẢNG TÌM KIẾM (CHO CẢ LIGHT VÀ DARK THEME) --- */
-.search-box-dropdown {
-    background-color: var(--card) !important; /* Ép nhận màu nền đặc, không lo bị xuyên thấu */
-    border: 1px solid var(--border) !important;
+/* --- ĐỔ MÀU BẢNG TÌM KIẾM --- */
+/* Xóa bỏ hoàn toàn viền xanh mặc định của Bootstrap khi focus vào ô nhập liệu */
+.input-group .form-control:focus {
+    border-color: #ced4da !important;  /* Giữ nguyên màu viền xám mặc định */
+    box-shadow: none !important;        /* Triệt tiêu hoàn toàn bóng mờ màu xanh của Bootstrap */
 }
 
-.search-box-dropdown .form-control {
-    background-color: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
+/* Đảm bảo viền của nút hồng và ô input ăn khớp, khít khịt với nhau */
+.input-group .btn-search-submit-pink {
+    background-color: var(--search-btn-bg) !important;
+    border: 1px solid var(--search-btn-bg) !important;
 }
 
-/* Khi đang gõ chữ, viền ô input đổi sang màu brand */
-.search-box-dropdown .form-control:focus {
-    border-color: var(--brand);
+.input-group .btn-search-submit-pink svg {
+    fill: var(--search-btn-color) !important;
+    color: var(--search-btn-color) !important;
 }
 
-/* Đổ màu cho nút kính lúp phụ trách Tìm kiếm */
-.search-box-dropdown .btn-search-submit {
-    background-color: var(--brand);
-    border: 1px solid var(--brand);
-    color: #ffffff !important;
-}
-
-/* Hiệu ứng Hover nhẹ cho nút tìm kiếm */
-.search-box-dropdown .btn-search-submit:hover {
-    opacity: 0.9;
+.input-group .form-control {
+    border: 1px solid #ced4da !important;
+    border-right: none !important; /* Giữ việc bỏ viền phải để nối liền vào nút hồng */
 }
 
 /* --- ĐỔ MÀU CHO SIDEBAR, BANNER VÀ CARD --- */
@@ -64,7 +81,7 @@
 
 .category-sidebar .category-title {
     background-color: var(--brand); 
-    color: #ffffff; /* Tiêu đề giữ chữ trắng trên nền màu chủ đạo để nổi bật */
+    color: var(--default-white); /* Tiêu đề giữ chữ trắng trên nền màu chủ đạo để nổi bật */
 }
 
 .category-sidebar .category-list li {
@@ -109,83 +126,78 @@
     border: 1px solid var(--border) !important;
 }
 
+/* --- TẠO MÀU HIGHLIGHT CHO ICON NAVBAR --- */
+/* Áp dụng đổ màu thực tế cho Icon */
+.nav-icon-link {
+    color: var(--icon-default-color); 
+}
+
+/* Đổ màu khi Rê chuột qua (Hover) */
+.nav-icon-link:hover {
+    color: var(--brand) !important;
+    background-color: var(--icon-hover-bg);
+}
+
+/* Đổ màu và giữ màu cho Kính lúp khi đang mở bảng tìm kiếm */
+.nav-icon-link#searchDropdown[aria-expanded="true"] {
+    color: var(--brand) !important;
+    background-color: var(--icon-opened-bg) !important;
+    border-color: var(--brand) !important;
+}
+
+/* Đổ màu nhấp nháy lẹ làng cho Chuông và Ba gạch khi click chuột */
+.nav-icon-link:not(#searchDropdown):active {
+    color: var(--brand) !important;
+    background-color: var(--icon-active-bg);
+}
+
   /****************************************/
  /* --- CÁC HIỆU ỨNG CHUYỂN ĐỘNG NHẸ --- */
 /****************************************/
 
-/* --- KHUNG XƯƠNG SIDEBAR ALL CATEGORIES --- */
-.category-sidebar {
-    border-radius: 8px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.category-sidebar .category-title {
-    font-weight: bold;
-    padding: 15px 20px;
-    letter-spacing: 0.5px;
-}
-
-.category-sidebar .category-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.category-sidebar .category-list a {
-    display: flex;
-    align-items: center;
-    padding: 14px 20px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.category-sidebar .category-list a:hover {
-    padding-left: 25px; /* Hiệu ứng nhích nhẹ sang phải */
-}
-
-.category-sidebar .arrow-icon {
-    font-size: 0.8rem;
-    transition: transform 0.2s ease;
-}
-
-.category-sidebar .category-list a:hover .arrow-icon {
-    transform: translateX(3px);
-}
-
 /* --- KHUNG XƯƠNG BẢNG TÌM KIẾM THẢ XUỐNG --- */
-.search-box-dropdown {
-    width: 320px;
-    border-radius: 12px !important;
-    margin-top: 15px !important;
-    padding: 1rem !important;
-    
-    /* Tạo hoạt ảnh mượt mà khiDropdown mở ra */
-    display: block !important; 
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(10px);
-    transition: all 0.25s ease-in-out;
+.input-group .btn-search-submit-pink {
+    width: 45px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 0 6px 6px 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: filter 0.15s ease-in-out !important; /* Chuyển động mượt khi hover */
 }
 
-/* Class này do Bootstrap tự động thêm vào khi ông click mở Dropdown */
-.search-box-dropdown.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
+.input-group .btn-search-submit-pink svg {
+    display: block !important;
+    opacity: 1 !important;
 }
 
-.search-box-dropdown .form-control {
-    border-radius: 6px 0 0 6px; /* Bo góc bên trái */
+/* Hiệu ứng tương tác Hover làm tối nhẹ nút hồng */
+.input-group .btn-search-submit-pink:hover {
+    filter: brightness(0.9) !important;
+    background-color: var(--search-btn-bg) !important;
 }
 
-/* Nút kính lúp nhỏ bên trong ô tìm kiếm */
-.search-box-dropdown .btn-search-submit {
-    border-radius: 0 6px 6px 0; /* Bo góc bên phải */
-    border-left: none;
+/* --- HIGHLIGHT ICON NAVBAR --- */
+.nav-icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px; /* Phom O vuông bo góc hiện đại */
+    border: 1px solid transparent;
+    transition: all 0.2s ease-in-out; /* Chuyển động mượt mà */
 }
 
-.search-box-dropdown .form-control:focus {
+/* Hiệu ứng Highlight viền O vuông lan tỏa khi click hoặc khi đang mở */
+.nav-icon-link:focus,
+.nav-icon-link[aria-expanded="true"] {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--icon-highlight-shadow); 
+}
+
+/* Chuông và Ba gạch khi click xong thả ra thì tắt hiệu ứng shadow ngay */
+.nav-icon-link:not(#searchDropdown):focus {
     box-shadow: none;
-} 
+}
