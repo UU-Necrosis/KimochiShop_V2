@@ -73,6 +73,7 @@ kimochi_shop_online/
 │
 ├── vendor/                  # Thư viện PHPMailer gửi mail hóa đơn
 │
+├── verify.php
 ├── index.php                # TRANG CHỦ (Khách xem hàng)
 ├── shop.php                 # TRANG CỬA HÀNG + BỘ LỌC
 ├── product_detail.php       # CHI TIẾT SẢN PHẨM
