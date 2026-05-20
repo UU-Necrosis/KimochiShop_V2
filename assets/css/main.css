@@ -140,7 +140,8 @@
 
 /* Đổ màu và giữ màu cho Kính lúp khi đang mở bảng tìm kiếm */
 .nav-icon-link#searchDropdown[aria-expanded="true"],
-.nav-icon-link#userMenuDropdown[aria-expanded="true"] {
+.nav-icon-link#userMenuDropdown[aria-expanded="true"],
+.nav-icon-link#cartMenuIcon[aria-expanded="true"] {
     color: var(--brand) !important;
     background-color: var(--icon-opened-bg) !important;
     border-color: var(--brand) !important;
