@@ -46,7 +46,21 @@ if (isset($_POST['btn-verify'])) {
                         alert('Bạn đã nhập sai OTP quá 3 lần! Hệ thống đã hủy, vui lòng đăng ký lại.');
                         window.location.href='auth.php';
                     </script>";
-                    exit();
+                } else {
+                    // 1. Cập nhật trạng thái xác thực
+                    $update_sql = "UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = :email";
+                    $update_stmt = $conn->prepare($update_sql);
+                    $update_stmt->execute([':email' => $_SESSION['verify_email']]);
+
+                    // 2. Dọn dẹp session
+                    unset($_SESSION['verify_email']);
+                    unset($_SESSION['verify_action']); // Thêm dòng này để chắc chắn dọn sạch
+
+                    // 3. CHUYỂN HƯỚNG BẮT BUỘC
+                    // Thay vì dùng alert, ông giáo dùng header để đảm bảo nó văng về trang login
+                    header("Location: auth.php?tab=login&success=verified");
+                    exit(); 
+                }
                 }
 
                 $remaining = 3 - $_SESSION['otp_attempts'];
