@@ -419,16 +419,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
     <div class="col-md-6 bg-dark text-white d-none d-md-flex flex-column align-items-center justify-content-center p-5 position-relative" style="background: #121212 !important;">
         <div class="text-center" style="max-width: 480px; z-index: 2;">
             <h1 class="display-4 fw-light opacity-25 mb-0" style="letter-spacing: 4px;">WELCOME</h1>
-                <h2 class="fw-bold text-white mb-4" style="font-size: 3rem;">Kimochi <span class="text-pink">Shop</span></h2>
-                <p class="lead fw-semibold text-pink mb-3">Chào mừng bạn đến với thế giới người lớn</p>
-                <p class="text-secondary small lh-lg">
-                    Tại Kimochi Shop, chúng tôi cam kết mang đến những sản phẩm chất lượng tốt, an toàn và tinh tế. 
-            Chúng tôi tin rằng mọi người đều xứng đáng được tận hưởng những giây phục tuyệt vời và thoải mái.
+            <h2 class="fw-bold text-white mb-4" style="font-size: 3rem;">Kimochi <span class="text-pink">Shop</span></h2>
+            <p class="lead fw-semibold text-pink mb-3">Chào mừng bạn đến với thế giới người lớn</p>
+            <p class="text-secondary small lh-lg">
+                Tại Kimochi Shop, chúng tôi cam kết mang đến những sản phẩm chất lượng tốt, an toàn và tinh tế. 
+                Chúng tôi tin rằng mọi người đều xứng đáng được tận hưởng những giây phục tuyệt vời và thoải mái.
             </p>
-        <p class="lead fs-6 lh-lg" style="max-width: 600px; color: #b0b3b8 !important;">
-            Hãy khám phá bộ sưu tập đa dạng của chúng tôi để tìm kiếm những món đồ phù hợp với sở thích của bạn.
-        </p>
-            </div>
+            <p class="lead fs-6 lh-lg" style="max-width: 600px; color: #b0b3b8 !important;">
+                Hãy khám phá bộ sưu tập đa dạng của chúng tôi để tìm kiếm những món đồ phù hợp với sở thích của bạn.
+            </p>
+        </div>
             <div class="position-absolute top-0 start-0 w-100 h-100" style="background: radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.4) 100%); pointer-events: none;"></div>
         </div>
 
