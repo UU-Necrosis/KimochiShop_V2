@@ -29,7 +29,7 @@ if (isset($_POST['btn-register'])) {
         $errors['email'] = "Địa chỉ email không đúng định dạng!";
     }
 
-    // Chặn spam & Check trùng: Kiểm tra Username hoặc Email trong PostgreSQL
+    // Chặn spam & Check trùng: Kiểm tra Username hoặc Email trong PostgreSQL               echo $errors['register'];
 
         try {
             // 1. Kiểm tra Username trước
@@ -48,7 +48,6 @@ if (isset($_POST['btn-register'])) {
         } catch (PDOException $e) {
             $errors['register'] = "Lỗi hệ thống kiểm tra dữ liệu: " . $e->getMessage();
         }
-    }
 
     // 3. Tiến hành bùa chú Postgres + Gửi Mail OTP nếu không có lỗi
     if (empty($errors)) {
