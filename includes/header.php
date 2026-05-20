@@ -68,17 +68,17 @@ require_once __DIR__ . '/functions.php';
 
                         <hr class="text-white-50 d-lg-none my-2 w-100">
 
-                        <div class="nav-icons-group d-flex align-items-center gap-3">
-                                                            
+                        <div class="nav-icons-group d-flex align-items-center gap-3">                   
 
-
+                            <?php if (isset($_SESSION['user_id'])): ?>
                                 <a class="nav-icon-link position-relative me-3" href="cart.php" title="Giỏ hàng" id="cartMenuIcon">
                                     <i class="fa-solid fa-shopping-cart"></i>
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger" style="font-size: 10px; padding: 4px 6px;">
                                         2
                                     </span>
                                 </a>
-                            <
+                            <?php endif; ?>
+
 
                             <div class="dropdown">
                                 <a class="nav-icon-link" href="#" title="Tìm kiếm" id="searchDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
