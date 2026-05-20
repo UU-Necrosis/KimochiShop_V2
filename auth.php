@@ -429,7 +429,7 @@ if (isset($_POST['btn-forgot'])) {
                         </div>
                     <?php endif; ?>
                     <div class="mb-3">
-                        <label class="form-label small fw-bold text-secondary">Tên đăng nhập</label>
+                        <label class="form-label small fw-bold text-secondary">Tên đăng nhập hoặc Email</label>
                         <input type="text" name="username" class="form-control py-2" placeholder="Nhập username..." required>
                     </div>
                     <div class="mb-2">
