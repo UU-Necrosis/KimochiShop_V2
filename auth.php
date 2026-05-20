@@ -96,9 +96,6 @@ if (isset($_POST['btn-register'])) {
         }
     }
 }
-?>
-
-<?php
 
 // ==================== XỬ LÝ LOGIC ĐĂNG NHẬP POSTGRESQL ====================
 
@@ -145,10 +142,9 @@ if (isset($_POST['btn-login'])) {
         }
     }
 }
-?>
 
-<?php
 // ==================== XỬ LÝ LOGIC QUÊN MẬT KHẨU ====================
+
 if (isset($_POST['btn-forgot'])) {
     $email = trim($_POST['forgot_email'] ?? '');
 
@@ -218,6 +214,7 @@ if (isset($_POST['btn-forgot'])) {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
