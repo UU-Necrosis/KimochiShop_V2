@@ -29,7 +29,7 @@ if (isset($_POST['btn-register'])) {
         $errors['email'] = "Địa chỉ email không đúng định dạng!";
     }
 
-    // Chặn spam & Check trùng: Kiểm tra Username hoặc Email trong PostgreSQL               echo $errors['register'];
+    // Chặn spam & Check trùng: Kiểm tra Username hoặc Email trong PostgreSQL
 
         try {
             // 1. Kiểm tra Username trước
@@ -417,7 +417,7 @@ if (isset($_POST['btn-forgot'])) {
                 <form action="auth.php" method="POST">
                     <?php if (isset($errors['register'])): ?>
                         <div class="alert alert-danger py-2 small shadow-sm text-center">
-                            <?php echo $errors['register']; ?>
+                            <?php echo $errors['register'] ?>
                         </div>
                     <?php endif; ?>
                     <div class="mb-3">
