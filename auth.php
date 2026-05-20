@@ -102,7 +102,6 @@ if (isset($_POST['btn-register'])) {
 
 // ==================== XỬ LÝ LOGIC ĐĂNG NHẬP POSTGRESQL ====================
 
-// ==================== XỬ LÝ LOGIC ĐĂNG NHẬP POSTGRESQL ====================
 if (isset($_POST['btn-login'])) {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
