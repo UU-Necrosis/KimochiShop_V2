@@ -96,7 +96,8 @@ if (isset($_POST['btn-register'])) {
                         <span style='font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #222; background: #fff5f8; padding: 12px 25px; border-radius: 8px; border: 2px dashed #c0c0c0; display: inline-block;'>$otp_code</span>
                     </div>
                     <p style='font-size: 12px; color: #999; text-align: center;'>
-                    Mã này có hiệu lực trong vòng 15 phút. Tuyệt đối không chia sẻ mã này cho ai.</p>
+                    Nếu bạn không yêu cầu đăng ký, vui lòng bỏ qua email này. Mã này có hiệu lực trong vòng 15 phút. Tuyệt đối không chia sẻ mã này cho ai.
+                    </p>
                 </div>
             ";
 
