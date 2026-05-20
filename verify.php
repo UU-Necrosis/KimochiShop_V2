@@ -34,36 +34,38 @@ if (isset($_POST['btn-verify'])) {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user) {
-                // ... Đoạn code xử lý khi KHỚP MÃ (giữ nguyên như cũ) ...
-                unset($_SESSION['otp_attempts']); // Đăng nhập đúng thì xóa số lần đếm đi
+                // =============== TRƯỜNG HỢP 1: KHỚP MÃ OTP (THÀNH CÔNG) ===============
+                unset($_SESSION['otp_attempts']); 
+
+                // 1. Cập nhật trạng thái kích hoạt tài khoản trong PostgreSQL
+                $update_sql = "UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = :email";
+                $update_stmt = $conn->prepare($update_sql);
+                $update_stmt->execute([':email' => $email]);
+
+                // 2. Dọn dẹp Session
+                unset($_SESSION['verify_email']);
+                unset($_SESSION['verify_action']);
+
+                // 3. Bốc đầu bay thẳng về trang Login cùng thông báo thành công
+                header("Location: auth.php?tab=login&success=verified");
+                exit();
+
             } else {
-                // Trường hợp SAI MÃ: Tăng số lần nhập sai lên
+                // =============== TRƯỜNG HỢP 2: SAI MÃ OTP (THẤT BẠI) ===============
                 $_SESSION['otp_attempts'] = ($_SESSION['otp_attempts'] ?? 0) + 1;
 
                 if ($_SESSION['otp_attempts'] >= 3) {
-                    // Nếu nhập sai quá 3 lần, tự động xóa Session bắt cút về trang đăng ký luôn
+                    // Nhập sai quá 3 lần: Trục xuất luôn, xóa session bắt đăng ký lại
                     unset($_SESSION['verify_email']);
                     unset($_SESSION['otp_attempts']);
                     echo "<script>
-                        alert('Bạn đã nhập sai OTP quá 3 lần! Hệ thống đã hủy, vui lòng đăng ký lại.');
-                        window.location.href='auth.php';
+                        alert('Bạn đã nhập sai OTP quá 3 lần! Phiên làm việc đã bị hủy, vui lòng đăng ký lại.');
+                        window.location.href='auth.php?tab=register';
                     </script>";
-                } else {
-                    // 1. Cập nhật trạng thái xác thực
-                    $update_sql = "UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = :email";
-                    $update_stmt = $conn->prepare($update_sql);
-                    $update_stmt->execute([':email' => $_SESSION['verify_email']]);
-
-                    // 2. Dọn dẹp session
-                    unset($_SESSION['verify_email']);
-                    unset($_SESSION['verify_action']); // Thêm dòng này để chắc chắn dọn sạch
-
-                    // 3. CHUYỂN HƯỚNG BẮT BUỘC
-                    // Thay vì dùng alert, ông giáo dùng header để đảm bảo nó văng về trang login
-                    header("Location: auth.php?tab=login&success=verified");
-                    exit(); 
+                    exit();
                 }
 
+                // Nếu chưa quá 3 lần thì tính số lần còn lại và báo lỗi ra form
                 $remaining = 3 - $_SESSION['otp_attempts'];
                 $error = "Mã OTP không chính xác! Bạn còn $remaining lần thử trước khi bị khóa.";
             }
