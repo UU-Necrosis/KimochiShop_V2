@@ -416,7 +416,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
         </div>
     </div>
 
-<div class="col-md-6 bg-dark text-white d-none d-md-flex flex-column align-items-center justify-content-center p-5 position-relative" style="background: #121212 !important;">
+        <div class="col-md-6 bg-dark text-white d-none d-md-flex flex-column align-items-center justify-content-center p-5 position-relative" style="background: #121212 !important;">
             <div class="text-center" style="max-width: 480px; z-index: 2;">
                 <h1 class="display-4 fw-light opacity-25 mb-0" style="letter-spacing: 4px;">WELCOME</h1>
                 <h2 class="fw-bold text-white mb-4" style="font-size: 3rem;">
