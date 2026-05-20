@@ -151,18 +151,7 @@
     background-color: var(--icon-active-bg);
 }
 
-/* Đổ màu và giữ màu cho Menu khi đang mở bảng tìm kiếm */
-.nav-icon-link#userMenuDropdown[aria-expanded="true"] {
-    color: var(--brand) !important;
-    background-color: var(--icon-opened-bg) !important;
-    border-color: var(--brand) !important;
-}
 
-/* Đổ màu nhấp nháy lẹ làng cho Chuông và Ba gạch khi click chuột */
-.nav-icon-link:not(#userMenuDropdown):active {
-    color: var(--brand) !important;
-    background-color: var(--icon-active-bg);
-}
 
   /****************************************/
  /* --- CÁC HIỆU ỨNG CHUYỂN ĐỘNG NHẸ --- */
@@ -212,9 +201,5 @@
 
 /* Chuông và Ba gạch khi click xong thả ra thì tắt hiệu ứng shadow ngay */
 .nav-icon-link:not(#searchDropdown):focus {
-    box-shadow: none;
-}
-
-.nav-icon-link:not(#userMenuDropdown):focus {
     box-shadow: none;
 }
