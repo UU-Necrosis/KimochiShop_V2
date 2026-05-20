@@ -24,31 +24,37 @@ if (isset($_POST['btn-verify'])) {
         $error = "Vui lòng nhập đủ 6 số xác thực!";
     } else {
         try {
-            // 1. Kiểm tra mã OTP trong PostgreSQL (Dùng biến $conn từ db_connect.php)
-            $sql = "SELECT * FROM users WHERE email = :email AND verification_code = :otp";
+           // 1. Thay đổi SQL để kiểm tra xem giá trị nhập vào khớp với username HOẶC email
+            $sql = "SELECT * FROM users WHERE username = :login_input OR email = :login_input";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([
-                ':email' => $email, 
-                ':otp' => $otp_input
-            ]);
+
+            // 2. Lấy dữ liệu từ ô input (ô đó tên là gì thì ông giữ nguyên, ví dụ $_POST['username'])
+            $login_input = trim($_POST['username'] ?? ''); 
+
+            $stmt->execute([':login_input' => $login_input]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+            // 3. Tiến hành check mật khẩu và trạng thái kích hoạt (is_verified)
             if ($user) {
-                // =============== TRƯỜNG HỢP 1: KHỚP MÃ OTP (THÀNH CÔNG) ===============
-                unset($_SESSION['otp_attempts']); 
-
-                // 1. Cập nhật trạng thái kích hoạt tài khoản trong PostgreSQL
-                $update_sql = "UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = :email";
-                $update_stmt = $conn->prepare($update_sql);
-                $update_stmt->execute([':email' => $email]);
-
-                // 2. Dọn dẹp Session
-                unset($_SESSION['verify_email']);
-                unset($_SESSION['verify_action']);
-
-                // 3. Bốc đầu bay thẳng về trang Login cùng thông báo thành công
-                header("Location: auth.php?tab=login&success=verified");
-                exit();
+                // Kiểm tra xem tài khoản đã kích hoạt OTP chưa
+                if ($user['is_verified'] == false) {
+                    $errors['login'] = "Tài khoản của ông giáo chưa được kích hoạt OTP! Vui lòng kiểm tra lại mail.";
+                } 
+                // Kiểm tra mật khẩu mã hóa
+                elseif (password_verify($password, $user['password'])) {
+                    // Đăng nhập thành công -> Lưu session -> Chuyển hướng về trang chủ
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['username'] = $user['username'];
+                    $_SESSION['role'] = $user['role'];
+                    
+                    header("Location: index.php");
+                    exit();
+                } else {
+                    $errors['login'] = "Mật khẩu không chính xác rồi ông giáo ơi!";
+                }
+            } else {
+                $errors['login'] = "Tên đăng nhập hoặc Email không tồn tại!";
+            }
 
             } else {
                 // =============== TRƯỜNG HỢP 2: SAI MÃ OTP (THẤT BẠI) ===============
