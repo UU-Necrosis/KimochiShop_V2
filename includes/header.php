@@ -56,7 +56,7 @@ require_once __DIR__ . '/functions.php';
                     <div class="ms-auto d-flex flex-column flex-lg-row align-items-center">
                         
                         <ul class="navbar-nav align-items-center">
-                            <?php if (isset($_SESSION['user_id'])): ?>
+                            <?php if (!isset($_SESSION['user_id'])): ?>
                                 <li class="nav-item me-2">
                                     <a class="btn btn-outline-light btn-sm" href="auth.php?tab=login">Đăng nhập</a>
                                 </li>
