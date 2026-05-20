@@ -125,7 +125,6 @@ try {
         html, body { 
             height: 100%; 
             overflow: hidden; 
-            background-color: #111214; 
             color: #f2f3f5; 
             font-family: 'Segoe UI', Tahoma, sans-serif; 
         }
