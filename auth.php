@@ -142,17 +142,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
             height: 100vh !important;
             position: relative !important; /* Làm mốc cố định cho header */
         }
-        
+
         /* CỤM LOGO SÁT NÓC PHẢI + DÒNG HIGHLIGHT HỒNG */
         .auth-header {
-            position: relative !important; /* Đổi hoàn toàn từ absolute sang relative */
-            width: 100% !important;
+            position: absolute !important;
+            top: 1.5rem !important;    
+            left: 2rem !important;   /* Mở rộng sang bên trái để chứa nút quay lại */
+            right: 2rem !important;  /* Ghim sát lề phải */
             display: flex !important;
-            justify-content: space-between !important; /* Đẩy Home Page sang trái, Kimochi Shop sang phải */
-            align-items: center !important; /* Căn cho hai bên thẳng hàng ngang */
-            border-bottom: 1px solid rgba(0,0,0,0.08) !important; /* Đường kẻ mờ ngăn cách */
-            padding-bottom: 15px !important;
-            margin-bottom: 30px !important; /* Tạo khoảng cách an toàn với chữ ĐĂNG KÝ bên dưới */
+            justify-content: space-between !important; /* Đẩy nút sang trái, logo sang phải */
+            align-items: center !important; /* Căn chỉnh hai bên nằm thẳng hàng ngang */
+            z-index: 10;
+            
+            /* Di chuyển thanh line hồng sang ôm trọn lề phải của Header */
+            border-right: 4px solid var(--pink-primary) !important; 
+            padding-right: 15px !important; 
         }
 
         /* Style nút quay lại hình dáng số 0 (Oval/Pill) */
