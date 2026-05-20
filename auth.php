@@ -410,7 +410,7 @@ if (isset($_POST['btn-forgot'])) {
             <?php 
             // Nếu có session success hoặc có tham số success từ URL truyền về
             if (isset($_GET['success']) && $_GET['success'] == 'verified') {
-                $success = "Kích hoạt tài khoản thành công! Ông giáo có thể đăng nhập ngay bây giờ.";
+                $success = "Kích hoạt tài khoản thành công! Quý khách có thể đăng nhập ngay bây giờ.";
             }
             if (!empty($success)): 
             ?>
