@@ -355,7 +355,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
                                 <i class="fa-solid fa-eye"></i>
                             </button>
                         </div>
-                        
+
                         <?php if (isset($errors['password_confirm'])): ?>
                             <div class="invalid-feedback small fw-semibold position-absolute" style="bottom: -20px; left: 0; margin: 0; line-height: 1; display: block;">
                                 <?php echo $errors['password_confirm']; ?>
@@ -475,5 +475,29 @@ window.addEventListener('popstate', function() {
 });
 </script>
 
+
+
+<script>
+// Hiển thị password khi bấm vào, dựa vào data-target để biết được input nào cần đổi
+document.querySelectorAll('.toggle-password').forEach(button => {
+    button.addEventListener('click', function() {
+        // Lấy ra cái ô input mục tiêu dựa vào thuộc tính data-target
+        const targetId = this.getAttribute('data-target');
+        const passwordInput = document.getElementById(targetId);
+        const icon = this.querySelector('i');
+        
+        // Thay đổi qua lại giữa 'password' và 'text'
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash'); // Đổi thành icon mắt gạch chéo
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye'); // Đổi về icon mắt mở
+        }
+    });
+});
+</script>
 </body>
 </html>
