@@ -1,27 +1,42 @@
 <?php
-// Kiểm tra xem URL đang yêu cầu tab nào (Mặc định là login nếu không có)
+// ==================== KHỞI TẠO HỆ THỐNG & KẾT NỐI DATABASE ====================
+if (session_status() == PHP_SESSION_NONE) { 
+    session_start();
+}
+
+require_once 'config/db_connect.php'; 
+require_once 'vendor/autoload.php'; // Nạp Composer một lần duy nhất ở đây
+
+// Xác định tab giao diện đang hiển thị
 $tab = isset($_GET['tab']) ? $_GET['tab'] : 'login';
-
-// === ĐOẠN NÀY ĐẶT TRÊN ĐỈNH ĐẦU FILE AUTH.PHP - NƠI XỬ LÝ LOGIC ĐĂNG KÝ ===
-session_start();
-require_once 'config/db_connect.php'; // Tui thấy file kết nối của ông tên là db_connect.php nè!
-
 $errors = [];
+$success = "";
 
-if (isset($_POST['btn-register'])) {
-    // 1. Lấy dữ liệu từ form và validate sạch sẽ như cũ
+// ==================== XỬ LÝ LOGIC ĐĂNG KÝ GỬI OTP ====================
+if (isset($_POST['btn-register'])) { 
+    // 1. Nhận dữ liệu nhập vào từ Form
     $username = trim($_POST['reg_username'] ?? '');
     $email = trim($_POST['reg_email'] ?? '');
     $password = $_POST['reg_password'] ?? '';
-    
-    // ... Khúc này giữ nguyên các logic check lỗi cũ của ông giáo nha ...
+    $password_confirm = $_POST['reg_password_confirm'] ?? '';
 
-    // 2. Nếu không có lỗi gì thì bắt đầu bùa chú Postgres + Gửi OTP
+    // 2. Validate dữ liệu đầu vào (Giữ nguyên các logic check cũ của ông giáo)
+    if (strlen($username) < 5) {
+        $errors['username'] = "Tên đăng nhập tối thiểu 5 ký tự!";
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors['email'] = "Địa chỉ email không đúng định dạng!";
+    }
+    if ($password !== $password_confirm) {
+        $errors['password_confirm'] = "Xác nhận mật khẩu không trùng khớp!";
+    }
+
+    // 3. Tiến hành bùa chú Postgres + Gửi Mail OTP nếu không có lỗi
     if (empty($errors)) {
         try {
             // Tạo mã OTP ngẫu nhiên 6 chữ số
             $otp_code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT); // Mã hóa pass
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT); 
 
             // Câu lệnh INSERT tài khoản mới vào PostgreSQL (Mặc định is_verified = FALSE)
             $sql = "INSERT INTO users (username, email, password, verification_code, is_verified) 
@@ -35,17 +50,15 @@ if (isset($_POST['btn-register'])) {
                 ':otp'      => $otp_code
             ]);
 
-            // Triệu hồi PHPMailer (Composer đã cài sẵn v7.1.1 xịn sò)
-            require_once 'vendor/autoload.php';
-            
+            // Triệu hồi PHPMailer gửi thư (Không cần require lại vendor nữa)
             $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
             
-            // Cấu hình máy chủ gửi (Sử dụng SMTP của Gmail)
+            // Cấu hình SMTP của Gmail
             $mail->isSMTP();
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'email_cua_ong_giao@gmail.com'; // Điền Gmail của ông giáo vào đây
-            $mail->Password   = 'abcd efgh ijkl mnop';          // Mật khẩu ứng dụng Gmail 16 ký tự
+            $mail->Username   = 'email_cua_ong_giao@gmail.com'; // ⚠️ Thay bằng Gmail thật của ông
+            $mail->Password   = 'abcd efgh ijkl mnop';          // ⚠️ Thay bằng mật khẩu ứng dụng 16 ký tự
             $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
             $mail->CharSet    = 'UTF-8';
@@ -54,27 +67,26 @@ if (isset($_POST['btn-register'])) {
             $mail->setFrom($mail->Username, 'Kimochi Shop');
             $mail->addAddress($email);
 
-            // Nội dung thư tri ân trân trọng
+            // Nội dung bức thư tri ân trân trọng quý khách
             $mail->isHTML(true);
             $mail->Subject = '🔑 Mã xác thực tài khoản Kimochi Shop';
             $mail->Body    = "
                 <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #f0f0f0; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);'>
                     <h2 style='color: #ff69b4; text-align: center; font-size: 26px; margin-bottom: 5px;'>Kimochi Shop</h2>
                     <p style='color: #555; font-size: 14px; line-height: 1.6;'>Chào bạn,</p>
-                    <p style='color: #555; font-size: 14px; line-height: 1.6;'>Cảm ơn bạn vì đã tin tưởng và lựa chọn Kimochi Shop! Để hoàn tất đăng ký tài khoản, vui lòng nhập mã xác thực OTP dưới đây:</p>
+                    <p style='color: #555; font-size: 14px; line-height: 1.6;'>Cảm ơn bạn vì đã tin tưởng và lựa chọn Kimochi Shop! Để hoàn tất quá trình thiết lập tài khoản, vui lòng sử dụng mã OTP dưới đây để xác thực:</p>
                     <div style='text-align: center; margin: 35px 0;'>
                         <span style='font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #222; background: #fff5f8; padding: 12px 25px; border-radius: 8px; border: 2px dashed #ff69b4; display: inline-block;'>$otp_code</span>
                     </div>
-                    <p style='font-size: 12px; color: #999; text-align: center; margin-top: 30px; border-top: 1px solid #f7f7f7; padding-top: 15px;'>Mã xác thực có hiệu lực trong vòng 15 phút. Vui lòng không chia sẻ mã này với bất kỳ ai.</p>
+                    <p style='font-size: 12px; color: #999; text-align: center; margin-top: 30px; border-top: 1px solid #f7f7f7; padding-top: 15px;'>Mã xác thực có hiệu lực trong vòng 15 phút. Vì lý do bảo mật, vui lòng tuyệt đối không chia sẻ mã này cho ai.</p>
                 </div>
             ";
 
             $mail->send();
 
-            // Lưu email vào Session để trang verify.php nhận diện
+            // Lưu email vào Session để chuyển tiếp sang verify.php
             $_SESSION['verify_email'] = $email;
             
-            // Đá bay sang trang nhập OTP
             header("Location: verify.php");
             exit();
 
@@ -85,6 +97,7 @@ if (isset($_POST['btn-register'])) {
 }
 ?>
 
+<?php
 // ========================================================
 //  XỬ LÝ LOGIC ĐĂNG NHẬP
 // ========================================================
