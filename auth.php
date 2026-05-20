@@ -352,6 +352,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
                         <?php endif; ?>
                     </div>
                     <button type="submit" name="btn-register" class="btn btn-pink w-100 fw-bold py-2 mb-1 shadow-sm">Đăng Ký</button>
+                    <?php                           ?/
                 </form>
                 
                 <div class="text-center mt-3">
