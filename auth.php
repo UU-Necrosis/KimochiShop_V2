@@ -416,6 +416,11 @@ if (isset($_POST['btn-forgot'])) {
                 <p class="text-muted small text-center mb-3">Chào mừng bạn quay lại!</p>
 
                 <form action="auth.php" method="POST">
+                    <?php if (isset($errors['register'])): ?>
+                        <div class="alert alert-danger py-2 small shadow-sm text-center">
+                            <?php echo $errors['register']; ?>
+                        </div>
+                    <?php endif; ?>
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-secondary">Tên đăng nhập</label>
                         <input type="text" name="username" class="form-control py-2" placeholder="Nhập username..." required>
