@@ -277,7 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
             <div id="login-box" class="form-box-fade <?php echo $tab !== 'login' ? 'd-none' : ''; ?>">
                 <h4 class="dynamic-title mb-1">ĐĂNG NHẬP</h4>
                 <p class="text-muted small text-center mb-3">Chào mừng bạn quay lại!</p>
-
+form-container-box w-100
                 <form action="auth.php" method="POST">
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-secondary">Tên đăng nhập</label>
