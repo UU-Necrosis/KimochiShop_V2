@@ -91,11 +91,12 @@ if (isset($_POST['btn-register'])) {
                 <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #f0f0f0; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);'>
                     <h2 style='color: white; text-align: center; font-size: 26px; margin-bottom: 5px;'>Kimochi <span style='color:pink'>Shop</span></h2>
                     <p style='color: #555; font-size: 14px;'>Xin chào <strong>$username</strong>,</p>
-                    <p style='color: #555; font-size: 14px;'>Cảm ơn bạn vì đã tin tưởng và lựa chọn Kimochi Shop! Mã xác thực tài khoản của bạn là:</p>
+                    <p style='color: #555; font-size: 14px;'>Cảm ơn bạn vì đã tin tưởng và lựa chọn Kimochi Shop. Mã xác thực tài khoản của bạn là:</p>
                     <div style='text-align: center; margin: 35px 0;'>
-                        <span style='font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #222; background: #fff5f8; padding: 12px 25px; border-radius: 8px; border: 2px dashed #ff69b4; display: inline-block;'>$otp_code</span>
+                        <span style='font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #222; background: #fff5f8; padding: 12px 25px; border-radius: 8px; border: 2px dashed #c0c0c0; display: inline-block;'>$otp_code</span>
                     </div>
-                    <p style='font-size: 12px; color: #999; text-align: center;'>Mã này có hiệu lực trong vòng 15 phút. Tuyệt đối không chia sẻ mã này cho ai.</p>
+                    <p style='font-size: 12px; color: #999; text-align: center;'>
+                    Mã này có hiệu lực trong vòng 15 phút. Tuyệt đối không chia sẻ mã này cho ai.</p>
                 </div>
             ";
 
