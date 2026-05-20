@@ -28,8 +28,11 @@ if (isset($_POST['btn-register'])) {
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors['email'] = "Địa chỉ email không đúng định dạng!";
     }
-    if ($password !== $password_confirm) {
-        $errors['password_confirm'] = "Xác nhận mật khẩu không trùng khớp!";
+    // Check xem Username hoặc Email đã tồn tại trong PostgreSQL chưa
+    $check_stmt = $conn->prepare("SELECT id FROM users WHERE username = :username OR email = :email");
+    $check_stmt->execute([':username' => $username, ':email' => $email]);
+    if ($check_stmt->fetch()) {
+        $errors['register'] = "Tên đăng nhập hoặc Email này đã được sử dụng rồi ông giáo ơi!";
     }
 
     // 3. Tiến hành bùa chú Postgres + Gửi Mail OTP nếu không có lỗi
