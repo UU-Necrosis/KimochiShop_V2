@@ -56,19 +56,8 @@ require_once __DIR__ . '/functions.php';
                     <div class="ms-auto d-flex flex-column flex-lg-row align-items-center">
                         
                         <ul class="navbar-nav align-items-center">
-                            <?php if not (isset($_SESSION['user_id'])): ?>
-                                
+                            <?php if (not isset($_SESSION['user_id'])): ?>
 
-
-                                <a class="nav-icon-link position-relative me-3" href="cart.php" title="Giỏ hàng" id="cartMenuIcon">
-                                    <i class="fa-solid fa-shopping-cart"></i>
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger" style="font-size: 10px; padding: 4px 6px;">
-                                        2
-                                    </span>
-                                </a>
-
-
-                            <?php else: ?>
                                 <li class="nav-item me-2">
                                     <a class="btn btn-outline-light btn-sm" href="auth.php?tab=login">Đăng nhập</a>
                                 </li>
