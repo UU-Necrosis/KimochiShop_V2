@@ -60,12 +60,12 @@ require_once __DIR__ . '/functions.php';
                                 
 
 
-                                <li class="nav-item text-white me-3">
-                                    Xin chào, <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="btn btn-outline-danger btn-sm" href="auth.php?action=logout">Đăng xuất</a>
-                                </li>
+                                <a class="nav-icon-link position-relative me-3" href="cart.php" title="Giỏ hàng" id="cartMenuIcon">
+                                    <i class="fa-solid fa-shopping-cart"></i>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger" style="font-size: 10px; padding: 4px 6px;">
+                                        2
+                                    </span>
+                                </a>
 
 
                             <?php else: ?>
