@@ -56,7 +56,7 @@ require_once __DIR__ . '/functions.php';
                     <div class="ms-auto d-flex flex-column flex-lg-row align-items-center">
                         
                         <ul class="navbar-nav align-items-center">
-                            <?php if (isset($_SESSION['user_id'])): ?>
+                            <?php if not (isset($_SESSION['user_id'])): ?>
                                 
 
 
