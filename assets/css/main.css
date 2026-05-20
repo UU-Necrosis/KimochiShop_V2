@@ -151,6 +151,20 @@
     background-color: var(--icon-active-bg);
 }
 
+/* Đổ màu và giữ màu cho Menhi đang mở bảng tìm kiếm */
+.nav-icon-link#searchDropdown[aria-expanded="true"] {
+    color: var(--brand) !important;
+    background-color: var(--icon-opened-bg) !important;
+    border-color: var(--brand) !important;
+}
+
+/* Đổ màu nhấp nháy lẹ làng cho Chuông và Ba gạch khi click chuột */
+.nav-icon-link:not(#searchDropdown):active {
+    color: var(--brand) !important;
+    background-color: var(--icon-active-bg);
+}
+userMenuDropdown
+
   /****************************************/
  /* --- CÁC HIỆU ỨNG CHUYỂN ĐỘNG NHẸ --- */
 /****************************************/
