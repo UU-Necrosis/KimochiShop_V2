@@ -14,52 +14,89 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : 'login';
 $errors = [];
 $success = "";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-register'])) {
-    $tab = 'register'; 
+<?php
+// === ĐOẠN NÀY ĐẶT TRÊN ĐỈNH ĐẦU FILE AUTH.PHP - NƠI XỬ LÝ LOGIC ĐĂNG KÝ ===
+session_start();
+require_once 'config/db_connect.php'; // Tui thấy file kết nối của ông tên là db_connect.php nè!
+
+$errors = [];
+
+if (isset($_POST['btn-register'])) {
+    // 1. Lấy dữ liệu từ form và validate sạch sẽ như cũ
+    $username = trim($_POST['reg_username'] ?? '');
+    $email = trim($_POST['reg_email'] ?? '');
+    $password = $_POST['reg_password'] ?? '';
     
-    $username         = trim($_POST['reg_username'] ?? '');
-    $email            = trim($_POST['reg_email'] ?? '');
-    $password         = $_POST['reg_password'] ?? '';
-    $password_confirm = $_POST['reg_password_confirm'] ?? ''; 
+    // ... Khúc này giữ nguyên các logic check lỗi cũ của ông giáo nha ...
 
-    // CHỈ ĐỊNH RÕ LỖI NẰM Ở CỘT NÀO
-    if (strlen($username) < 5) {
-        $errors['username'] = "Tên đăng nhập phải chứa ít nhất 5 ký tự!";
-    }
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors['email'] = "Địa chỉ email không hợp lệ!";
-    }
-    if ($password !== $password_confirm) {
-        $errors['password_confirm'] = "Mật khẩu xác nhận không trùng khớp!";
-    }
-
+    // 2. Nếu không có lỗi gì thì bắt đầu bùa chú Postgres + Gửi OTP
     if (empty($errors)) {
         try {
-            $stmt = $conn->prepare("SELECT id FROM users WHERE username = :user OR email = :email");
-            $stmt->execute(['user' => $username, 'email' => $email]);
+            // Tạo mã OTP ngẫu nhiên 6 chữ số
+            $otp_code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT); // Mã hóa pass
+
+            // Câu lệnh INSERT tài khoản mới vào PostgreSQL (Mặc định is_verified = FALSE)
+            $sql = "INSERT INTO users (username, email, password, verification_code, is_verified) 
+                    VALUES (:username, :email, :password, :otp, FALSE)";
             
-            if ($stmt->rowCount() > 0) {
-                // Nếu trùng thì báo lỗi chung lên ô Username hoặc tạo một lỗi hệ thống
-                $errors['username'] = "Tên đăng nhập hoặc Email đã được sử dụng!";
-            } else {
-                $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':username' => $username,
+                ':email'    => $email,
+                ':password' => $hashed_password,
+                ':otp'      => $otp_code
+            ]);
 
-                $insertStmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (:user, :email, :pass)");
-                $insertStmt->execute([
-                    'user'  => $username,
-                    'email' => $email,
-                    'pass'  => $hashed_password
-                ]);
+            // Triệu hồi PHPMailer (Composer đã cài sẵn v7.1.1 xịn sò)
+            require_once 'vendor/autoload.php';
+            
+            $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+            
+            // Cấu hình máy chủ gửi (Sử dụng SMTP của Gmail)
+            $mail->isSMTP();
+            $mail->Host       = 'smtp.gmail.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'email_cua_ong_giao@gmail.com'; // Điền Gmail của ông giáo vào đây
+            $mail->Password   = 'abcd efgh ijkl mnop';          // Mật khẩu ứng dụng Gmail 16 ký tự
+            $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = 587;
+            $mail->CharSet    = 'UTF-8';
 
-                $success = "Đăng ký tài khoản thành công! Đang chuyển sang Đăng nhập...";
-                $tab = 'login'; 
-                $username = $email = "";
-            }
-        } catch (PDOException $e) {
-            $errors['system'] = "Có lỗi xảy ra với hệ thống: " . $e->getMessage();
+            // Người nhận & Người gửi
+            $mail->setFrom($mail->Username, 'Kimochi Shop');
+            $mail->addAddress($email);
+
+            // Nội dung thư tri ân trân trọng
+            $mail->isHTML(true);
+            $mail->Subject = '🔑 Mã xác thực tài khoản Kimochi Shop';
+            $mail->Body    = "
+                <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #f0f0f0; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);'>
+                    <h2 style='color: #ff69b4; text-align: center; font-size: 26px; margin-bottom: 5px;'>Kimochi Shop</h2>
+                    <p style='color: #555; font-size: 14px; line-height: 1.6;'>Chào bạn,</p>
+                    <p style='color: #555; font-size: 14px; line-height: 1.6;'>Cảm ơn bạn vì đã tin tưởng và lựa chọn Kimochi Shop! Để hoàn tất đăng ký tài khoản, vui lòng nhập mã xác thực OTP dưới đây:</p>
+                    <div style='text-align: center; margin: 35px 0;'>
+                        <span style='font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #222; background: #fff5f8; padding: 12px 25px; border-radius: 8px; border: 2px dashed #ff69b4; display: inline-block;'>$otp_code</span>
+                    </div>
+                    <p style='font-size: 12px; color: #999; text-align: center; margin-top: 30px; border-top: 1px solid #f7f7f7; padding-top: 15px;'>Mã xác thực có hiệu lực trong vòng 15 phút. Vui lòng không chia sẻ mã này với bất kỳ ai.</p>
+                </div>
+            ";
+
+            $mail->send();
+
+            // Lưu email vào Session để trang verify.php nhận diện
+            $_SESSION['verify_email'] = $email;
+            
+            // Đá bay sang trang nhập OTP
+            header("Location: verify.php");
+            exit();
+
+        } catch (\Exception $e) {
+            $errors['register'] = "Có lỗi xảy ra: " . $e->getMessage();
         }
     }
 }
+?>
 
 // ========================================================
 //  XỬ LÝ LOGIC ĐĂNG NHẬP
@@ -352,15 +389,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
                         <?php endif; ?>
                     </div>
                     <button type="submit" name="btn-register" class="btn btn-pink w-100 fw-bold py-2 mb-1 shadow-sm">Đăng Ký</button>
-                    <?php     
-                    
-                    
-                    
-                    //đây đúng ko ông
-
-                    
-                    
-                     ?>
                 </form>
                 
                 <div class="text-center mt-3">
