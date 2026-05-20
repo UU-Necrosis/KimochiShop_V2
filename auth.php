@@ -169,6 +169,7 @@ if (isset($_POST['btn-forgot'])) {
     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors['forgot'] = "Vui lòng nhập địa chỉ email hợp lệ!";
     }
+
     if (empty($errors)) {
         try {
             // 1. Kiểm tra xem Email có tồn tại trong hệ thống PostgreSQL không
@@ -414,7 +415,7 @@ if (isset($_POST['btn-forgot'])) {
                 <h4 class="dynamic-title mb-1">ĐĂNG NHẬP</h4>
                 <p class="text-muted small text-center mb-3">Chào mừng bạn quay lại!</p>
 
-                " method="POST">
+                <form action="auth.php" method="POST">
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-secondary">Tên đăng nhập</label>
                         <input type="text" name="username" class="form-control py-2" placeholder="Nhập username..." required>
@@ -440,7 +441,7 @@ if (isset($_POST['btn-forgot'])) {
                 <h4 class="dynamic-title mb-1">ĐĂNG KÝ TÀI KHOẢN</h4>
                 <?php// p class="text-muted small text-center mb-2" Cảm ơn vì đã tin tưởng và lựa chọn Kimochi Shop!/p ?>
                 
-                " method="POST">
+                <form action="auth.php" method="POST">
 
                     <div class="mb-4 position-relative"> <label class="form-label small fw-bold text-secondary">Tên đăng nhập <span class="text-danger">*</span></label>
                         <input type="text" name="reg_username" class="form-control py-2 <?php echo isset($errors['username']) ? 'is-invalid' : ''; ?>" placeholder="Tối thiểu 5 ký tự..." value="<?php echo htmlspecialchars($username ?? ''); ?>" required>
@@ -501,7 +502,7 @@ if (isset($_POST['btn-forgot'])) {
             <div id="forgot-box" class="form-box-fade <?php echo $tab !== 'forgot' ? 'd-none' : ''; ?>">
                 <h4 class="dynamic-title mb-1">QUÊN MẬT KHẨU</h4>
                 <p class="text-muted small text-center mb-4">Vui lòng nhập Email đã đăng ký để khôi phục mật khẩu.</p>
-                " method="POST">
+                <form action="auth.php" method="POST">
                     <div class="mb-4">
                         <label class="form-label small fw-bold text-secondary">Địa chỉ Email đăng ký</label>
                         <input type="email" name="forgot_email" class="form-control py-2" placeholder="Nhập email của bạn..." required>
