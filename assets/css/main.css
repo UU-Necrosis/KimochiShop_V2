@@ -203,3 +203,21 @@
 .nav-icon-link:not(#searchDropdown):focus {
     box-shadow: none;
 }
+
+/* Loại bỏ mũi tên tam giác mặc định của Bootstrap */
+.no-caret::after {
+    display: none !important;
+}
+
+/* Ép icon menu giữ hiệu ứng highlight đổi màu nền/viền khi dropdown đang bật */
+#userMenuDropdown[aria-expanded="true"] {
+    background-color: rgba(255, 255, 255, 0.15) !important; /* Tạo hiệu ứng nền sáng lên giống search bar */
+    color: #fff !important;
+    border-radius: 50%;
+}
+
+/* Hiệu ứng hover mượt mà cho các mục bên trong menu đen */
+.dropdown-menu .dropdown-item:hover {
+    background-color: #2b2b2b !important;
+    color: #ff69b4 !important; /* Đổi chữ sang màu hồng đặc trưng của Kimochi Shop */
+}
