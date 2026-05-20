@@ -50,22 +50,20 @@ if (isset($_POST['btn-register'])) {
                 ':otp'      => $otp_code
             ]);
 
-            // Triệu hồi PHPMailer gửi thư (Không cần require lại vendor nữa)
+            // ==================== CẤU HÌNH GỬI MAIL OTP ====================
             $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
-            
-            // Cấu hình SMTP của Gmail
+
             $mail->isSMTP();
-            $mail->Host       = 'smtp.gmail.com';
+            $mail->Host       = $_ENV['SMTP_HOST'] ?? 'smtp.gmail.com'; // Đọc từ file .env tự chế của ông giáo
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'email_cua_ong_giao@gmail.com'; // ⚠️ Thay bằng Gmail thật của ông
-            $mail->Password   = 'abcd efgh ijkl mnop';          // ⚠️ Thay bằng mật khẩu ứng dụng 16 ký tự
+            $mail->Username   = $_ENV['SMTP_USER'] ?? '';               // Đọc từ file .env
+            $mail->Password   = $_ENV['SMTP_PASS'] ?? '';               // Đọc từ file .env
             $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port       = 587;
+            $mail->Port       = $_ENV['SMTP_PORT'] ?? 587;
             $mail->CharSet    = 'UTF-8';
 
-            // Người nhận & Người gửi
             $mail->setFrom($mail->Username, 'Kimochi Shop');
-            $mail->addAddress($email);
+            $mail->addAddress($email); // Gửi tới mail người dùng nhập lúc đăng ký
 
             // Nội dung bức thư tri ân trân trọng quý khách
             $mail->isHTML(true);
