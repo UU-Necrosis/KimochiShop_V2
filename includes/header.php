@@ -71,7 +71,7 @@ require_once __DIR__ . '/functions.php';
                         <div class="nav-icons-group d-flex align-items-center gap-3">                   
 
                             <?php if (isset($_SESSION['user_id'])): ?>
-                                <a class="nav-icon-link position-relative me-3" href="cart.php" title="Giỏ hàng" id="cartMenuIcon">
+                                <a class="nav-icon-link position-relative p-3" href="cart.php" title="Giỏ hàng" id="cartMenuIcon">
                                     <i class="fa-solid fa-shopping-cart"></i>
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger" style="font-size: 10px; padding: 4px 6px;">
                                         2
