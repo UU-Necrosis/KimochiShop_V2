@@ -105,27 +105,20 @@ require_once __DIR__ . '/functions.php';
                             </a>
                             
                             <div class="menu-account-section my-3 p-3 border-bottom">
-                            <?php if (isset($_SESSION['username'])): ?>
-                                <div class="d-flex flex-column gap-2">
-                                    <div class="d-flex align-items-center gap-2 mb-2">
-                                        <i class="fa-solid fa-circle-user fs-4 text-pink"></i>
-                                        <span class="fw-bold text-dark">Xin chào, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
+                                <?php if (isset($_SESSION['username'])): ?>
+                                    <div class="d-flex flex-column gap-2">
+                                        <div class="d-flex align-items-center gap-2 mb-2">
+                                            <i class="fa-solid fa-circle-user fs-4 text-pink"></i>
+                                            <span class="fw-bold text-dark">Xin chào, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
+                                        </div>
+                                        <a href="personal_profile.php" class="btn btn-sm btn-outline-secondary w-100 text-start">
+                                            <i class="fa-solid fa-id-card me-2"></i>Hồ sơ của tôi
+                                        </a>
+                                        <a href="logout.php" class="btn btn-sm btn-danger w-100 text-start mt-1">
+                                            <i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất
+                                        </a>
                                     </div>
-                                    <a href="personal_profile.php" class="btn btn-sm btn-outline-secondary w-100 text-start">
-                                        <i class="fa-solid fa-id-card me-2"></i>Hồ sơ của tôi
-                                    </a>
-                                    <a href="logout.php" class="btn btn-sm btn-danger w-100 text-start mt-1">
-                                        <i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất
-                                    </a>
-                                </div>
-                            <?php else: ?>
-                                <div class="d-flex flex-column gap-2">
-                                    <p class="small text-muted mb-2">Đăng nhập để nhận nhiều ưu đãi và quản lý giỏ hàng tốt hơn!</p>
-                                    <a href="auth.php" class="btn btn-sm btn-pink w-100 fw-bold py-2 text-center text-white text-decoration-none rounded">
-                                        <i class="fa-solid fa-right-to-bracket me-2"></i>Đăng Nhập / Đăng Ký
-                                    </a>
-                                </div>
-                            <?php endif; ?>
+                            </div>
                         </div>
 
                     </div>
