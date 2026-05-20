@@ -428,8 +428,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
         <p class="lead fs-6 lh-lg" style="max-width: 600px; color: #b0b3b8 !important;">
             Hãy khám phá bộ sưu tập đa dạng của chúng tôi để tìm kiếm những món đồ phù hợp với sở thích của bạn.
         </p>
-    </div>
+            </div>
+            <div class="position-absolute top-0 start-0 w-100 h-100" style="background: radial-gradient(circle at center, transparent 20%, rgba(0,0,0,0.4) 100%); pointer-events: none;"></div>
+        </div>
 
+    </div>
 </div>
 
 <script>
