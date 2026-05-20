@@ -152,18 +152,17 @@
 }
 
 /* Đổ màu và giữ màu cho Menu khi đang mở bảng tìm kiếm */
-.nav-icon-link#searchDropdown[aria-expanded="true"] {
+.nav-icon-link#userMenuDropdown[aria-expanded="true"] {
     color: var(--brand) !important;
     background-color: var(--icon-opened-bg) !important;
     border-color: var(--brand) !important;
 }
 
 /* Đổ màu nhấp nháy lẹ làng cho Chuông và Ba gạch khi click chuột */
-.nav-icon-link:not(#searchDropdown):active {
+.nav-icon-link:not(#userMenuDropdown):active {
     color: var(--brand) !important;
     background-color: var(--icon-active-bg);
 }
-userMenuDropdown
 
   /****************************************/
  /* --- CÁC HIỆU ỨNG CHUYỂN ĐỘNG NHẸ --- */
