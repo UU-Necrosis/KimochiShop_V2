@@ -43,14 +43,14 @@ if (isset($_POST['btn-verify'])) {
                     unset($_SESSION['verify_email']);
                     unset($_SESSION['otp_attempts']);
                     echo "<script>
-                        alert('Bạnđã nhập sai OTP quá 3 lần! Hệ thống tự hủy, vui lòng đăng ký lại.');
+                        alert('Bạn đã nhập sai OTP quá 3 lần! Hệ thống đã hủy, vui lòng đăng ký lại.');
                         window.location.href='auth.php';
                     </script>";
                     exit();
                 }
 
-                $remaining = 5 - $_SESSION['otp_attempts'];
-                $error = "Mã OTP không chính xác! Ông giáo còn $remaining lần thử trước khi bị khóa.";
+                $remaining = 3 - $_SESSION['otp_attempts'];
+                $error = "Mã OTP không chính xác! Bo còn $remaining lần thử trước khi bị khóa.";
             }
         } catch (PDOException $e) {
             $error = "Lỗi hệ thống database: " . $e->getMessage();
