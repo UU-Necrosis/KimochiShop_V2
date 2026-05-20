@@ -50,7 +50,7 @@ if (isset($_POST['btn-verify'])) {
                 }
 
                 $remaining = 3 - $_SESSION['otp_attempts'];
-                $error = "Mã OTP không chính xác! Bo còn $remaining lần thử trước khi bị khóa.";
+                $error = "Mã OTP không chính xác! Bạn còn $remaining lần thử trước khi bị khóa.";
             }
         } catch (PDOException $e) {
             $error = "Lỗi hệ thống database: " . $e->getMessage();
