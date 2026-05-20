@@ -145,7 +145,7 @@ try {
         }
 
         /* Discord Card Compact Profile */
-        .discord-card { 
+        .profile-card { 
             background-color: #1e1f22; 
             border-radius: 12px; 
             overflow: hidden; 
@@ -155,13 +155,13 @@ try {
         }
         
         /* Hạ chiều cao banner xuống để tiết kiệm diện tích */
-        .discord-banner { 
+        .profile-banner { 
             height: 75px; 
             background: linear-gradient(135deg, #ff69b4, #b9bbbe); 
             position: relative; 
         }
         
-        .discord-avatar-container { 
+        .profile-avatar-container { 
             position: relative; 
             display: inline-block; 
             margin-top: -38px; 
@@ -169,7 +169,7 @@ try {
         }
         
         /* Thu nhỏ kích cỡ avatar */
-        .discord-avatar { 
+        .profile-avatar { 
             width: 76px; 
             height: 76px; 
             border-radius: 50%; 
@@ -196,8 +196,8 @@ try {
         }
         .avatar-edit-badge:hover { background: #4e5058; color: #fff; }
 
-        .discord-body { padding: 15px 20px 20px 20px; background-color: #1e1f22; }
-        .discord-info-box { background-color: #2b2d31; border-radius: 8px; padding: 12px 16px; margin-top: 10px; }
+        .profile-body { padding: 15px 20px 20px 20px; background-color: #1e1f22; }
+        .profile-info-box { background-color: #2b2d31; border-radius: 8px; padding: 12px 16px; margin-top: 10px; }
         
         /* Custom Input thanh thoát, form nhỏ lại */
         .input-custom { 
@@ -211,10 +211,10 @@ try {
         .input-custom:focus { border-color: #5865f2 !important; box-shadow: none !important; }
         .form-label-custom { color: #949ba4; font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 4px; }
         
-        .btn-discord-save { background-color: #248046; color: white; font-weight: 500; border: none; padding: 6px 18px; border-radius: 3px; font-size: 14px; transition: 0.2s; }
-        .btn-discord-save:hover { background-color: #1a6535; }
-        .btn-discord-logout { background-color: transparent; color: #da373c; border: 1px solid #da373c; padding: 6px 18px; border-radius: 3px; font-size: 14px; transition: 0.2s; text-decoration: none; }
-        .btn-discord-logout:hover { background-color: #da373c; color: white; }
+        .btn-profile-save { background-color: #248046; color: white; font-weight: 500; border: none; padding: 6px 18px; border-radius: 3px; font-size: 14px; transition: 0.2s; }
+        .btn-profile-save:hover { background-color: #1a6535; }
+        .btn-profile-logout { background-color: transparent; color: #da373c; border: 1px solid #da373c; padding: 6px 18px; border-radius: 3px; font-size: 14px; transition: 0.2s; text-decoration: none; }
+        .btn-profile-logout:hover { background-color: #da373c; color: white; }
         
         .alert-toast { position: absolute; top: 75px; right: 20px; z-index: 9999; max-width: 350px; }
     </style>
@@ -236,14 +236,14 @@ try {
         </div>
 
         <form action="profile.php" method="POST" enctype="multipart/form-data" class="w-100 d-flex justify-content-center">
-            <div class="discord-card shadow-lg">
-                <div class="discord-banner"></div>
+            <div class="profile-card shadow-lg">
+                <div class="profile-banner"></div>
                 
-                <div class="discord-avatar-container">
+                <div class="profile-avatar-container">
                     <?php if(!empty($user['avatar']) && file_exists(__DIR__ . '/' . $user['avatar'])): ?>
-                        <img src="<?php echo htmlspecialchars($user['avatar']); ?>?t=<?php echo time(); ?>" class="discord-avatar" id="avatarImage">
+                        <img src="<?php echo htmlspecialchars($user['avatar']); ?>?t=<?php echo time(); ?>" class="profile-avatar" id="avatarImage">
                     <?php else: ?>
-                        <div class="discord-avatar d-flex align-items-center justify-content-center text-white fs-4" id="avatarPlaceholder" style="background-color: #ff69b4;"><i class="fa-solid fa-user"></i></div>
+                        <div class="profile-avatar d-flex align-items-center justify-content-center text-white fs-4" id="avatarPlaceholder" style="background-color: #ff69b4;"><i class="fa-solid fa-user"></i></div>
                     <?php endif; ?>
                     
                     <label for="avatarInput" class="avatar-edit-badge" title="Thay đổi ảnh đại diện">
@@ -252,7 +252,7 @@ try {
                     <input type="file" id="avatarInput" name="avatar" class="d-none" accept="image/*" onchange="previewImage(this)">
                 </div>
 
-                <div class="discord-body">
+                <div class="profile-body">
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <div>
                             <h5 class="fw-bold m-0 text-white"><?php echo htmlspecialchars($user['username']); ?></h5>
@@ -261,7 +261,7 @@ try {
                         <span class="badge bg-dark border border-secondary text-white px-2 py-1" style="font-size: 11px;"><i class="fa-solid fa-skull me-1 text-pink"></i><?php echo strtoupper(htmlspecialchars($user['role'] ?? 'USER')); ?></span>
                     </div>
 
-                    <div class="discord-info-box">
+                    <div class="profile-info-box">
                         <div class="mb-2">
                             <label class="form-label-custom">Địa chỉ Email</label>
                             <input type="text" class="form-control input-custom text-white-50" value="<?php echo htmlspecialchars($user['email']); ?>" style="cursor: not-allowed;" readonly>
@@ -289,8 +289,8 @@ try {
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <a href="index.php" class="text-white-50 text-decoration-none small" style="font-size: 13px;"><i class="fa-solid fa-arrow-left me-1"></i> Quay lại trang chủ</a>
                         <div>
-                            <a href="logout.php" class="btn-discord-logout me-2">Đăng xuất</a>
-                            <button type="submit" class="btn-discord-save">Lưu thay đổi</button>
+                            <a href="logout.php" class="btn-profile-logout me-2">Đăng xuất</a>
+                            <button type="submit" class="btn-profile-save">Lưu thay đổi</button>
                         </div>
                     </div>
 
@@ -310,7 +310,7 @@ function previewImage(input) {
             if(img) {
                 img.src = e.target.result;
             } else if(placeholder) {
-                placeholder.outerHTML = '<img src="'+e.target.result+'" class="discord-avatar" id="avatarImage">';
+                placeholder.outerHTML = '<img src="'+e.target.result+'" class="profile-avatar" id="avatarImage">';
             }
         }
         reader.readAsDataURL(input.files[0]);
