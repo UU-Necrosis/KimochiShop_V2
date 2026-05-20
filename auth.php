@@ -339,27 +339,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
                         <?php endif; ?>
                     </div>
 
-                    <div class="mb-4 position-relative">
+                    <div class="mb-3">
                         <label class="form-label small fw-bold text-secondary">Mật khẩu <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <input type="password" id="reg_password" name="reg_password" class="form-control py-2" placeholder="Nhập mật khẩu bảo mật..." value="<?php echo htmlspecialchars($password ?? ''); ?>" required style="border-radius:  0.375rem 0 0 0.375rem;">
-                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="reg_password" style="border-radius: 0 0.375rem 0.375rem 0; border-color: #ced4da;">
-                                <i class="fa-solid fa-eye"></i>
-                            </button>
-                        </div>
+                    <input type="password" name="reg_password" class="form-control py-2" placeholder="Nhập mật khẩu bảo mật..." value="<?php echo htmlspecialchars($password ?? ''); ?>" required>
                     </div>
 
                     <div class="mb-4 position-relative">
                         <label class="form-label small fw-bold text-secondary">Xác nhận mật khẩu <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <input type="password" id="reg_password_confirm" name="reg_password_confirm" class="form-control py-2 <?php echo isset($errors['password_confirm']) ? 'is-invalid' : ''; ?>" placeholder="Nhập lại mật khẩu..." value="<?php echo htmlspecialchars($password_confirm ?? ''); ?>" required style="border-radius:  0.375rem 0 0 0.375rem;">
-                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="reg_password_confirm" style="border-radius: 0 0.375rem 0.375rem 0; border-color: #ced4da;">
-                                <i class="fa-solid fa-eye"></i>
-                            </button>
-                        </div>
+                        <input type="password" name="reg_password_confirm" class="form-control py-2 <?php echo isset($errors['password_confirm']) ? 'is-invalid' : ''; ?>" placeholder="Nhập lại mật khẩu..." required>
                         
                         <?php if (isset($errors['password_confirm'])): ?>
-                            <div class="invalid-feedback small fw-semibold position-absolute" style="bottom: -20px; left: 0; margin: 0; line-height: 1; display: block;">
+                            <div class="invalid-feedback small fw-semibold position-absolute" style="bottom: -20px; left: 0; margin: 0; line-height: 1;">
                                 <?php echo $errors['password_confirm']; ?>
                             </div>
                         <?php endif; ?>
@@ -422,8 +412,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
         <h5 class="fw-semibold text-white mb-4" style="opacity: 0.9;">Chào mừng bạn đến với thế giới người lớn</h5>
         
         <p class="lead fs-6 lh-lg mb-4" style="max-width: 600px; color: #b0b3b8 !important;">
-            Tại Kimochi Shop, chúng tôi cam kết mang đến những sản phẩm chất lượng cao, an toàn và tinh tế. 
-            Chúng tôi tin rằng mọi người đều xứng đáng được tận hưởng những giây phục thăng hoa và tự tin.
+            Tại Kimochi Shop, chúng tôi cam kết mang đến những sản phẩm chất lượng tốt, an toàn và tinh tế. 
+            Chúng tôi tin rằng mọi người đều xứng đáng được tận hưởng những giây phục tuyệt vời và thoải mái.
         </p>
         <p class="lead fs-6 lh-lg" style="max-width: 600px; color: #b0b3b8 !important;">
             Hãy khám phá bộ sưu tập đa dạng của chúng tôi để tìm kiếm những món đồ phù hợp với sở thích của bạn.
