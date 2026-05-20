@@ -541,7 +541,7 @@ if (isset($_POST['btn-forgot'])) {
     <div class="auth-left">
         <h1 class="display-1 fw-bold mb-2 text-uppercase text-welcome">WELCOME</h1>
         <h2 class="display-4 fw-bold mb-4 text-white">Kimochi <span class="text-pink">Shop</span></h2>
-        <h5 class="fw-semibold text-white mb-4" style="opacity: 0.9;">Chào mừng bạn đến với thế giới người lớn</h5>
+        <h5 class="fw-semibold text-white mb-4" style="opacity: 0.9;">Chào mừng bạn đến với cửa hàng online chuyên mặt hàng người lớn</h5>
         
         <p class="lead fs-6 lh-lg mb-4" style="max-width: 600px; color: #b0b3b8 !important;">
             Tại Kimochi Shop, chúng tôi cam kết mang đến những sản phẩm chất lượng tốt, an toàn và tinh tế. 
