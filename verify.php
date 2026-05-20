@@ -38,12 +38,12 @@ if (isset($_POST['btn-verify'])) {
                 // Trường hợp SAI MÃ: Tăng số lần nhập sai lên
                 $_SESSION['otp_attempts'] = ($_SESSION['otp_attempts'] ?? 0) + 1;
 
-                if ($_SESSION['otp_attempts'] >= 5) {
-                    // Nếu nhập sai quá 5 lần, tự động xóa Session bắt cút về trang đăng ký luôn
+                if ($_SESSION['otp_attempts'] >= 3) {
+                    // Nếu nhập sai quá 3 lần, tự động xóa Session bắt cút về trang đăng ký luôn
                     unset($_SESSION['verify_email']);
                     unset($_SESSION['otp_attempts']);
                     echo "<script>
-                        alert('Ông giáo đã nhập sai OTP quá 5 lần! Hệ thống tự hủy, vui lòng đăng ký lại.');
+                        alert('Bạnđã nhập sai OTP quá 3 lần! Hệ thống tự hủy, vui lòng đăng ký lại.');
                         window.location.href='auth.php';
                     </script>";
                     exit();
