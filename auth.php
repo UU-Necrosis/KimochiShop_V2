@@ -89,7 +89,7 @@ if (isset($_POST['btn-register'])) {
             $mail->Subject = ' Mã xác thực tài khoản Kimochi Shop';
             $mail->Body    = "
                 <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #f0f0f0; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);'>
-                    <h2 style='color: #ff69b4; text-align: center; font-size: 26px; margin-bottom: 5px;'>Kimochi Shop</h2><span style='color:white
+                    <h2 style='color: #ff69b4; text-align: center; font-size: 26px; margin-bottom: 5px;'>Kimochi </span>Shop</h2><span style='color:pink>
                     <p style='color: #555; font-size: 14px;'>Chào bạn,</p>
                     <p style='color: #555; font-size: 14px;'>Cảm ơn bạn vì đã tin tưởng và lựa chọn Kimochi Shop! Mã xác thực tài khoản của bạn là:</p>
                     <div style='text-align: center; margin: 35px 0;'>
