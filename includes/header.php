@@ -111,7 +111,7 @@ require_once __DIR__ . '/functions.php';
                             </a>
                             
                             <div class="dropdown">
-                                <a class="nav-icon-link dropdown-toggle no-caret" href="#" role="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Tài khoản">
+                                <a class="nav-icon-link no-caret" href="#" role="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Tài khoản">
                                     <i class="fa-solid fa-bars"></i>
                                 </a>
 
@@ -138,18 +138,6 @@ require_once __DIR__ . '/functions.php';
                                         <li>
                                             <a class="dropdown-item text-danger py-2" href="logout.php">
                                                 <i class="fa-solid fa-right-from-bracket me-2"></i> Đăng xuất
-                                            </a>
-                                        </li>
-
-                                    <?php else: ?>
-                                        <li>
-                                            <a class="dropdown-item text-white py-2" href="auth.php?tab=login">
-                                                <i class="fa-solid fa-right-to-bracket me-2 text-pink"></i> Đăng nhập
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item text-white py-2" href="auth.php?tab=register">
-                                                <i class="fa-solid fa-user-plus me-2 text-pink"></i> Đăng ký tài khoản
                                             </a>
                                         </li>
                                     <?php endif; ?>

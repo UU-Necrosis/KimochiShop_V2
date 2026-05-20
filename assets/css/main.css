@@ -139,14 +139,16 @@
 }
 
 /* Đổ màu và giữ màu cho Kính lúp khi đang mở bảng tìm kiếm */
-.nav-icon-link#searchDropdown[aria-expanded="true"] {
+.nav-icon-link#searchDropdown[aria-expanded="true"],
+.nav-icon-link#userMenuDropdown[aria-expanded="true"] {
     color: var(--brand) !important;
     background-color: var(--icon-opened-bg) !important;
     border-color: var(--brand) !important;
 }
 
+
 /* Đổ màu nhấp nháy lẹ làng cho Chuông và Ba gạch khi click chuột */
-.nav-icon-link:not(#searchDropdown):active {
+.nav-icon-link:not(#searchDropdown,#userMenuDropdown):active {
     color: var(--brand) !important;
     background-color: var(--icon-active-bg);
 }
@@ -187,12 +189,12 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    border-radius: 10px; /* Phom O vuông bo góc hiện đại */
+    border-radius: 10px; /* phom tròn vuông bo góc */
     border: 1px solid transparent;
-    transition: all 0.2s ease-in-out; /* Chuyển động mượt mà */
+    transition: all 0.2s ease-in-out; /* Chuyển động mượt */
 }
 
-/* Hiệu ứng Highlight viền O vuông lan tỏa khi click hoặc khi đang mở */
+/* Hiệu ứng Highlight viền tròn vuông khi click hoặc khi đang mở */
 .nav-icon-link:focus,
 .nav-icon-link[aria-expanded="true"] {
     outline: none;
@@ -200,6 +202,6 @@
 }
 
 /* Chuông và Ba gạch khi click xong thả ra thì tắt hiệu ứng shadow ngay */
-.nav-icon-link:not(#searchDropdown,#):focus {
+.nav-icon-link:not(#searchDropdown,#userMenuDropdown):focus {
     box-shadow: none;
 }
