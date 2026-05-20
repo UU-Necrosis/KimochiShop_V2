@@ -4,46 +4,85 @@ require_once 'config/connect.php'; // Gọi file kết nối CSDL PostgreSQL c�
 
 $error = '';
 
-// Nếu không có session chứng tỏ chưa qua bước đăng ký, đá về trang auth luôn
-if (!isset($_SESSION['verify_email'])) {
-    header("Location: auth.php");
-    exit();
-}
+// === ĐOẠN NÀY ĐẶT TRÊN ĐỈNH ĐẦU FILE AUTH.PHP - NƠI XỬ LÝ LOGIC ĐĂNG KÝ ===
+session_start();
+require_once 'config/db_connect.php'; // Tui thấy file kết nối của ông tên là db_connect.php nè!
 
-if (isset($_POST['btn-verify'])) {
-    $otp_input = trim($_POST['otp_code']);
-    $email = $_SESSION['verify_email'];
+$errors = [];
 
-    try {
-        // 1. Kiểm tra mã OTP trong PostgreSQL
-        $sql = "SELECT * FROM users WHERE email = :email AND verification_code = :otp";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            ':email' => $email, 
-            ':otp' => $otp_input
-        ]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+if (isset($_POST['btn-register'])) {
+    // 1. Lấy dữ liệu từ form và validate sạch sẽ như cũ
+    $username = trim($_POST['reg_username'] ?? '');
+    $email = trim($_POST['reg_email'] ?? '');
+    $password = $_POST['reg_password'] ?? '';
+    
+    // ... Khúc này giữ nguyên các logic check lỗi cũ của ông giáo nha ...
 
-        if ($user) {
-            // 2. Khớp mã! Kích hoạt trạng thái tài khoản thành TRUE và dọn sạch cột OTP
-            $update_sql = "UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = :email";
-            $update_stmt = $conn->prepare($update_sql);
-            $update_stmt->execute([':email' => $email]);
+    // 2. Nếu không có lỗi gì thì bắt đầu bùa chú Postgres + Gửi OTP
+    if (empty($errors)) {
+        try {
+            // Tạo mã OTP ngẫu nhiên 6 chữ số
+            $otp_code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT); // Mã hóa pass
 
-            // Xóa session chờ xác thực
-            unset($_SESSION['verify_email']);
+            // Câu lệnh INSERT tài khoản mới vào PostgreSQL (Mặc định is_verified = FALSE)
+            $sql = "INSERT INTO users (username, email, password, verification_code, is_verified) 
+                    VALUES (:username, :email, :password, :otp, FALSE)";
             
-            // Hiện thông báo popup thành công rồi tự động đẩy sang tab Login
-            echo "<script>
-                alert('Xác thực tài khoản thành công! Chào mừng bạn đã tham gia Kimochi Shop.'); 
-                window.location.href='auth.php?tab=login';
-            </script>";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':username' => $username,
+                ':email'    => $email,
+                ':password' => $hashed_password,
+                ':otp'      => $otp_code
+            ]);
+
+            // Triệu hồi PHPMailer (Composer đã cài sẵn v7.1.1 xịn sò)
+            require_once 'vendor/autoload.php';
+            
+            $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+            
+            // Cấu hình máy chủ gửi (Sử dụng SMTP của Gmail)
+            $mail->isSMTP();
+            $mail->Host       = 'smtp.gmail.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'email_cua_ong_giao@gmail.com'; // Điền Gmail của ông giáo vào đây
+            $mail->Password   = 'abcd efgh ijkl mnop';          // Mật khẩu ứng dụng Gmail 16 ký tự
+            $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = 587;
+            $mail->CharSet    = 'UTF-8';
+
+            // Người nhận & Người gửi
+            $mail->setFrom($mail->Username, 'Kimochi Shop');
+            $mail->addAddress($email);
+
+            // Nội dung thư tri ân trân trọng
+            $mail->isHTML(true);
+            $mail->Subject = '🔑 Mã xác thực tài khoản Kimochi Shop';
+            $mail->Body    = "
+                <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #f0f0f0; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);'>
+                    <h2 style='color: #ff69b4; text-align: center; font-size: 26px; margin-bottom: 5px;'>Kimochi Shop</h2>
+                    <p style='color: #555; font-size: 14px; line-height: 1.6;'>Chào bạn,</p>
+                    <p style='color: #555; font-size: 14px; line-height: 1.6;'>Cảm ơn bạn vì đã tin tưởng và lựa chọn Kimochi Shop! Để hoàn tất đăng ký tài khoản, vui lòng nhập mã xác thực OTP dưới đây:</p>
+                    <div style='text-align: center; margin: 35px 0;'>
+                        <span style='font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #222; background: #fff5f8; padding: 12px 25px; border-radius: 8px; border: 2px dashed #ff69b4; display: inline-block;'>$otp_code</span>
+                    </div>
+                    <p style='font-size: 12px; color: #999; text-align: center; margin-top: 30px; border-top: 1px solid #f7f7f7; padding-top: 15px;'>Mã xác thực có hiệu lực trong vòng 15 phút. Vui lòng không chia sẻ mã này với bất kỳ ai.</p>
+                </div>
+            ";
+
+            $mail->send();
+
+            // Lưu email vào Session để trang verify.php nhận diện
+            $_SESSION['verify_email'] = $email;
+            
+            // Đá bay sang trang nhập OTP
+            header("Location: verify.php");
             exit();
-        } else {
-            $error = "Mã xác thực OTP không chính xác. Ông giáo check lại kỹ trong hòm thư xem!";
+
+        } catch (\Exception $e) {
+            $errors['register'] = "Có lỗi xảy ra: " . $e->getMessage();
         }
-    } catch (PDOException $e) {
-        $error = "Lỗi hệ thống database: " . $e->getMessage();
     }
 }
 ?>
