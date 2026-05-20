@@ -1,5 +1,11 @@
 
 <?php
+
+// được chưa?
+
+
+
+
 // Kiểm tra xem URL đang yêu cầu tab nào (Mặc định là login nếu không có)
 $tab = isset($_GET['tab']) ? $_GET['tab'] : 'login';
 // 1. Nhúng file kết nối database vào
