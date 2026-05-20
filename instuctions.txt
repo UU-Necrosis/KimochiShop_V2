@@ -77,6 +77,7 @@ kimochi_shop_online/
 ├── index.php                # TRANG CHỦ (Khách xem hàng)
 ├── shop.php                 # TRANG CỬA HÀNG + BỘ LỌC
 ├── product_detail.php       # CHI TIẾT SẢN PHẨM
+
 ├── cart.php                 # GIỎ HÀNG 
 ├── checkout.php             # THANH TOÁN
 ├── order_success.php        # HOÀN TẤT ĐƠN HÀNG
