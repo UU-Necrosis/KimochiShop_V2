@@ -13,6 +13,7 @@ $errors = [];
 $success = "";
 
 // ==================== XỬ LÝ LOGIC ĐĂNG KÝ GỬI OTP ====================
+
 if (isset($_POST['btn-register'])) { 
     // 1. Nhận dữ liệu nhập vào từ Form
     $username = trim($_POST['reg_username'] ?? '');
@@ -98,43 +99,53 @@ if (isset($_POST['btn-register'])) {
 ?>
 
 <?php
-// ========================================================
-//  XỬ LÝ LOGIC ĐĂNG NHẬP
-// ========================================================
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-login'])) {
-    $tab = 'login';
-    $username = trim($_POST['username']);
-    $password = $_POST['password'];
 
-    try {
-        // Tìm user theo username
-        $stmt = $conn->prepare("SELECT * FROM users WHERE username = :user");
-        $stmt->execute(['user' => $username]);
-        $user = $stmt->fetch();
+// ==================== XỬ LÝ LOGIC ĐĂNG NHẬP POSTGRESQL ====================
 
-        if ($user && password_verify($password, $user['password'])) {
-    
-    //  CHÈN THÊM ĐOẠN CHECK XÁC THỰC NÀY VÀO:
-            if ($user['is_verified'] === false || $user['is_verified'] === 0) {
-                $errors[] = "Tài khoản này chưa kích hoạt Email. Vui lòng kiểm tra hộp thư để xác thực OTP!";
-            } else {
-                // Nếu đã xác thực thành công (TRUE) thì cho vào như cũ:
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['username'] = $user['username'];
-                $_SESSION['role'] = $user['role'] ?? 'user'; 
+if (isset($_POST['btn-login'])) {
+    $username = trim($_POST['username'] ?? '');
+    $password = $_POST['password'] ?? '';
+
+    if (empty($username) || empty($password)) {
+        $errors['login'] = "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!";
+    }
+
+    if (empty($errors)) {
+        try {
+            // Lấy thông tin user dựa vào username hoặc email
+            $sql = "SELECT * FROM users WHERE username = :username OR email = :username";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([':username' => $username]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user && password_verify($password, $user['password'])) {
                 
-                header("Location: index.php");
-                exit();
+                // 🛠️ QUẢ BÙA CHẶN ĐĂNG NHẬP KHI CHƯA XÁC THỰC EMAIL Ở ĐÂY
+                // PostgreSQL trả về boolean (true/false) nên check chuẩn kiểu dữ liệu
+                if ($user['is_verified'] === false || $user['is_verified'] === 0) {
+                    
+                    // Lưu email vào Session để lỡ khách có bấm "Xác thực ngay" thì có cái mà dùng
+                    $_SESSION['verify_email'] = $user['email'];
+                    
+                    $errors['login'] = "Tài khoản chưa kích hoạt Email! <a href='verify.php' class='text-pink fw-bold text-decoration-underline'>Nhấp vào đây để nhập mã OTP</a>";
+                } else {
+                    // ĐÃ XÁC THỰC THÀNH CÔNG -> CHO VÀO TRANG CHỦ
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['username'] = $user['username'];
+                    $_SESSION['role'] = $user['role'] ?? 'user';
+
+                    header("Location: index.php");
+                    exit();
+                }
+                
+            } else {
+                $errors['login'] = "Tên đăng nhập hoặc mật khẩu không chính xác!";
             }
-            
-        } else {
-            $errors[] = "Tên đăng nhập hoặc mật khẩu không chính xác!";
+        } catch (PDOException $e) {
+            $errors['login'] = "Lỗi kết nối hệ thống: " . $e->getMessage();
         }
-    } catch (PDOException $e) {
-        $errors[] = "Lỗi hệ thống: " . $e->getMessage();
     }
 }
-?>
 
 <!DOCTYPE html>
 <html lang="vi">
