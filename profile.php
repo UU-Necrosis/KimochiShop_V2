@@ -23,6 +23,61 @@ $user_id = $_SESSION['user_id'];
 $success_msg = "";
 $error_msg = "";
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-add-product'])) {
+    $name = trim($_POST['name'] ?? '');
+    $category_id = $_POST['category_id'] ?? '';
+    $price = trim($_POST['price'] ?? '');
+    $stock = trim($_POST['stock'] ?? 0);
+    $seller_id = $account['id'] ?? $_SESSION['user_id'];
+
+    // 📸 XỬ LÝ UPLOAD ẢNH SẢN PHẨM
+    $image_name = 'default-product.png'; // Tên ảnh mặc định nếu không upload gì
+
+    if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
+        $file_tmp = $_FILES['product_image']['tmp_name'];
+        $original_name = $_FILES['product_image']['name'];
+        $ext = strtolower(pathinfo($original_name, PATHINFO_EXTENSION));
+        
+        $allowed_exts = ['jpg', 'jpeg', 'png', 'webp'];
+        if (in_array($ext, $allowed_exts)) {
+            // Đổi tên ảnh thành chuỗi ngẫu nhiên để không bị trùng lặp trên host
+            $image_name = 'prod_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
+            
+            // Tạo thư mục lưu ảnh nếu chưa có
+            $upload_dir = 'uploads/products/';
+            if (!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0777, true);
+            }
+            
+            // Di chuyển file từ bộ nhớ tạm vào thư mục dự án
+            move_uploaded_file($file_tmp, $upload_dir . $image_name);
+        }
+    }
+
+    if (!empty($name) && !empty($category_id) && is_numeric($price) && $price > 0) {
+        try {
+            // Chèn thêm cột image_url vào câu lệnh SQL để ghi nhận ảnh vào pgAdmin
+            $sql = "INSERT INTO products (seller_id, category_id, name, price, stock, image_url, status) 
+                    VALUES (:seller_id, :category_id, :name, :price, :stock, :image_url, 1)";
+            
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ':seller_id'   => $seller_id,
+                ':category_id' => $category_id,
+                ':name'        => $name,
+                ':price'       => $price,
+                ':stock'       => $stock,
+                ':image_url'   => $image_name // Đẩy tên file ảnh vào đây
+            ]);
+
+            header("Location: profile.php?status=success");
+            exit();
+        } catch (PDOException $e) {
+            $errors['db'] = "Lỗi lưu sản phẩm: " . $e->getMessage();
+        }
+    }
+}
+
 // Sửa lại đoạn xử lý xóa ở đầu file profile.php mẹ
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-delete-product'])) {
     $del_id = $_POST['delete_product_id'] ?? '';
