@@ -49,17 +49,20 @@ include_once 'includes/header.php';
                     <?php foreach ($products as $prod): ?>
                         <?php 
                             // 1. Ảnh mặc định dự phòng ban đầu nếu không có ảnh
-                            $img_src = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500'; 
-                            
-                            // 2. Xử lý cột image_url duy nhất sau khi đã xóa xỏ các cột thừa
-                            if (!empty($prod['image_url'])) {
-                                // Nếu là đường link URL tuyệt đối (http:// hoặc https://)
-                                if (strpos($prod['image_url'], 'http://') === 0 || strpos($prod['image_url'], 'https://') === 0) {
-                                    $img_src = $prod['image_url'];
-                                } else {
-                                    // Nếu là tên file cục bộ (như prod_1779346175_6174.png), tự nối thư mục uploads/
-                                    $img_src = 'uploads/' . $prod['image_url'];
-                                }
+                            try {
+                                // SỬA LẠI SQL SELECT: Chuyển hết sang gọi cột p.image_url
+                                $sql = "SELECT p.id, p.name, p.price, p.description, p.image_url, p.stock, c.name AS category_name 
+                                        FROM products p
+                                        LEFT JOIN categories c ON p.category_id = c.id
+                                        WHERE p.status = 1 AND p.stock > 0 
+                                        ORDER BY p.id DESC";
+                                        
+                                $stmt = $conn->query($sql);
+                                $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                            } catch (PDOException $e) {
+                                // Dòng này cứu cánh để ông biết chính xác lỗi gì nếu chưa hiện:
+                                echo "<div class='alert alert-danger'>Lỗi hiển thị sản phẩm: " . $e->getMessage() . "</div>";
+                                $products = [];
                             }
                         ?>
                         
