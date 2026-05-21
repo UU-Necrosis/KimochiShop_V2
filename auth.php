@@ -149,7 +149,7 @@ if (isset($_POST['btn-login'])) {
                     // ĐĂNG NHẬP THÀNH CÔNG
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
-                    $_SESSION['role'] = $user['role'] ?? 'user';
+                    $_SESSION['role'] = $user['role'] ?? 'customer';
 
                     // 2. GIẢI PHÁP AN TOÀN: Dùng JavaScript làm phương án dự phòng nếu header() bị lỗi đã gửi content trước
                     if (!headers_sent()) {
