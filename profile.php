@@ -125,7 +125,7 @@ try {
         html, body { 
             height: 100%; 
             overflow: hidden; 
-            background-color: #adadad; 
+            background-color: #111214; 
             color: #f2f3f5; 
             font-family: 'Segoe UI', Tahoma, sans-serif; 
         }
@@ -183,7 +183,7 @@ try {
         /* --- 4/5 CỘT PHẢI: BẢNG THÔNG TIN CHI TIẾT --- */
         .discord-main-panel {
             flex: 0 0 80%; /* Chiếm đúng 4/5 chiều rộng */
-            background-color: #313338;
+            background-color: #a3a3a3;
             padding: 40px 40px 20px 40px;
             overflow-y: auto; /* Nếu nội dung dài tự cuộn bên trong box phải */
             display: flex;
