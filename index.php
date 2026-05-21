@@ -3,16 +3,12 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// =====================================================================================
-// KHỞI TẠO VÀ KÉO DỮ LIỆU SẢN PHẨM TỪ DB POSTGRESQL
-// =====================================================================================
-global $conn;
-// Dò tìm và include file cấu hình nếu file header chưa kéo vào
-if (!isset($conn) || $conn === null) {
-    if (file_exists('config/db.php')) include_once 'config/db.php';
-    elseif (file_exists('config/config.php')) include_once 'config/config.php';
-}
+// 🚨 BẮT BUỘC: Phải kéo file header vào TRƯỚC để kích hoạt biến kết nối $conn từ database
+include_once 'includes/header.php'; 
 
+// =====================================================================================
+// KHỞI TẠO VÀ KÉO DỮ LIỆU SẢN PHẨM TỪ DB POSTGRESQL (Sau khi đã có $conn)
+// =====================================================================================
 $products = [];
 try {
     if (isset($conn) && $conn !== null) {
@@ -24,8 +20,6 @@ try {
     // Nếu lỗi DB thì mảng trống, không làm sập giao diện web
     $products = [];
 }
-
-include_once 'includes/header.php'; 
 ?>
 
 <div class="container my-4">
