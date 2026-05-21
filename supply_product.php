@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-add-product'])) {
                     <div class="alert alert-danger py-2 small"><i class="fa-solid fa-circle-xmark me-2"></i><?php echo $errors['db']; ?></div>
                 <?php endif; ?>
 
-                <form action="seller_add_product.php" method="POST" enctype="multipart/form-data">
+                <form action="supply_product.php" method="POST" enctype="multipart/form-data">
                     
                     <div class="mb-3">
                         <label class="form-label small text-uppercase fw-bold text-muted">Tên mặt hàng <span class="text-danger">*</span></label>
@@ -168,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-add-product'])) {
 
             </div>
 
-        </div>
+        </div><form action="
     </div>
 </div>
 
