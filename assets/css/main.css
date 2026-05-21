@@ -2,29 +2,36 @@
  /* --- CÁC DỮ LIỆU CHỨA MÀU --- */
 /********************************/
 
-:root [theme="light"] {
-  --bg: #f8f9fa;
-  --card: #ffffff;
-  --text: #0b2141;
-  --muted: #5b6b81;
-  --brand: #0d6efd; 
-  --accent: #20c997; 
-  --danger: #dc3545;
-  --border: #dee2e6;
-  --pink: #ff69b4;
+/* ==========================================================================
+   CONFIG HỆ THỐNG BIẾN MÀU SẮC (DISCORD LIGHT/DARK MODE TOÀN CỤC)
+   ========================================================================== */
+
+/*  Chế độ Nền Tối mặc định (Khi html có thuộc tính data-theme="dark" hoặc không ghi gì) */
+:root, html[data-theme="dark"] {
+    --bg-body: #111214;
+    --bg-sidebar: #2b2d31;
+    --bg-main: #313338;
+    --bg-card: #1e1f22;
+    --bg-input: #111214;
+    --text-main: #f2f3f5;
+    --text-muted: #949ba4;
+    --border-color: #2b2d31;
+    --sidebar-active: #404249;
+    --card-shadow: rgba(0, 0, 0, 0.3);
 }
 
-:root [theme="dark"] {
-  --bg: #121212;
-  --card: #1e1e1e;
-  --text: #e4e6eb;
-  --muted: #a0a0a0;
-  --border: #333333;
-  --brand: #0d6efd; 
-  --accent: #20c997; 
-  --danger: #dc3545;
-  --border: #dee2e6;
-  --pink: #ff69b4;
+/*  Chế độ Nền Sáng (Khi Javascript kích hoạt gạt công tắc html[data-theme="light"]) */
+html[data-theme="light"] {
+    --bg-body: #f0f2f5;
+    --bg-sidebar: #e3e5e8;
+    --bg-main: #ffffff;
+    --bg-card: #f2f3f5;
+    --bg-input: #ffffff;
+    --text-main: #060607;
+    --text-muted: #4e5058;
+    --border-color: #cbd5e1;
+    --sidebar-active: #c9ccd1;
+    --card-shadow: rgba(0, 0, 0, 0.08);
 }
 
 :root {
@@ -205,4 +212,59 @@
 /* Chuông và Ba gạch khi click xong thả ra thì tắt hiệu ứng shadow ngay */
 .nav-icon-link:not(#searchDropdown,#userMenuDropdown,#cartMenuIcon):focus {
     box-shadow: none;
+}
+
+/* ---CÁC CLASS ĐIỀU HƯỚNG THEO THEME (DÙNG CHO PROFILE & CÁC TRANG KHÁC)
+html, body {
+    background-color: var(--bg-body) !important;
+    color: var(--text-main) !important;
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Áp dụng cho các card bọc thông tin */
+.discord-card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 8px 24px var(--card-shadow) !important;
+}
+
+/* Áp dụng cho thanh menu bên trái */
+.discord-sidebar {
+    background-color: var(--bg-sidebar) !important;
+    border-right: 1px solid var(--border-color) !important;
+}
+
+/* Áp dụng cho khung nền chứa nội dung bên phải */
+.discord-main-panel {
+    background-color: var(--bg-main) !important;
+}
+
+/* Áp dụng cho các hộp bọc input nhỏ bên trong */
+.discord-info-box {
+    background-color: var(--bg-sidebar) !important;
+}
+
+/* Các thẻ ô nhập liệu TEXT / PASSWORD / SELECT */
+.input-custom, select.input-custom {
+    background-color: var(--bg-input) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-main) !important;
+}
+
+/* Màu chữ mô tả phụ */
+.form-label-custom {
+    color: var(--text-muted) !important;
+}
+
+/* Trạng thái các nút menu đang được chọn (Active) */
+.sidebar-menu-item {
+    color: var(--text-muted) !important;
+}
+.sidebar-menu-item:hover {
+    background-color: var(--sidebar-active) !important;
+    color: var(--text-main) !important;
+}
+.sidebar-menu-item.active {
+    background-color: var(--sidebar-active) !important;
+    color: var(--text-main) !important;
 }
