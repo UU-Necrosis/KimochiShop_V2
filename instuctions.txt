@@ -176,3 +176,6 @@ Rule 5: domain.com/cart.php*  -> Cache Level = Bypass
 
 Auto-Push:
 while ($true) { git add .; git commit -m "Auto backup: $(Get-Date -Format 'HH:mm:ss')"; git push; Start-Sleep -Seconds 60 }
+
+Lệnh chạy ngrok:
+ngrok http 80
