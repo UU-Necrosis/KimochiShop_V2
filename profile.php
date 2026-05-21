@@ -17,8 +17,8 @@ $error_msg = "";
 // ================= PROCESSING FORM SUBMISSION =================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
-    // 1. Cập nhật Username
-    if (isset($_POST['username'])) {
+    // 1. Cập nhật thông tin cơ bản & đổi mật khẩu (Tab 1)
+    if (isset($_POST['action']) && $_POST['action'] === 'update_profile') {
         $new_username = trim($_POST['username']);
         if (!empty($new_username)) {
             try {
@@ -39,34 +39,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error_msg = "Lỗi: " . $e->getMessage();
             }
         }
+
+        // Xử lý đổi mật khẩu nếu có nhập
+        if (!empty($_POST['new_password'])) {
+            $old_password = $_POST['old_password'];
+            $new_password = $_POST['new_password'];
+            
+            if (empty($old_password)) {
+                $error_msg = "Vui lòng nhập Mật khẩu cũ để xác nhận!";
+            } else {
+                try {
+                    $pass_sql = "SELECT password FROM users WHERE id = :id";
+                    $pass_stmt = $conn->prepare($pass_sql);
+                    $pass_stmt->execute([':id' => $user_id]);
+                    $curr = $pass_stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if ($curr && password_verify($old_password, $curr['password'])) {
+                        $hashed = password_hash($new_password, PASSWORD_BCRYPT);
+                        $update_p = "UPDATE users SET password = :pass WHERE id = :id";
+                        $update_p_stmt = $conn->prepare($update_p);
+                        $update_p_stmt->execute([':pass' => $hashed, ':id' => $user_id]);
+                        $success_msg = "Cập nhật mật khẩu mới thành công!";
+                    } else {
+                        $error_msg = "Mật khẩu cũ không chính xác!";
+                    }
+                } catch (PDOException $e) {
+                    $error_msg = "Lỗi đổi mật khẩu: " . $e->getMessage();
+                }
+            }
+        }
     }
 
-    // 2. Cập nhật Mật khẩu
-    if (!empty($_POST['new_password'])) {
-        $old_password = $_POST['old_password'];
-        $new_password = $_POST['new_password'];
-        
-        if (empty($old_password)) {
-            $error_msg = "Vui lòng nhập Mật khẩu cũ để xác nhận!";
-        } else {
+    // 2. Cập nhật nâng cao: Vai trò người sử dụng (Tab 2)
+    if (isset($_POST['action']) && $_POST['action'] === 'update_advanced') {
+        $new_role = trim($_POST['role']);
+        if (in_array($new_role, ['user', 'admin'])) {
             try {
-                $pass_sql = "SELECT password FROM users WHERE id = :id";
-                $pass_stmt = $conn->prepare($pass_sql);
-                $pass_stmt->execute([':id' => $user_id]);
-                $curr = $pass_stmt->fetch(PDO::FETCH_ASSOC);
-                
-                if ($curr && password_verify($old_password, $curr['password'])) {
-                    $hashed = password_hash($new_password, PASSWORD_BCRYPT);
-                    $update_p = "UPDATE users SET password = :pass WHERE id = :id";
-                    $update_p_stmt = $conn->prepare($update_p);
-                    $update_p_stmt->execute([':pass' => $hashed, ':id' => $user_id]);
-                    $success_msg = "Cập nhật mật khẩu mới thành công!";
-                } else {
-                    $error_msg = "Mật khẩu cũ không chính xác!";
-                }
+                $role_sql = "UPDATE users SET role = :role WHERE id = :id";
+                $role_stmt = $conn->prepare($role_sql);
+                $role_stmt->execute([':role' => $new_role, ':id' => $user_id]);
+                $_SESSION['role'] = $new_role; // Cập nhật lại session quyền
+                $success_msg = "Cập nhật quyền tài khoản thành công!";
             } catch (PDOException $e) {
-                $error_msg = "Lỗi đổi mật khẩu: " . $e->getMessage();
+                $error_msg = "Lỗi cập nhật vai trò: " . $e->getMessage();
             }
+        } else {
+            $error_msg = "Vai trò chọn không hợp lệ!";
         }
     }
 
@@ -113,155 +131,74 @@ try {
 ?>
 
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cài đặt tài khoản - <?php echo htmlspecialchars($user['username']); ?></title>
+    <title>Cài đặt hệ thống - <?php echo htmlspecialchars($user['username']); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* Khóa cứng chiều cao trang chuẩn app Desktop */
-        html, body { 
-            height: 100%; 
-            overflow: hidden; 
-            background-color: #111214; 
-            color: #f2f3f5; 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
+        /* CSS Variables hỗ trợ chế độ Light/Dark Mode linh hoạt */
+        :root[data-theme="dark"] {
+            --bg-body: #111214;
+            --bg-sidebar: #2b2d31;
+            --bg-main: #313338;
+            --bg-card: #1e1f22;
+            --bg-input: #111214;
+            --text-main: #f2f3f5;
+            --text-muted: #949ba4;
+            --border-color: #2b2d31;
+            --sidebar-active: #404249;
         }
+        :root[data-theme="light"] {
+            --bg-body: #f0f2f5;
+            --bg-sidebar: #e3e5e8;
+            --bg-main: #ffffff;
+            --bg-card: #f2f3f5;
+            --bg-input: #ffffff;
+            --text-main: #060607;
+            --text-muted: #4e5058;
+            --border-color: #cbd5e1;
+            --sidebar-active: #c9ccd1;
+        }
+
+        html, body { height: 100%; overflow: hidden; background-color: var(--bg-body); color: var(--text-main); font-family: 'Segoe UI', Tahoma, sans-serif; transition: background 0.2s, color 0.2s; }
+        .page-wrapper { display: flex; flex-direction: column; height: 100vh; }
+        .discord-container { flex: 1; display: flex; height: calc(100vh - 56px); }
+
+        /* --- CỘT TRÁI (1/5): SIDEBAR TABS --- */
+        .discord-sidebar { flex: 0 0 20%; background-color: var(--bg-sidebar); padding: 40px 10px 20px 30px; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; }
+        .sidebar-title { color: var(--text-muted); font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; padding-left: 10px; }
         
-        .page-wrapper {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        /* Container chia 2 cột */
-        .discord-container {
-            flex: 1;
-            display: flex;
-            height: calc(100vh - 56px); /* Trừ đi thanh Header */
-        }
-
-        /* --- 1/5 CỘT TRÁI: MENU MỤC LỤC --- */
-        .discord-sidebar {
-            flex: 0 0 20%; /* Chiếm đúng 1/5 chiều rộng */
-            background-color: #2b2d31;
-            padding: 40px 10px 20px 30px;
-            border-right: 1px solid #1f2023;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .sidebar-title {
-            color: #949ba4;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 10px;
-            padding-left: 10px;
-        }
-
-        .sidebar-menu-item {
-            display: flex;
-            align-items: center;
-            padding: 8px 12px;
-            color: #949ba4;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 4px;
-            transition: 0.2s;
-        }
+        /* Chuyển các nút thành nav-link của Bootstrap */
+        .sidebar-menu-item { display: flex; align-items: center; padding: 8px 12px; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 14px; font-weight: 500; margin-bottom: 4px; border: none; background: transparent; width: 100%; text-align: left; transition: 0.2s; }
         .sidebar-menu-item i { margin-right: 8px; width: 16px; text-align: center; }
-        .sidebar-menu-item:hover { background-color: #35373c; color: #dbdee1; }
-        .sidebar-menu-item.active { background-color: #404249; color: #fff; }
+        .sidebar-menu-item:hover { background-color: var(--sidebar-active); color: var(--text-main); }
+        .sidebar-menu-item.active { background-color: var(--sidebar-active); color: var(--text-main); font-weight: bold; }
 
-        /* --- 4/5 CỘT PHẢI: BẢNG THÔNG TIN CHI TIẾT --- */
-        .discord-main-panel {
-            flex: 0 0 80%; /* Chiếm đúng 4/5 chiều rộng */
-            background-color: #313338;
-            padding: 40px 40px 20px 40px;
-            overflow-y: auto; /* Nếu nội dung dài tự cuộn bên trong box phải */
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        /* Discord Card Form */
-        .discord-card { 
-            background-color: #1e1f22; 
-            border-radius: 8px; 
-            overflow: hidden; 
-            border: 1px solid #2b2d31; 
-            width: 100%;
-            max-width: 660px;
-        }
+        /* --- CỘT PHẢI (4/5): MAIN CORE --- */
+        .discord-main-panel { flex: 0 0 80%; background-color: var(--bg-main); padding: 40px 40px 20px 40px; overflow-y: auto; }
+        .discord-card { background-color: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); width: 100%; max-width: 660px; }
+        .discord-banner { height: 80px; background: linear-gradient(135deg, #ff69b4, #b9bbbe); position: relative; }
         
-        .discord-banner { 
-            height: 80px; 
-            background: linear-gradient(135deg, #ff69b4, #b9bbbe); 
-            position: relative; 
-        }
+        .discord-avatar-container { position: relative; display: inline-block; margin-top: -40px; margin-left: 20px; }
+        .discord-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 4px solid var(--bg-card); background-color: var(--bg-sidebar); }
         
-        .discord-avatar-container { 
-            position: relative; 
-            display: inline-block; 
-            margin-top: -40px; 
-            margin-left: 20px; 
-        }
+        .avatar-edit-badge { position: absolute; top: 0; right: 0; background: #313338; border: 2px solid #1e1f22; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: #dbdee1; cursor: pointer; }
+        .discord-body { padding: 20px; background-color: var(--bg-card); }
+        .discord-info-box { background-color: var(--bg-sidebar); border-radius: 8px; padding: 16px; margin-top: 12px; }
         
-        .discord-avatar { 
-            width: 80px; 
-            height: 80px; 
-            border-radius: 50%; 
-            object-fit: cover; 
-            border: 4px solid #1e1f22; 
-            background-color: #2b2d31; 
-        }
+        .input-custom { background-color: var(--bg-input) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; border-radius: 4px; padding: 8px 12px; font-size: 14px; }
+        .form-label-custom { color: var(--text-muted); font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 6px; }
         
-        .avatar-edit-badge { 
-            position: absolute; 
-            top: 0; 
-            right: 0; 
-            background: #313338; 
-            border: 2px solid #1e1f22; 
-            border-radius: 50%; 
-            width: 24px; 
-            height: 24px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: #dbdee1; 
-            cursor: pointer; 
-            transition: 0.2s; 
-        }
-        .avatar-edit-badge:hover { background: #4e5058; color: #fff; }
-
-        .discord-body { padding: 20px; background-color: #1e1f22; }
-        .discord-info-box { background-color: #2b2d31; border-radius: 8px; padding: 16px; margin-top: 12px; }
-        
-        /* Custom Input */
-        .input-custom { 
-            background-color: #111214 !important; 
-            border: 1px solid #111214 !important; 
-            color: #f2f3f5 !important; 
-            border-radius: 4px; 
-            padding: 8px 12px; 
-            font-size: 14px;
-        }
-        .input-custom:focus { border-color: #5865f2 !important; box-shadow: none !important; }
-        .form-label-custom { color: #949ba4; font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 6px; }
-        
-        .btn-discord-save { background-color: #248046; color: white; font-weight: 500; border: none; padding: 8px 24px; border-radius: 3px; font-size: 14px; transition: 0.2s; }
+        .btn-discord-save { background-color: #248046; color: white; font-weight: 500; border: none; padding: 8px 24px; border-radius: 3px; font-size: 14px; }
         .btn-discord-save:hover { background-color: #1a6535; }
-        .btn-discord-logout { background-color: transparent; color: #da373c; border: 1px solid #da373c; padding: 6px 16px; border-radius: 3px; font-size: 14px; transition: 0.2s; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-discord-logout { background-color: transparent; color: #da373c; border: 1px solid #da373c; padding: 6px 16px; border-radius: 3px; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
         .btn-discord-logout:hover { background-color: #da373c; color: white; }
         
         .alert-toast { position: absolute; top: 70px; right: 20px; z-index: 9999; max-width: 320px; }
+        .text-pink { color: #ff69b4 !important; }
     </style>
 </head>
 <body>
@@ -272,27 +209,28 @@ try {
     <div class="discord-container">
         
         <aside class="discord-sidebar">
-            <div>
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                 <div class="sidebar-title">Cài đặt người dùng</div>
-                <a href="profile.php" class="sidebar-menu-item active">
+                
+                <button class="sidebar-menu-item active" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">
                     <i class="fa-solid fa-user-gear"></i> Thông tin tài khoản
-                </a>
-                <a href="#" class="sidebar-menu-item" onclick="alert('Tính năng đang cập nhật cập nhật!')">
+                </button>
+                
+                <button class="sidebar-menu-item" id="v-pills-advanced-tab" data-bs-toggle="pill" data-bs-target="#v-pills-advanced" type="button" role="tab" aria-controls="v-pills-advanced" aria-selected="false">
                     <i class="fa-solid fa-user-shield"></i> Cập nhật nâng cao
-                </a>
-                <a href="index.php" class="sidebar-menu-item">
+                </button>
+                
+                <a href="index.php" class="sidebar-menu-item text-secondary mt-2">
                     <i class="fa-solid fa-house"></i> Quay lại trang chủ
                 </a>
             </div>
             
             <div>
-                <a href="logout.php" class="btn-discord-logout w-100">
-                    <i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất
-                </a>
+                <a href="logout.php" class="btn-discord-logout w-100"><i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất</a>
             </div>
         </aside>
 
-        <main class="discord-main-panel">
+        <main class="discord-main-panel tab-content" id="v-pills-tabContent">
             
             <div class="alert-toast">
                 <?php if(!empty($success_msg)): ?>
@@ -303,71 +241,131 @@ try {
                 <?php endif; ?>
             </div>
 
-            <h4 class="fw-bold mb-4" style="color: #fff;">Hồ sơ của tôi</h4>
-
-            <form action="profile.php" method="POST" enctype="multipart/form-data" class="w-100">
-                <div class="discord-card shadow-lg">
-                    <div class="discord-banner"></div>
-                    
-                    <div class="discord-avatar-container">
-                        <?php if(!empty($user['avatar']) && file_exists(__DIR__ . '/' . $user['avatar'])): ?>
-                            <img src="<?php echo htmlspecialchars($user['avatar']); ?>?t=<?php echo time(); ?>" class="discord-avatar" id="avatarImage">
-                        <?php else: ?>
-                            <div class="discord-avatar d-flex align-items-center justify-content-center text-white fs-4" id="avatarPlaceholder" style="background-color: #ff69b4;"><i class="fa-solid fa-user"></i></div>
-                        <?php endif; ?>
+            <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                <h4 class="fw-bold mb-4">Hồ sơ của tôi</h4>
+                
+                <form action="profile.php" method="POST" enctype="multipart/form-data" class="w-100">
+                    <input type="hidden" name="action" value="update_profile">
+                    <div class="discord-card shadow-lg">
+                        <div class="discord-banner"></div>
                         
-                        <label for="avatarInput" class="avatar-edit-badge" title="Thay đổi ảnh đại diện">
-                            <i class="fa-solid fa-pencil text-white" style="font-size: 10px;"></i>
-                        </label>
-                        <input type="file" id="avatarInput" name="avatar" class="d-none" accept="image/*" onchange="previewImage(this)">
-                    </div>
+                        <div class="discord-avatar-container">
+                            <?php if(!empty($user['avatar']) && file_exists(__DIR__ . '/' . $user['avatar'])): ?>
+                                <img src="<?php echo htmlspecialchars($user['avatar']); ?>?t=<?php echo time(); ?>" class="discord-avatar" id="avatarImage">
+                            <?php else: ?>
+                                <div class="discord-avatar d-flex align-items-center justify-content-center text-white fs-4" id="avatarPlaceholder" style="background-color: #ff69b4;"><i class="fa-solid fa-user"></i></div>
+                            <?php endif; ?>
+                            
+                            <label for="avatarInput" class="avatar-edit-badge" title="Thay đổi ảnh đại diện">
+                                <i class="fa-solid fa-pencil text-white" style="font-size: 10px;"></i>
+                            </label>
+                            <input type="file" id="avatarInput" name="avatar" class="d-none" accept="image/*" onchange="previewImage(this)">
+                        </div>
 
-                    <div class="discord-body">
-                        <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="discord-body">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div>
+                                    <h5 class="fw-bold m-0"><?php echo htmlspecialchars($user['username']); ?></h5>
+                                    <p class="text-secondary m-0" style="font-size: 12px;">Thành viên từ: <?php echo date('d/m/Y', strtotime($user['created_at'])); ?></p>
+                                </div>
+                                <span class="badge bg-dark border border-secondary text-white px-2 py-1" style="font-size: 11px;"><i class="fa-solid fa-skull me-1 text-pink"></i><?php echo strtoupper(htmlspecialchars($user['role'] ?? 'USER')); ?></span>
+                            </div>
+
+                            <div class="discord-info-box">
+                                <div class="mb-3">
+                                    <label class="form-label-custom">Địa chỉ Email</label>
+                                    <input type="text" class="form-control input-custom text-muted w-100" value="<?php echo htmlspecialchars($user['email']); ?>" style="cursor: not-allowed;" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label-custom">Tên hiển thị / Tên đăng nhập</label>
+                                    <input type="text" name="username" class="form-control input-custom w-100" value="<?php echo htmlspecialchars($user['username']); ?>" required>
+                                </div>
+                                <hr class="border-secondary my-3">
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label class="form-label-custom">Mật khẩu mới</label>
+                                        <input type="password" name="new_password" class="form-control input-custom w-100" placeholder="Bỏ trống nếu không đổi">
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label class="form-label-custom">Mật khẩu hiện tại</label>
+                                        <input type="password" name="old_password" class="form-control input-custom w-100" placeholder="Nhập pass cũ để lưu">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end mt-3">
+                                <button type="submit" class="btn-discord-save">Lưu thay đổi</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-advanced" role="tabpanel" aria-labelledby="v-pills-advanced-tab">
+                <h4 class="fw-bold mb-4">Cài đặt nâng cao</h4>
+                
+                <div class="discord-card p-4 shadow-lg">
+                    <div class="mb-4">
+                        <label class="form-label-custom d-block mb-2"><i class="fa-solid fa-palette me-1"></i> Chế độ hiển thị Giao diện</label>
+                        <div class="discord-info-box mt-0 d-flex align-items-center justify-content-between">
                             <div>
-                                <h5 class="fw-bold m-0 text-white"><?php echo htmlspecialchars($user['username']); ?></h5>
-                                <p class="text-secondary m-0" style="font-size: 12px;">Thành viên từ: <?php echo date('d/m/Y', strtotime($user['created_at'])); ?></p>
+                                <span class="d-block fw-bold small">Chuyển đổi Light / Dark mode</span>
+                                <span class="text-secondary small" style="font-size: 12px;">Điều chỉnh độ sáng phù hợp với môi trường của bạn.</span>
                             </div>
-                            <span class="badge bg-dark border border-secondary text-white px-2 py-1" style="font-size: 11px;"><i class="fa-solid fa-skull me-1 text-pink"></i><?php echo strtoupper(htmlspecialchars($user['role'] ?? 'USER')); ?></span>
-                        </div>
-
-                        <div class="discord-info-box">
-                            <div class="mb-3">
-                                <label class="form-label-custom">Địa chỉ Email</label>
-                                <input type="text" class="form-control input-custom text-white-50" value="<?php echo htmlspecialchars($user['email']); ?>" style="cursor: not-allowed;" readonly>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label-custom">Tên hiển thị / Tên đăng nhập</label>
-                                <input type="text" name="username" class="form-control input-custom" value="<?php echo htmlspecialchars($user['username']); ?>" required>
-                            </div>
-
-                            <hr class="border-secondary my-3">
-
-                            <div class="row">
-                                <div class="col-md-6 mb-2">
-                                    <label class="form-label-custom">Mật khẩu mới</label>
-                                    <input type="password" name="new_password" class="form-control input-custom" placeholder="Bỏ trống nếu không đổi">
-                                </div>
-                                <div class="col-md-6 mb-2">
-                                    <label class="form-label-custom">Mật khẩu hiện tại</label>
-                                    <input type="password" name="old_password" class="form-control input-custom" placeholder="Nhập pass cũ để lưu">
-                                </div>
+                            <div class="form-check form-switch fs-5">
+                                <input class="form-check-input" type="checkbox" role="switch" id="themeToggleScript" style="cursor: pointer;">
                             </div>
                         </div>
-
-                        <div class="d-flex justify-content-end mt-3">
-                            <button type="submit" class="btn-discord-save">Lưu thay đổi</button>
-                        </div>
-
                     </div>
+
+                    <hr class="border-secondary my-4">
+
+                    <form action="profile.php" method="POST">
+                        <input type="hidden" name="action" value="update_advanced">
+                        <div class="mb-3">
+                            <label class="form-label-custom d-block mb-2"><i class="fa-solid fa-user-shield me-1"></i> Vai trò tài khoản (Role Privilege)</label>
+                            <p class="text-secondary small" style="font-size: 12px; margin-top:-5px;">Thay đổi quyền hạn tài khoản trực tiếp (Dùng cho quá trình chạy thử nghiệm Demo đồ án).</p>
+                            
+                            <select name="role" class="form-select input-custom w-100" style="cursor: pointer;">
+                                <option value="user" <?php echo ($user['role'] === 'user') ? 'selected' : ''; ?>>USER (Khách hàng thông thường)</option>
+                                <option value="admin" <?php echo ($user['role'] === 'admin') ? 'selected' : ''; ?>>ADMIN (Quản trị viên toàn quyền)</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="submit" class="btn-discord-save">Lập tức áp dụng quyền</button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
+
         </main>
     </div>
 </div>
 
 <script>
+// 1. Logic lưu trạng thái Light/Dark mode vào bộ nhớ Trình duyệt (localStorage)
+const htmlElement = document.documentElement;
+const themeToggle = document.getElementById('themeToggleScript');
+
+// Kiểm tra bộ nhớ xem trước đó user chọn nền gì
+const savedTheme = localStorage.getItem('discord-theme') || 'dark';
+htmlElement.setAttribute('data-theme', savedTheme);
+if (savedTheme === 'light') {
+    themeToggle.checked = true;
+}
+
+// Bắt sự kiện khi click gạt công tắc
+themeToggle.addEventListener('change', function() {
+    if (this.checked) {
+        htmlElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('discord-theme', 'light');
+    } else {
+        htmlElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('discord-theme', 'dark');
+    }
+});
+
+// 2. Hàm xem trước ảnh đại diện ngay khi chọn file
 function previewImage(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
