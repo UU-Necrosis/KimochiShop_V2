@@ -332,7 +332,9 @@ try {
 
             <div class="tab-pane fade" id="v-pills-supply" role="tabpanel" aria-labelledby="v-pills-supply-tab">
                 <?php if (($user['role'] ?? '') === 'seller' || ($user['role'] ?? '') === 'admin'): ?>
-                    <h3
+                    <h3 class="fw-bold mb-3" style="color: var(--text-main);">Đăng sản phẩm mới</h3>
+
+                        <?php include 'includes/supply_product.php'; ?>
 
             <div class="tab-pane fade" id="v-pills-stock" role="tabpanel" aria-labelledby="v-pills-stock-tab">
                 <?php if (($user['role'] ?? '') === 'seller' || ($user['role'] ?? '') === 'admin'): ?>
