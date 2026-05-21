@@ -106,6 +106,11 @@ if (isset($_POST['btn-register'])) {
                             </a>
                         </span>
                     </div>
+                    <p style='color: #dbdee1; font-size: 14px; text-align: center;'>Hoặc bạn có thể click trực tiếp vào nút bên dưới để kích hoạt nhanh tài khoản:</p>
+                    
+                    <div style='text-align: center; margin: 20px 0;'>
+                        <a href='$verify_link' style='background-color: #248046; color: white; padding: 12px 30px; text-decoration: none; font-weight: bold; border-radius: 4px; display: inline-block;'>XÁC NHẬN MÃ OTP</a>
+                    </div>
                     <p style='font-size: 12px; color: #999; text-align: center;'>
                     Nếu bạn không yêu cầu đăng ký, vui lòng bỏ qua email này. Mã này có hiệu lực trong vòng 15 phút. Tuyệt đối không chia sẻ mã này cho ai.
                     </p>
