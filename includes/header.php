@@ -146,3 +146,10 @@ require_once __DIR__ . '/functions.php';
                 </div>
             </div>
         </nav>
+        <script>
+        // Ngay khi trang vừa tải, kiểm tra bộ nhớ trình duyệt xem user thích Mode nào
+        (function() {
+            const savedTheme = localStorage.getItem('discord-theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
