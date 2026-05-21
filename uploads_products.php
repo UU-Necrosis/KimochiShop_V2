@@ -75,21 +75,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($image_path_for_db !== null) {
         try {
             // Chuẩn bị câu lệnh INSERT bao gồm cả mô tả và đường dẫn ảnh
-            $sql = "INSERT INTO products (seller_id, category_id, name, description, price, stock, image_path, status) 
-                    VALUES (:seller_id, :category_id, :name, :description, :price, :stock, :image_path, 1)";
-            
+            $sql = "INSERT INTO products (seller_id, category_id, name, description, price, stock, image_url, status) 
+                    VALUES (:seller_id, :category_id, :name, :description, :price, :stock, :image_url, 1)";
+
             $stmt = $conn->prepare($sql);
-            
-            // Bind các giá trị
-            $stmt->bindParam(':seller_id', $seller_id);
-            $stmt->bindParam(':category_id', $category_id);
-            $stmt->bindParam(':name', $name);
-            $stmt->bindParam(':description', $description); // Mới
-            $stmt->bindParam(':price', $price);
-            $stmt->bindParam(':stock', $stock);
-            $stmt->bindParam(':image_path', $image_path_for_db); // Mới
-            
-            $stmt->execute();
+            $stmt->execute([
+                ':seller_id'   => $_SESSION['user_id'], // Xem lại session lưu id là gì nhé
+                ':category_id' => $category_id,
+                ':name'        => $name,
+                ':description' => $description,
+                ':price'       => $price,
+                ':stock'       => $stock,
+                ':image_url'   => $filename // Tên file ảnh (ví dụ: prod_1779346175_6174.png) nạp vào đây!
+            ]);
 
             // Thành công! Quay về trang profile hoặc kho hàng
             header("Location: profile.php?tab=stock&status=success"); 
