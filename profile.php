@@ -183,7 +183,7 @@ try {
         /* --- 4/5 CỘT PHẢI: BẢNG THÔNG TIN CHI TIẾT --- */
         .discord-main-panel {
             flex: 0 0 80%; /* Chiếm đúng 4/5 chiều rộng */
-            background-color: #ffffff;
+            background-color: #73757a;
             padding: 40px 40px 20px 40px;
             overflow-y: auto; /* Nếu nội dung dài tự cuộn bên trong box phải */
             display: flex;
