@@ -208,10 +208,6 @@ try {
                     <button class="sidebar-menu-item " id="v-pills-stock-tab" data-bs-toggle="pill" data-bs-target="#v-pills-stock" type="button" role="tab" aria-controls="v-pills-stock" aria-selected="true">
                         <i class="fa-solid fa-boxes-stacked me-1"></i> Kho hàng của tôi
                     </button>
-                    
-                    <a href="?tab=my-products" class="tab-link <?php echo $tab === 'my-products' ? 'active' : ''; ?>">
-
-                    </a>
                 <?php endif; ?>
 
 
