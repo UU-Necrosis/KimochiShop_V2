@@ -8,7 +8,6 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-require_once 'config/db_connect.php';
 // Gọi file con lên đầu để nó xử lý POST trước khi render HTML, tránh lỗi Headers Already Sent
 if (isset($_POST['btn-add-product'])) {
     include_once 'includes/supply_product.php';
