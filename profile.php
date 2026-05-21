@@ -13,7 +13,7 @@ if (isset($_POST['btn-add-product'])) {
     include_once 'includes/supply_product.php';
 }
 
-if (isset($_POST['btn-a'])) {
+if (isset($_POST['btn-update-stock'])) {
     include_once 'includes/stock_management.php';
 }
 
