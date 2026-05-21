@@ -102,8 +102,9 @@ if (isset($_POST['btn-register'])) {
                     <p style='color: #dbdee1; font-size: 14px; text-align: center;'>Hoặc bạn có thể click trực tiếp vào nút bên dưới để kích hoạt nhanh tài khoản:</p>
                     <div style='text-align: center; margin: 35px 0;'>
                         <a href='$verify_link' style='font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #222; background: #fff5f8; padding: 12px 25px; border-radius: 8px; border: 2px dashed #c0c0c0; display: inline-block;'>
-
+                            <p style='margin: 0;'>
                                 Xác nhận Mã OTP
+                            </p>
                         </a>
                     </div>
                     <p style='font-size: 12px; color: #999; text-align: center;'>
