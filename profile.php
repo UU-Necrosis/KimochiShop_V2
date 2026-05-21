@@ -288,7 +288,7 @@ try {
                         <label class="form-label-custom d-block mb-2"><i class="fa-solid fa-palette me-1"></i> Chế độ hiển thị Giao diện</label>
                         <div class="discord-info-box mt-0 d-flex align-items-center justify-content-between">
                             <div>
-                                <span class="d-block fw-bold small">Chuyển đổi Light / Dark mode</span>
+                                <span class="d-block fw-bold small">Chuyển đổi Dark / Light mode</span>
                                 <span class="text-secondary small" style="font-size: 12px;">Điều chỉnh độ sáng phù hợp với môi trường của bạn.</span>
                             </div>
                             <div class="form-check form-switch fs-5">
