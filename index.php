@@ -60,7 +60,7 @@ try {
                         <div class="col">
                             <div class="card h-100 shadow-sm border-0 product-card">
                                 <div class="position-relative" style="padding-top: 100%; overflow: hidden; background: #222;">
-                                    <img src="<?php echo htmlspecialchars($img_src); ?>" 
+                                    <img src="<?php echo htmlspecialchars($img_url); ?>" 
                                          class="card-img-top position-absolute top-0 start-0 w-100 h-100" 
                                          style="object-fit: cover;" 
                                          alt="<?php echo htmlspecialchars($prod['name']); ?>">
