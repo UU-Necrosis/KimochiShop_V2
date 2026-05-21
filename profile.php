@@ -13,8 +13,8 @@ if (isset($_POST['btn-add-product'])) {
     include_once 'includes/supply_product.php';
 }
 
-if (isset($_POST['btn-add-product'])) {
-    include_once 'includes/supply_product.php';
+if (isset($_POST['btn-a'])) {
+    include_once 'includes/stock_management.php';
 }
 
 require_once __DIR__ . '/config/db_connect.php'; 
