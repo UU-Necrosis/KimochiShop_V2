@@ -248,6 +248,56 @@ if (isset($_POST['btn-forgot'])) {
         }
     }
 }
+if (empty($email)) {
+    header("Location: auth.php");
+    exit();
+}
+
+// Hàm lõi xử lý xác thực tài khoản đăng ký
+function process_verification($input_otp, $email, $conn) {
+    global $error_msg;
+    try {
+        // Tìm user dựa trên email và mã OTP nhập vào
+        $sql = "SELECT * FROM users WHERE email = :email AND verification_code = :otp";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':email' => $email, ':otp' => $input_otp]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user) {
+            // Khớp mã! Cập nhật trạng thái kích hoạt và xóa bỏ mã OTP cũ trong DB
+            $update = $conn->prepare("UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE id = :id");
+            $update->execute([':id' => $user['id']]);
+
+            // Thực hiện tự động tạo phiên đăng nhập trực tiếp
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['role'] = $user['role'] ?? 'customer';
+
+            // Xóa dọn dẹp các session rác dùng lúc xác thực
+            unset($_SESSION['verify_email']);
+            unset($_SESSION['verify_action']);
+
+            // Sút thẳng về trang chủ theo đúng yêu cầu đồ án
+            header("Location: index.php");
+            exit();
+        } else {
+            $error_msg = "Mã xác thực OTP không chính xác hoặc đã hết hạn!";
+        }
+    } catch (PDOException $e) {
+        $error_msg = "Lỗi hệ thống: " . $e->getMessage();
+    }
+}
+
+?>
+// TRƯỜNG HỢP 1: Tự động bắt OTP khi người dùng CLICK LINK TỪ EMAIL (?otp=xxxxxx)
+if (isset($_GET['otp'])) {
+    process_verification(trim($_GET['otp']), $email, $conn);
+}
+
+// TRƯỜNG HỢP 2: Người dùng gõ tay vào ô rồi ấn nút kích hoạt
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-verify'])) {
+    process_verification(trim($_POST['otp_code']), $email, $conn);
+}
 ?>
 
 <!DOCTYPE html>
