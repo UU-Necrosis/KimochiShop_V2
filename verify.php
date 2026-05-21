@@ -43,19 +43,23 @@ if (isset($_SESSION['need_send_mail']) && $_SESSION['need_send_mail'] === true) 
         $mail->isHTML(true);
         $mail->Subject = '🔑 Mã xác thực tài khoản Kimochi Shop';
         $mail->Body    = "
-            <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #ff69b4; padding: 25px; border-radius: 12px; background-color: #1e1f22; color: #f2f3f5;'>
-                <h2 style='color: #ff69b4; text-align: center; font-size: 26px; margin-bottom: 5px;'>Kimochi Shop V2</h2>
-                <p style='color: #dbdee1; font-size: 14px;'>Xin chào <strong>$username</strong>,</p>
-                <p style='color: #dbdee1; font-size: 14px;'>Mã OTP xác thực tài khoản của bạn là:</p>
-                <div style='text-align: center; margin: 25px 0; background-color: #111214; padding: 15px; border-radius: 6px; border: 1px dashed #ff69b4;'>
-                    <span style='font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #ffffff;'>$otp_code</span>
+                <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #f0f0f0; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);'>
+                    <h2 style='color: white; text-align: center; font-size: 26px; margin-bottom: 5px;'>Kimochi <span style='color:pink'>Shop</span></h2>
+                    <p style='color: #555; font-size: 14px;'>Xin chào <strong>$username</strong>,</p>
+                    <p style='color: #555; font-size: 14px;'>Cảm ơn bạn vì đã tin tưởng và lựa chọn Kimochi Shop. Mã xác thực tài khoản của bạn là: <strong>$otp_code</strong></p>
+                    <p style='color: #dbdee1; font-size: 14px; text-align: center;'>Hoặc bạn có thể click trực tiếp vào nút bên dưới để kích hoạt nhanh tài khoản:</p>
+                    <div style='text-align: center; margin: 35px 0;'>
+                        <a href='$verify_link' style='font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #222; background: #fff5f8; padding: 12px 25px; border-radius: 8px; border: 2px dashed #c0c0c0; display: inline-block;'>
+                            <p style='margin: 0;'>
+                                Xác nhận Mã OTP
+                            </p>
+                        </a>
+                    </div>
+                    <p style='font-size: 12px; color: #999; text-align: center;'>
+                        Nếu bạn không yêu cầu đăng ký, vui lòng bỏ qua email này. Mã này có hiệu lực trong vòng 15 phút. Tuyệt đối không chia sẻ mã này cho ai.
+                    </p>
                 </div>
-                <p style='color: #dbdee1; font-size: 14px; text-align: center;'>Hoặc kích hoạt nhanh tại đây:</p>
-                <div style='text-align: center; margin: 20px 0;'>
-                    <a href='$verify_link' style='background-color: #248046; color: white; padding: 12px 30px; text-decoration: none; font-weight: bold; border-radius: 4px; display: inline-block;'>XÁC NHẬN MÃ OTP</a>
-                </div>
-            </div>
-        ";
+            ";
 
         $mail->send();
         
