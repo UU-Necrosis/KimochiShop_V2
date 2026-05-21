@@ -201,15 +201,11 @@ try {
                 </button>
 
                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'seller'): ?>
-                    <button class="sidebar-menu-item " id="v-pills-supply-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">
+                    <button class="sidebar-menu-item " id="v-pills-supply-tab" data-bs-toggle="pill" data-bs-target="#v-pills-supply" type="button" role="tab" aria-controls="v-pills-supply" aria-selected="true">
                         <i class="fa-solid fa-plus-circle me-1"></i> Đăng sản phẩm mới
                     </button>
 
-                    <a href="?tab=add-product" class="tab-link <?php echo $tab === 'add-product' ? 'active' : ''; ?>">
-
-                    </a>
-
-                    <button class="sidebar-menu-item " id="v-pills-stock-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">
+                    <button class="sidebar-menu-item " id="v-pills-stock-tab" data-bs-toggle="pill" data-bs-target="#v-pills-stock" type="button" role="tab" aria-controls="v-pills-stock" aria-selected="true">
                         <i class="fa-solid fa-boxes-stacked me-1"></i> Kho hàng của tôi
                     </button>
                     
