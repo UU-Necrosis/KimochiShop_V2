@@ -334,7 +334,6 @@ try {
             <div class="tab-pane fade" id="v-pills-stock" role="tabpanel" aria-labelledby="v-pills-stock-tab">
                 <?php if (($user['role'] ?? '') === 'seller' || ($user['role'] ?? '') === 'admin'): ?>
                     <h3 class="fw-bold mb-3" style="color: var(--text-main);">Kho hàng của tôi</h3>
-                    <p class="text-muted small mb-4">Danh sách các mặt hàng bạn đang đăng bán trên Kimochi Shop</p>
                     
                     <div class="table-responsive">
                         <table class="table table-dark table-hover align-middle small" style="background-color: #111214;">
@@ -363,7 +362,7 @@ try {
                                             echo "</tr>";
                                         }
                                     } else {
-                                        echo "<tr><td colspan='4' class='text-center text-muted py-4'>Bạn chưa đăng mặt hàng nào cả.</td></tr>";
+                                        echo "<tr><td colspan='4' class='text-center text-muted py-4'></td></tr>";
                                     }
                                 } catch (PDOException $e) {
                                     echo "<tr><td colspan='4' class='text-danger'>Lỗi: ".$e->getMessage()."</td></tr>";
