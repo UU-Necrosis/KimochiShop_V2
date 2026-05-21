@@ -248,10 +248,6 @@ if (isset($_POST['btn-forgot'])) {
         }
     }
 }
-if (empty($email)) {
-    header("Location: auth.php");
-    exit();
-}
 
 // Hàm lõi xử lý xác thực tài khoản đăng ký
 function process_verification($input_otp, $email, $conn) {
@@ -288,7 +284,6 @@ function process_verification($input_otp, $email, $conn) {
     }
 }
 
-?>
 // TRƯỜNG HỢP 1: Tự động bắt OTP khi người dùng CLICK LINK TỪ EMAIL (?otp=xxxxxx)
 if (isset($_GET['otp'])) {
     process_verification(trim($_GET['otp']), $email, $conn);
