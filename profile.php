@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $pass_stmt = $conn->prepare($pass_sql);
                     $pass_stmt->execute([':id' => $user_id]);
                     $curr = $pass_stmt->fetch(PDO::FETCH_ASSOC);
-                    
+                    $role
                     if ($curr && password_verify($old_password, $curr['password'])) {
                         $hashed = password_hash($new_password, PASSWORD_BCRYPT);
                         $update_p = "UPDATE users SET password = :pass WHERE id = :id";
@@ -304,7 +304,7 @@ try {
                         <div class="mb-3">
                             <label class="form-label-custom d-block mb-2"><i class="fa-solid fa-user-shield me-1"></i> Vai trò tài khoản (Role Privilege)</label>
                             <p class="text-secondary small" style="font-size: 12px; margin-top:-5px;">Thay đổi quyền hạn tài khoản trực tiếp (Dùng cho quá trình chạy thử nghiệm Demo đồ án).</p>
-                            role
+                            
                             <select name="role" class="form-select input-custom w-100" style="cursor: pointer;">
                                 <option value="customer" <?php echo ($user['role'] === 'customer') ? 'selected' : ''; ?>>CUSTOMER (Khách hàng)</option>
                                 <option value="seller" <?php echo ($user['role'] === 'seller') ? 'selected' : ''; ?>>SELLER (Người bán hàng)</option>
