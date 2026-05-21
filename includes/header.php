@@ -16,17 +16,6 @@ require_once __DIR__ . '/functions.php';
         <link href="assets/vendor/fontawesome/css/all.min.css" rel="stylesheet" /*FontAwesome_CSS*/>
         <link href="assets/css/main.css" rel="stylesheet" /*Custom_CSS*/>
     <style>
-            body { background-color: var(--bg); color: var(--text); }
-            .navbar-brand { font-weight: bold; color: var(--brand) !important; }
-            
-            /* Định dạng riêng cho cụm Icon Tiện Ích */
-            .nav-icons-group {
-                display: flex;
-                align-items: center;
-                gap: 18px; /* Tạo khoảng cách rộng rãi giữa các icon */
-                margin-left: 20px; /* Đẩy cụm icon tách biệt khỏi cụm nút chữ */
-            }
-            
             .nav-icon-link {
                 color: #f8f9fa !important; /* Đổi màu trắng sáng cho rõ nét */
                 font-size: 1.25rem; /* Phóng to icon lên nhìn cho dễ */

@@ -181,6 +181,17 @@ html[data-theme="light"] {
 }
 
 
+body { background-color: var(--bg); color: var(--text); }
+.navbar-brand { font-weight: bold; color: var(--brand) !important; }
+            
+            /* Định dạng riêng cho cụm Icon Tiện Ích */
+            .nav-icons-group {
+                display: flex;
+                align-items: center;
+                gap: 18px; /* Tạo khoảng cách rộng rãi giữa các icon */
+                margin-left: 20px; /* Đẩy cụm icon tách biệt khỏi cụm nút chữ */
+            }
+            
 
   /****************************************/
  /* --- CÁC HIỆU ỨNG CHUYỂN ĐỘNG NHẸ --- */
