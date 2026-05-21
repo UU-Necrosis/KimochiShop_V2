@@ -34,7 +34,7 @@ html[data-theme="light"] {
     --card-shadow: rgba(0, 0, 0, 0.08);
 }
 
-:root {
+:root,html[data-theme="dark"]{
     /* --- Hệ sinh thái màu sắc chung cho toàn bộ trang --- */
     --default-white: #ffffff;                 /* Màu trắng tinh khiết cho nền và chữ */
     --pink-primary: #ff69b4;
@@ -53,7 +53,7 @@ html[data-theme="light"] {
     --search-btn-color: #ffffff; /* Màu trắng cho icon kính lúp */
 }
 
-:root {
+:root,html[data-theme="light"] {
     /* --- Hệ sinh thái màu sắc chung cho toàn bộ trang --- */
     --default-white: #ffffff;                 /* Màu trắng tinh khiết cho nền và chữ */
     --pink-primary: #ff69b4;
