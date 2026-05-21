@@ -43,7 +43,7 @@ try {
                     <?php foreach ($products as $prod): ?>
                         <?php 
                             // 1. Ảnh mặc định dự phòng ban đầu nếu không có ảnh
-                            $img_src = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500'; 
+                            $img_url = query("SELECT * FROM products WHERE img_url");; 
                             
                             // 2. Xử lý cột image_url duy nhất sau khi đã xóa bỏ các cột thừa
                             if (!empty($prod['image_url'])) {
