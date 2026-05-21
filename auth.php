@@ -78,6 +78,10 @@ if (isset($_POST['btn-register'])) {
             $_SESSION['verify_action'] = 'register'; 
             $_SESSION['need_send_mail'] = true; // BẬT CỜ: Báo cho trang verify biết cần phải gửi mail
 
+            // Đẩy người dùng sang trang nhập OTP
+            header("Location: verify.php");
+            exit();
+            
             // Sút ngay sang trang verify.php (Mất chưa tới 0.5 giây!)
             header("Location: verify.php");
 
@@ -124,13 +128,6 @@ if (isset($_POST['btn-register'])) {
 
             $mail->send();
 
-            // Lưu thông tin cần thiết vào Session để verify.php biết đang làm việc với ai
-            $_SESSION['verify_email'] = $email;
-            $_SESSION['verify_action'] = 'register'; // Gắn cờ hành động đăng ký
-            
-            // Đẩy người dùng sang trang nhập OTP
-            header("Location: verify.php");
-            exit();
 
         } catch (\Exception $e) {
             $errors['register'] = "Có lỗi xảy ra trong quá trình xử lý: " . $e->getMessage();
