@@ -4,6 +4,10 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+// Gọi thư viện PHPMailer theo chuẩn cấu hình dự án
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 require_once 'config/db_connect.php'; 
 require_once 'vendor/autoload.php'; // Nạp Composer một lần duy nhất ở đây
 
