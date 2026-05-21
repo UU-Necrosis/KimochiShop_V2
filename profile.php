@@ -201,7 +201,7 @@ try {
                 </button>
 
                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'seller'): ?>
-                    <button class="sidebar-menu-item active" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">
+                    <button class="sidebar-menu-item " id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">
                         <i class="fa-solid fa-plus-circle me-1"></i> Đăng sản phẩm mới
                     </button>
 
@@ -209,7 +209,7 @@ try {
 
                     </a>
 
-                    <button class="sidebar-menu-item active" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">
+                    <button class="sidebar-menu-item " id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">
                         <i class="fa-solid fa-boxes-stacked me-1"></i> Kho hàng của tôi
                     </button>
                     
