@@ -362,8 +362,6 @@ try {
                                             echo "<td><span class='badge bg-success'>Đang bán</span></td>";
                                             echo "</tr>";
                                         }
-                                    } else {
-                                        echo "<tr><td colspan='4' class='text-center text-muted py-4'>Bạn chưa đăng mặt hàng nào cả.</td></tr>";
                                     }
                                 } catch (PDOException $e) {
                                     echo "<tr><td colspan='4' class='text-danger'>Lỗi: ".$e->getMessage()."</td></tr>";
