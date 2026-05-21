@@ -80,8 +80,7 @@ if (isset($_POST['btn-register'])) {
 
             // Đẩy người dùng sang trang nhập OTP
             header("Location: verify.php");
-            exit();
-            
+
             // Sút ngay sang trang verify.php (Mất chưa tới 0.5 giây!)
             header("Location: verify.php");
 
@@ -127,7 +126,7 @@ if (isset($_POST['btn-register'])) {
             ";
 
             $mail->send();
-
+            exit();
 
         } catch (\Exception $e) {
             $errors['register'] = "Có lỗi xảy ra trong quá trình xử lý: " . $e->getMessage();
