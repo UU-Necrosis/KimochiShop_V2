@@ -23,6 +23,28 @@ $user_id = $_SESSION['user_id'];
 $success_msg = "";
 $error_msg = "";
 
+// Sửa lại đoạn xử lý xóa ở đầu file profile.php mẹ
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-delete-product'])) {
+    $del_id = $_POST['delete_product_id'] ?? '';
+    $seller_id = $account['id'] ?? $_SESSION['user_id'];
+
+    if (!empty($del_id)) {
+        try {
+            // Thay vì DELETE, ta CHUYỂN STATUS THÀNH 0 (Xóa mềm) để tránh trùng lặp gãy khóa ngoại RESTRICT
+            $del_sql = "UPDATE products SET status = 0 WHERE id = :id AND (seller_id = :seller_id OR :user_role = 'admin')";
+            $del_stmt = $conn->prepare($del_sql);
+            $del_stmt->execute([
+                ':id'        => $del_id,
+                ':seller_id' => $seller_id,
+                ':user_role' => $account['role'] ?? 'customer'
+            ]);
+            header("Location: profile.php?status=deleted");
+            exit();
+        } catch (PDOException $e) {
+            $errors['db'] = "Lỗi hệ thống: " . $e->getMessage();
+        }
+    }
+}
 // ================= PROCESSING FORM SUBMISSION =================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
