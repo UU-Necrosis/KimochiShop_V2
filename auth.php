@@ -21,16 +21,19 @@ if (isset($_POST['btn-register'])) {
     $password = $_POST['reg_password'] ?? '';
     $password_confirm = $_POST['reg_password_confirm'] ?? '';
 
-    // 2. Validate dữ liệu đầu vào (Giữ nguyên các logic check cũ của ông giáo)
+    // 2. Validate dữ liệu đầu vào (Giữ nguyên các logic check của ông giáo)
     if (strlen($username) < 5) {
         $errors['username'] = "Tên đăng nhập tối thiểu 5 ký tự!";
     }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors['email'] = "Địa chỉ email không đúng định dạng!";
     }
+    if ($password !== $password_confirm) {
+        $errors['password_confirm'] = "Mật khẩu xác nhận không trùng khớp!";
+    }
 
     // Chặn spam & Check trùng: Kiểm tra Username hoặc Email trong PostgreSQL
-
+    if (empty($errors)) {
         try {
             // 1. Kiểm tra Username trước
             $check_user = $conn->prepare("SELECT id FROM users WHERE username = :username");
@@ -48,6 +51,7 @@ if (isset($_POST['btn-register'])) {
         } catch (PDOException $e) {
             $errors['register'] = "Lỗi hệ thống kiểm tra dữ liệu: " . $e->getMessage();
         }
+    }
 
     // 3. Tiến hành bùa chú Postgres + Gửi Mail OTP nếu không có lỗi
     if (empty($errors)) {
@@ -56,19 +60,19 @@ if (isset($_POST['btn-register'])) {
             $otp_code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
             $hashed_password = password_hash($password, PASSWORD_DEFAULT); 
 
-            // Cập nhật câu lệnh INSERT: Phải ném cả $otp_code vào cột verification_code
-            $sql = "INSERT INTO users (username, email, password, verification_code, is_verified) 
-                    VALUES (:username, :email, :password, :otp, FALSE)";
+            // Cập nhật câu lệnh INSERT: Đẩy dữ liệu vào PostgreSQL ở trạng thái chưa xác thực (FALSE)
+            $sql = "INSERT INTO users (username, email, password, verification_code, is_verified, role) 
+                    VALUES (:username, :email, :password, :otp, FALSE, 'customer')";
             
             $stmt = $conn->prepare($sql);
             $stmt->execute([
                 ':username' => $username,
                 ':email'    => $email,
                 ':password' => $hashed_password,
-                ':otp'      => $otp_code // Lưu mã OTP này vào database
+                ':otp'      => $otp_code // Lưu mã OTP này vào cột verification_code để đối chiếu sau
             ]);
 
-            // Triệu hồi PHPMailer gửi thư (Dùng mảng $_ENV từ hàm loadEnv tự chế của ông giáo)
+            // Triệu hồi PHPMailer gửi thư (Dùng mảng $_ENV chuẩn của ông)
             $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
             
             $mail->isSMTP();
@@ -81,12 +85,15 @@ if (isset($_POST['btn-register'])) {
             $mail->CharSet    = 'UTF-8';
 
             // Người nhận & Người gửi
-            $mail->setFrom($mail->Username, 'Kimochi Shop');
-            $mail->addAddress($email);
+            $mail->setFrom($mail->Username, $_ENV['SHOP_NAME'] ?? 'Kimochi Shop');
+            $mail->addAddress($email, $username);
 
-            // Nội dung bức thư gửi OTP
+            // Tạo đường link bấm xác thực nhanh tự động truyền OTP qua URL sang verify.php
+            $verify_link = "http://" . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/verify.php?otp=" . $otp_code;
+
+            // Nội dung bức thư gửi OTP dạng HTML đồng bộ giao diện
             $mail->isHTML(true);
-            $mail->Subject = ' Mã xác thực tài khoản Kimochi Shop';
+            $mail->Subject = '🔑 Mã xác thực tài khoản Kimochi Shop';
             $mail->Body    = "
                 <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #f0f0f0; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);'>
                     <h2 style='color: white; text-align: center; font-size: 26px; margin-bottom: 5px;'>Kimochi <span style='color:pink'>Shop</span></h2>
@@ -107,15 +114,16 @@ if (isset($_POST['btn-register'])) {
 
             $mail->send();
 
-            // Lưu email vào Session để trang verify.php nhận diện được đang check cho ai
+            // Lưu thông tin cần thiết vào Session để verify.php biết đang làm việc với ai
             $_SESSION['verify_email'] = $email;
+            $_SESSION['verify_action'] = 'register'; // Gắn cờ hành động đăng ký
             
-            // Đẩy sang trang nhập OTP
+            // Đẩy người dùng sang trang nhập OTP
             header("Location: verify.php");
             exit();
 
         } catch (\Exception $e) {
-            $errors['register'] = "Có lỗi xảy ra: " . $e->getMessage();
+            $errors['register'] = "Có lỗi xảy ra trong quá trình xử lý: " . $e->getMessage();
         }
     }
 }
