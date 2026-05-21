@@ -54,6 +54,7 @@ if (isset($_POST['btn-register'])) {
     }
 
     // 3. Tiến hành bùa chú Postgres + Gửi Mail OTP nếu không có lỗi
+// 3. Tiến hành bùa chú Postgres + Cài đặt trạng thái chờ gửi Mail nếu không có lỗi
     if (empty($errors)) {
         try {
             // Tạo mã OTP ngẫu nhiên 6 chữ số

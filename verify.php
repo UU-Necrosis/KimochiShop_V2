@@ -79,39 +79,6 @@ if (isset($_SESSION['need_send_mail']) && $_SESSION['need_send_mail'] === true) 
     }
 }
 
-// ==========================================================================
-// CÁC LOGIC KIỂM TRA ĐỐI CHIẾU OTP (Giữ nguyên như cũ)
-// ==========================================================================
-function process_verification($input_otp, $email, $conn) {
-    global $error_msg;
-    try {
-        $sql = "SELECT * FROM users WHERE email = :email AND verification_code = :otp";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':email' => $email, ':otp' => $input_otp]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($user) {
-            $update = $conn->prepare("UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE id = :id");
-            $update->execute([':id' => $user['id']]);
-
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role'] = $user['role'] ?? 'customer';
-
-            unset($_SESSION['verify_email']);
-            unset($_SESSION['verify_username']);
-            unset($_SESSION['verify_action']);
-
-            header("Location: index.php");
-            exit();
-        } else {
-            $error_msg = "Mã xác thực OTP không chính xác hoặc đã hết hạn!";
-        }
-    } catch (PDOException $e) {
-        $error_msg = "Lỗi hệ thống: " . $e->getMessage();
-    }
-}
-
 if (isset($_GET['otp'])) {
     process_verification(trim($_GET['otp']), $email, $conn);
 }
