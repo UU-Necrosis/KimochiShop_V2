@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $pass_stmt = $conn->prepare($pass_sql);
                     $pass_stmt->execute([':id' => $user_id]);
                     $curr = $pass_stmt->fetch(PDO::FETCH_ASSOC);
-                    $role
+                    
                     if ($curr && password_verify($old_password, $curr['password'])) {
                         $hashed = password_hash($new_password, PASSWORD_BCRYPT);
                         $update_p = "UPDATE users SET password = :pass WHERE id = :id";
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 2. Cập nhật nâng cao: Vai trò người sử dụng (Tab 2)
     if (isset($_POST['action']) && $_POST['action'] === 'update_advanced') {
         $new_role = trim($_POST['role']);
-        if (in_array($new_role, ['user', 'admin'])) {
+        if (in_array($new_role, ['customer', ,'admin'])) {
             try {
                 $role_sql = "UPDATE users SET role = :role WHERE id = :id";
                 $role_stmt = $conn->prepare($role_sql);
