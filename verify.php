@@ -5,18 +5,9 @@ if (session_status() == PHP_SESSION_NONE) {
 
 // Gọi file kết nối CSDL PostgreSQL (Nơi đã có hàm loadEnv() tự chế của ông giáo)
 require_once 'config/db_connect.php'; 
+require_once 'vendor/autoload.php'; // Gọi PHPMailer ở đây để phục vụ gửi mail công việc
 
 $error = '';
-
-
-
-<?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
-require_once 'config/db_connect.php';
-require_once 'vendor/autoload.php'; // Gọi PHPMailer ở đây để phục vụ gửi mail công việc
 
 $error_msg = "";
 $email = $_SESSION['verify_email'] ?? '';
