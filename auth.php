@@ -58,9 +58,9 @@ if (isset($_POST['btn-register'])) {
         try {
             // Tạo mã OTP ngẫu nhiên 6 chữ số
             $otp_code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT); 
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-            // Cập nhật câu lệnh INSERT: Đẩy dữ liệu vào PostgreSQL ở trạng thái chưa xác thực (FALSE)
+            // Đẩy dữ liệu vào PostgreSQL ở trạng thái chưa xác thực (FALSE)
             $sql = "INSERT INTO users (username, email, password, verification_code, is_verified, role) 
                     VALUES (:username, :email, :password, :otp, FALSE, 'customer')";
             
@@ -69,7 +69,7 @@ if (isset($_POST['btn-register'])) {
                 ':username' => $username,
                 ':email'    => $email,
                 ':password' => $hashed_password,
-                ':otp'      => $otp_code // Lưu mã OTP này vào cột verification_code để đối chiếu sau
+                ':otp'      => $otp_code
             ]);
 
             // Triệu hồi PHPMailer gửi thư (Dùng mảng $_ENV chuẩn của ông)
