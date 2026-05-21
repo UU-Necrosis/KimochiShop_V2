@@ -306,8 +306,9 @@ try {
                             <p class="text-secondary small" style="font-size: 12px; margin-top:-5px;">Thay đổi quyền hạn tài khoản trực tiếp (Dùng cho quá trình chạy thử nghiệm Demo đồ án).</p>
                             
                             <select name="role" class="form-select input-custom w-100" style="cursor: pointer;">
-                                <option value="user" <?php echo ($user['role'] === 'user') ? 'selected' : ''; ?>>USER (Khách hàng)</option>
+                                <option value="user" <?php echo ($user['role'] === 'user') ? 'selected' : ''; ?>>CUSTOMER (Khách hàng)</option>
                                 <option value="admin" <?php echo ($user['role'] === 'seller') ? 'selected' : ''; ?>>SELLER (Người bán hàng)</option>
+                                <option value="admin" <?php echo ($user['role'] === 'admin') ? 'selected' : ''; ?>>ADMIN (Quản trị viên)</option>
                             </select>
                         </div>
 
