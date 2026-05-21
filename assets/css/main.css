@@ -53,6 +53,25 @@ html[data-theme="light"] {
     --search-btn-color: #ffffff; /* Màu trắng cho icon kính lúp */
 }
 
+:root {
+    /* --- Hệ sinh thái màu sắc chung cho toàn bộ trang --- */
+    --default-white: #ffffff;                 /* Màu trắng tinh khiết cho nền và chữ */
+    --pink-primary: #ff69b4;
+    /* --- Hệ sinh thái màu sắc của Icon Navbar --- */
+    --icon-default-color: #ffffff;             /* Màu trắng mặc định cho icon */
+    --icon-hover-bg: rgba(234, 234, 234, 0.08);   /* Nền hồng mờ 8% khi hover */
+    --icon-active-bg: rgba(224, 30, 91, 0.529);  /* Nền hồng mờ 20% khi click mạnh */
+    --icon-opened-bg: rgb(255, 255, 255);  /* Nền hồng mờ 15% khi giữ trạng thái mở */
+    --icon-highlight-shadow: rgba(30, 217, 224, 0.444); /* Vòng shadow mờ 30% lan tỏa xung quanh */
+    /* --- Hệ sinh thái màu sắc của Bảng Tìm Kiếm --- */
+    --search-bg: #7c7c7c;
+    --search-border: rgba(224, 30, 90, 0.15);
+    --search-shadow: rgba(0, 0, 0, 0.12);
+    --search-label: #6c757d;
+    --search-btn-bg: #4d5cff; 
+    --search-btn-color: #ffffff; /* Màu trắng cho icon kính lúp */
+}
+
   /******************************/
  /* --- CÁC DỮ LIỆU ĐỔ MÀU --- */
 /******************************/
