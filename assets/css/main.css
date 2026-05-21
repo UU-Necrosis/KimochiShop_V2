@@ -184,7 +184,17 @@ html[data-theme="light"] {
 body { background-color: var(--bg); color: var(--text); }
 .navbar-brand { font-weight: bold; color: var(--brand) !important; }
             
-
+            .nav-icon-link {
+                color: #f8f9fa !important; /* Đổi màu trắng sáng cho rõ nét */
+                font-size: 1.25rem; /* Phóng to icon lên nhìn cho dễ */
+                transition: all 0.2s ease;
+                text-decoration: none;
+            }
+            
+            .nav-icon-link:hover {
+                color: var(--brand) !important; /* Di chuột vào đổi màu hồng/xanh tùy theme */
+                transform: scale(1.1); /* Hiệu ứng phóng to nhẹ khi hover */
+            }
             
 
   /****************************************/
