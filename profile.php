@@ -23,80 +23,85 @@ $user_id = $_SESSION['user_id'];
 $success_msg = "";
 $error_msg = "";
 
+// ==========================================
+// TRƯỜNG HỢP 1: XỬ LÝ THÊM MỚI SẢN PHẨM
+// ==========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-add-product'])) {
     $name = trim($_POST['name'] ?? '');
     $category_id = $_POST['category_id'] ?? '';
+    $description = trim($_POST['description'] ?? '');
     $price = trim($_POST['price'] ?? '');
     $stock = trim($_POST['stock'] ?? 0);
-    $seller_id = $account['id'] ?? $_SESSION['user_id'];
+    $seller_id = $_SESSION['user_id'];
 
-    // 📸 XỬ LÝ UPLOAD ẢNH SẢN PHẨM
-    $image_name = 'default-product.png'; // Tên ảnh mặc định nếu không upload gì
-
+    // Xử lý Upload ảnh sản phẩm
+    $image_name = 'default-product.png'; // Ảnh backup dự phòng
     if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
         $file_tmp = $_FILES['product_image']['tmp_name'];
-        $original_name = $_FILES['product_image']['name'];
-        $ext = strtolower(pathinfo($original_name, PATHINFO_EXTENSION));
-        
+        $ext = strtolower(pathinfo($_FILES['product_image']['name'], PATHINFO_EXTENSION));
         $allowed_exts = ['jpg', 'jpeg', 'png', 'webp'];
+        
         if (in_array($ext, $allowed_exts)) {
-            // Đổi tên ảnh thành chuỗi ngẫu nhiên để không bị trùng lặp trên host
+            // Đổi tên file ngẫu nhiên tránh trùng lặp
             $image_name = 'prod_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
-            
-            // Tạo thư mục lưu ảnh nếu chưa có
             $upload_dir = 'uploads/products/';
-            if (!is_dir($upload_dir)) {
-                mkdir($upload_dir, 0777, true);
-            }
             
-            // Di chuyển file từ bộ nhớ tạm vào thư mục dự án
+            if (!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0777, true); // Tự tạo thư mục nếu chưa có
+            }
             move_uploaded_file($file_tmp, $upload_dir . $image_name);
         }
     }
 
+    // Đẩy vào database Postgres (Khớp hoàn toàn cấu trúc cột mới)
     if (!empty($name) && !empty($category_id) && is_numeric($price) && $price > 0) {
         try {
-            // Chèn thêm cột image_url vào câu lệnh SQL để ghi nhận ảnh vào pgAdmin
-            $sql = "INSERT INTO products (seller_id, category_id, name, price, stock, image_url, status) 
-                    VALUES (:seller_id, :category_id, :name, :price, :stock, :image_url, 1)";
+            $sql = "INSERT INTO products (seller_id, category_id, name, description, price, stock, image_url, status) 
+                    VALUES (:seller_id, :category_id, :name, :description, :price, :stock, :image_url, 1)";
             
             $stmt = $conn->prepare($sql);
             $stmt->execute([
                 ':seller_id'   => $seller_id,
                 ':category_id' => $category_id,
                 ':name'        => $name,
+                ':description' => $description,
                 ':price'       => $price,
                 ':stock'       => $stock,
-                ':image_url'   => $image_name // Đẩy tên file ảnh vào đây
+                ':image_url'   => $image_name
             ]);
 
+            // Thành công quay về trang cá nhân và hiện thông báo
             header("Location: profile.php?status=success");
             exit();
         } catch (PDOException $e) {
-            $errors['db'] = "Lỗi lưu sản phẩm: " . $e->getMessage();
+            die("Lỗi lưu DB: " . $e->getMessage());
         }
     }
 }
 
-// Sửa lại đoạn xử lý xóa ở đầu file profile.php mẹ
+// ==========================================
+// TRƯỜNG HỢP 2: XỬ LÝ XÓA MỀM SẢN PHẨM
+// ==========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-delete-product'])) {
     $del_id = $_POST['delete_product_id'] ?? '';
-    $seller_id = $account['id'] ?? $_SESSION['user_id'];
+    $seller_id = $_SESSION['user_id'];
+    $user_role = $_SESSION['role'] ?? 'customer';
 
     if (!empty($del_id)) {
         try {
-            // Thay vì DELETE, ta CHUYỂN STATUS THÀNH 0 (Xóa mềm) để tránh trùng lặp gãy khóa ngoại RESTRICT
+            // Chuyển status về 0 (Xóa mềm) để lách luật khóa ngoại ON DELETE RESTRICT trong DB của ông
             $del_sql = "UPDATE products SET status = 0 WHERE id = :id AND (seller_id = :seller_id OR :user_role = 'admin')";
             $del_stmt = $conn->prepare($del_sql);
             $del_stmt->execute([
                 ':id'        => $del_id,
                 ':seller_id' => $seller_id,
-                ':user_role' => $account['role'] ?? 'customer'
+                ':user_role' => $user_role
             ]);
+            
             header("Location: profile.php?status=deleted");
             exit();
         } catch (PDOException $e) {
-            $errors['db'] = "Lỗi hệ thống: " . $e->getMessage();
+            die("Lỗi xóa sản phẩm: " . $e->getMessage());
         }
     }
 }
