@@ -23,17 +23,17 @@
                                         echo "<td>".htmlspecialchars($p['stock'])." cái</td>";
                                         echo "<td><span class='badge bg-success'>Đang bán</span></td>";
                                         echo "</tr>";
-                                        }
-                                    } else {
-                                        echo "<tr><td colspan='4' class='text-center text-muted py-4'></td></tr>";
                                     }
-                                } catch (PDOException $e) {
-                                    echo "<tr><td colspan='4' class='text-danger'>Lỗi: ".$e->getMessage()."</td></tr>";
+                                } else {
+                                    echo "<tr><td colspan='4' class='text-center text-muted py-4'></td></tr>";
                                 }
-                                ?>
-                            </tbody>
-                        </table>
-                    </div>
+                            } catch (PDOException $e) {
+                                echo "<tr><td colspan='4' class='text-danger'>Lỗi: ".$e->getMessage()."</td></tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
 <div class="p-1">
     <div class="text-start mb-4">
         <h3 class="fw-bold text-white"><i class="fa-solid fa-boxes-stacked text-pink me-2"></i>Kho hàng của tôi</h3>
