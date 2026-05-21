@@ -1,12 +1,8 @@
 <?php
 // =====================================================================================
-// FILE: includes/supply_product.php
-// File con hiển thị Form Đăng sản phẩm mới, được nhúng trong file profile.php mẹ.
-// Kế thừa nguyên vẹn biến kết nối cơ sở dữ liệu $conn từ file mẹ truyền xuống.
+// FILE: includes/supply_product.php (Bản vá lỗi hiển thị Sáng / Tối)
 // =====================================================================================
-
 try {
-    // Tự động truy vấn lấy danh sách danh mục đang hoạt động (status = 1) để đổ vào thẻ Select
     $cat_stmt = $conn->query("SELECT id, name FROM categories WHERE status = 1 ORDER BY name ASC");
     $categories = $cat_stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
@@ -14,9 +10,38 @@ try {
 }
 ?>
 
+<style>
+    /* Khi ở CHẾ ĐỘ TỐI (Dark Mode) */
+    [data-bs-theme="dark"] .input-custom, .dark-mode .input-custom {
+        background-color: #1e1f22 !important;
+        color: #f2f3f5 !important;
+        border: 1px solid #2b2d31 !important;
+    }
+    [data-bs-theme="dark"] .theme-text-adaptive, .dark-mode .theme-text-adaptive {
+        color: #ffffff !important;
+    }
+
+    /* Khi ở CHẾ ĐỘ SÁNG (Light Mode) */
+    [data-bs-theme="light"] .input-custom, .light-mode .input-custom {
+        background-color: #fff !important;
+        color: #313338 !important;
+        border: 1px solid #ced4da !important;
+    }
+    [data-bs-theme="light"] .theme-text-adaptive, .light-mode .theme-text-adaptive {
+        color: #313338 !important;
+    }
+    [data-bs-theme="light"] .input-custom::placeholder, .light-mode .input-custom::placeholder {
+        color: #949ba4 !important;
+    }
+    [data-bs-theme="light"] select.input-custom option, .light-mode select.input-custom option {
+        background-color: #fff !important;
+        color: #313338 !important;
+    }
+</style>
+
 <div class="p-1">
     <div class="text-start mb-4">
-        <h3 class="fw-bold text-white">
+        <h3 class="fw-bold theme-text-adaptive">
             <i class="fa-solid fa-box-open text-pink me-2"></i>Đăng sản phẩm mới
         </h3>
         <p class="text-muted small">Cung ứng mặt hàng mới của bạn lên hệ thống cửa hàng Kimochi Shop đầy đủ hình ảnh và thông số</p>
@@ -31,8 +56,8 @@ try {
         
         <div class="mb-3">
             <label class="form-label text-muted small text-uppercase fw-bold">Danh mục mặt hàng <span class="text-danger">*</span></label>
-            <select name="category_id" class="form-select input-custom" style="background-color: var(--bg-input); color: #fff;" required>
-                <option value="">-- Chọn danh mục sản phẩm tương ứng --</option>
+            <select name="category_id" class="form-select input-custom" required>
+                <option value="" class="text-muted">-- Chọn danh mục sản phẩm tương ứng --</option>
                 <?php if (!empty($categories)): ?>
                     <?php foreach ($categories as $cat): ?>
                         <option value="<?php echo $cat['id']; ?>">
@@ -47,7 +72,7 @@ try {
 
         <div class="mb-3">
             <label class="form-label text-muted small text-uppercase fw-bold">Mô tả chi tiết sản phẩm <span class="text-danger">*</span></label>
-            <textarea name="description" class="form-control input-custom" rows="5" placeholder="Nhập thông số kỹ thuật, chất liệu, tính năng, hoặc chính sách bảo hành... Mô tả càng chi tiết khách hàng càng tin tưởng xuống tiền!" required></textarea>
+            <textarea name="description" class="form-control input-custom" rows="5" placeholder="Nhập thông số kỹ thuật, chất liệu, tính năng, hoặc chính sách bảo hành..." required></textarea>
         </div>
 
         <div class="row">
