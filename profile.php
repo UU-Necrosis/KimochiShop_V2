@@ -282,6 +282,19 @@ try {
 
             <div class="tab-pane fade" id="v-pills-advanced" role="tabpanel" aria-labelledby="v-pills-advanced-tab">
                 <h4 class="fw-bold mb-4">Cài đặt nâng cao</h4>
+
+                <a href="?tab=my-account" class="tab-link <?php echo $tab === 'my-account' ? 'active' : ''; ?>">Tài khoản của tôi</a>
+                <a href="?tab=change-password" class="tab-link <?php echo $tab === 'change-password' ? 'active' : ''; ?>">Đổi mật khẩu</a>
+
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'seller'): ?>
+                    <div class="separator-custom my-2"></div> <div class="small text-muted px-3 mb-1 text-uppercase fw-bold" style="font-size: 11px;">Quản lý cửa hàng</div>
+                    <a href="?tab=add-product" class="tab-link <?php echo $tab === 'add-product' ? 'active' : ''; ?>">
+                        <i class="fa-solid fa-plus-circle me-1"></i> Đăng sản phẩm mới
+                    </a>
+                    <a href="?tab=my-products" class="tab-link <?php echo $tab === 'my-products' ? 'active' : ''; ?>">
+                        <i class="fa-solid fa-boxes-stacked me-1"></i> Kho hàng của tôi
+                    </a>
+                <?php endif; ?>
                 
                 <div class="discord-card p-4 shadow-lg">
                     <div class="mb-4">
