@@ -199,9 +199,6 @@ try {
                 <button class="sidebar-menu-item" id="v-pills-advanced-tab" data-bs-toggle="pill" data-bs-target="#v-pills-advanced" type="button" role="tab" aria-controls="v-pills-advanced" aria-selected="false">
                     <i class="fa-solid fa-user-shield"></i> Cập nhật nâng cao
                 </button>
-                
-                <a href="?tab=my-account" class="tab-link <?php echo $tab === 'my-account' ? 'active' : ''; ?>">Tài khoản của tôi</a>
-                <a href="?tab=change-password" class="tab-link <?php echo $tab === 'change-password' ? 'active' : ''; ?>">Đổi mật khẩu</a>
 
                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'seller'): ?>
                     <div class="separator-custom my-2"></div> <div class="small text-muted px-3 mb-1 text-uppercase fw-bold" style="font-size: 11px;">Quản lý cửa hàng</div>
