@@ -168,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-add-product'])) {
 
             </div>
 
-        </div><form action="
+        </div>
     </div>
 </div>
 
