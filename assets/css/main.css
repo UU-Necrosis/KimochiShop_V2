@@ -309,3 +309,21 @@ html, body {
     gap: 18px; /* Tạo khoảng cách rộng rãi giữa các icon */
     margin-left: 20px; /* Đẩy cụm icon tách biệt khỏi cụm nút chữ */
 }
+
+/* --- BẢO VỆ LAYOUT CARD KHÔNG BỊ VỠ KHI CHỮ QUÁ DÀI --- */
+.text-truncate-2mb {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Ép buộc tối đa chỉ hiện 2 dòng */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 40px; /* Cố định chiều cao phần mô tả để các card bằng tăm tắp */
+}
+
+.product-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.product-card:hover {
+    transform: translateY(-5px); /* Hiệu ứng nhấc nhẹ thẻ khi di chuột vào cực sang */
+    box-shadow: 0 10px 20px rgba(255, 71, 126, 0.2) !important; /* Đổ bóng hồng Kimochi */
+}
