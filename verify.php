@@ -3,131 +3,71 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once 'config/db_connect.php';
-require_once 'vendor/autoload.php';
+// Gọi file kết nối CSDL PostgreSQL (Nơi đã có hàm loadEnv() tự chế của ông giáo)
+require_once 'config/db_connect.php'; 
 
-$error_msg = "";
-$success_msg = "";
-$email = $_SESSION['verify_email'] ?? '';
-$username = $_SESSION['verify_username'] ?? 'Thành viên';
-$otp_code = $_SESSION['verify_otp'] ?? '';
-$action = $_SESSION['verify_action'] ?? 'register';
+$error = '';
 
-if (empty($email)) {
-    header("Location: auth.php");
+// Nếu không có session chứng tỏ chưa qua bước đăng ký hoặc đăng nhập thất bại, đá về trang auth luôn
+if (!isset($_SESSION['verify_email'])) {
+    echo "<script>
+        alert('Phiên làm việc đã hết hạn hoặc bạn chưa đăng ký! Vui lòng đăng ký lại.');
+        window.location.href='auth.php?tab=register';
+    </script>";
     exit();
 }
 
-// ==========================================================================
-// 1. CHẶN ĐẦU: LOGIC GỬI EMAIL NGẦM KHI GIAO DIỆN HIỂN THỊ
-// ==========================================================================
-if (isset($_SESSION['need_send_mail']) && $_SESSION['need_send_mail'] === true) {
-    try {
-        $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
-        
-        $mail->isSMTP();
-        $mail->Host       = $_ENV['SMTP_HOST'] ?? 'smtp.gmail.com';
-        $mail->SMTPAuth   = true;
-        $mail->Username   = $_ENV['SMTP_USER'] ?? '';
-        $mail->Password   = $_ENV['SMTP_PASS'] ?? '';
-        $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = $_ENV['SMTP_PORT'] ?? 587;
-        $mail->CharSet    = 'UTF-8';
+if (isset($_POST['btn-verify'])) {
+    $otp_input = trim($_POST['otp_code'] ?? ''); // Nhớ check kỹ tên name ở form HTML là 'otp' hay 'otp_code' nha ông
+    $email = $_SESSION['verify_email'] ?? '';
 
-        $mail->setFrom($mail->Username, $_ENV['SHOP_NAME'] ?? 'Kimochi Shop');
-        $mail->addAddress($email);
+    if (empty($otp_input)) {
+        $error = "Vui lòng nhập đủ 6 số xác thực!";
+    } else {
+        try {
+            // Tìm user dựa vào Email trong Session và mã OTP nhập vào
+            $sql = "SELECT * FROM users WHERE email = :email AND verification_code = :otp";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([':email' => $email, ':otp' => $otp_input]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $mail->isHTML(true);
-        
-        if ($action === 'forgot_password') {
-            $mail->Subject = '🔑 Reset lại mật khẩu ' . ($_ENV['SHOP_NAME'] ?? 'Kimochi Shop');
-            $mail->Body    = "
-                <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #ff69b4; padding: 25px; border-radius: 12px; background-color: #1e1f22; color: #f2f3f5;'>
-                    <h2 style='color: #ff69b4; text-align: center;'>Kimochi Shop</h2>
-                    <p style='color: #dbdee1;'>Bạn đã yêu cầu đặt lại mật khẩu. Mã OTP xác nhận của bạn là:</p>
-                    <div style='text-align: center; margin: 30px 0; background-color: #111214; padding: 15px; border-radius: 6px; border: 1px dashed #ff69b4;'>
-                        <span style='font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #ffffff;'>$otp_code</span>
-                    </div>
-                </div>";
-        } else {
-            $verify_link = "http://" . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/verify.php?otp=" . $otp_code;
-            $mail->Subject = '🔑 Mã xác thực tài khoản Kimochi Shop';
-            $mail->Body    = "
-                <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #ff69b4; padding: 25px; border-radius: 12px; background-color: #1e1f22; color: #f2f3f5;'>
-                    <h2 style='color: #ff69b4; text-align: center;'>Kimochi Shop V2</h2>
-                    <p style='color: #dbdee1;'>Xin chào <strong>$username</strong>, mã OTP kích hoạt tài khoản của bạn là:</p>
-                    <div style='text-align: center; margin: 25px 0; background-color: #111214; padding: 15px; border-radius: 6px; border: 1px dashed #ff69b4;'>
-                        <span style='font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #ffffff;'>$otp_code</span>
-                    </div>
-                    <p style='color: #dbdee1; text-align: center;'>Hoặc bạn nhấp trực tiếp vào link kích hoạt nhanh này:</p>
-                    <div style='text-align: center; margin: 20px 0;'>
-                        <a href='$verify_link' style='background-color: #248046; color: white; padding: 12px 30px; text-decoration: none; font-weight: bold; border-radius: 4px; display: inline-block;'>XÁC NHẬN MÃ OTP</a>
-                    </div>
-                </div>";
-        }
+            if ($user) {
+                // =============== TRƯỜNG HỢP 1: KHỚP MÃ OTP (THÀNH CÔNG) ===============
+                unset($_SESSION['otp_attempts']); 
 
-        $mail->send();
-        
-        // Tắt cờ gửi mail ngay lập tức để tránh F5 bị gửi lặp
-        unset($_SESSION['need_send_mail']);
-        unset($_SESSION['verify_otp']); 
-
-    } catch (\Exception $e) {
-        $error_msg = "Tài khoản đã tạo nhưng lỗi gửi Email: " . $e->getMessage();
-        unset($_SESSION['need_send_mail']);
-    }
-}
-
-// ==========================================================================
-// 2. LOGIC KIỂM TRA ĐỐI CHIẾU MÃ OTP KHI USER NHẬP HOẶC CLICK LINK
-// ==========================================================================
-function process_verification($input_otp, $email, $action, $conn) {
-    global $error_msg;
-    try {
-        $sql = "SELECT * FROM users WHERE email = :email AND verification_code = :otp";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':email' => $email, ':otp' => $input_otp]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($user) {
-            if ($action === 'forgot_password') {
-                // Nếu là quên mật khẩu, chuyển sang trang đổi mật khẩu mới (ông viết sau)
-                $_SESSION['can_reset_password'] = true;
-                header("Location: reset_password.php"); 
-                exit();
-            } else {
-                // Nếu là đăng ký tài khoản mới -> Kích hoạt luôn
-                $update = $conn->prepare("UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE id = :id");
-                $update->execute([':id' => $user['id']]);
-
-                // Tạo session đăng nhập tự động luôn
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['username'] = $user['username'];
-                $_SESSION['role'] = $user['role'] ?? 'customer';
+                // Kích hoạt tài khoản lên TRUE
+                $update_sql = "UPDATE users SET is_verified = TRUE, verification_code = NULL WHERE email = :email";
+                $update_stmt = $conn->prepare($update_sql);
+                $update_stmt->execute([':email' => $email]);
 
                 unset($_SESSION['verify_email']);
-                unset($_SESSION['verify_username']);
                 unset($_SESSION['verify_action']);
 
-                header("Location: index.php");
+                // Đẩy sang trang Login kèm thông báo
+                header("Location: auth.php?tab=login&success=verified");
                 exit();
+
+            } else {
+                // =============== TRƯỜNG HỢP 2: SAI MÃ OTP (THẤT BẠI) ===============
+                $_SESSION['otp_attempts'] = ($_SESSION['otp_attempts'] ?? 0) + 1;
+
+                if ($_SESSION['otp_attempts'] >= 3) {
+                    unset($_SESSION['verify_email']);
+                    unset($_SESSION['otp_attempts']);
+                    echo "<script>
+                        alert('Bạn đã nhập sai OTP quá 3 lần! Phiên làm việc đã bị hủy, vui lòng đăng ký lại.');
+                        window.location.href='auth.php?tab=register';
+                    </script>";
+                    exit();
+                }
+
+                $remaining = 3 - $_SESSION['otp_attempts'];
+                $error = "Mã OTP không chính xác! Bạn còn $remaining lần thử.";
             }
-        } else {
-            $error_msg = "Mã xác thực OTP không chính xác hoặc đã hết hạn!";
+        } catch (PDOException $e) {
+            $error = "Lỗi hệ thống database: " . $e->getMessage();
         }
-    } catch (PDOException $e) {
-        $error_msg = "Lỗi hệ thống: " . $e->getMessage();
     }
-}
-
-// Kiểm tra xem có nhận mã tự động từ URL không
-if (isset($_GET['otp'])) {
-    process_verification(trim($_GET['otp']), $email, $action, $conn);
-}
-
-// Kiểm tra khi ấn nút Submit trên form
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-verify'])) {
-    process_verification(trim($_POST['otp_code']), $email, $action, $conn);
 }
 ?>
 
