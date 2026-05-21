@@ -371,8 +371,6 @@ try {
                             </tbody>
                         </table>
                     </div>
-                <?php else: ?>
-                    <div class="alert alert-danger m-3">Bạn không có quyền sử dụng chức năng này!</div>
                 <?php endif; ?>
             </div>
 
