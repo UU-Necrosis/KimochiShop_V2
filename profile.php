@@ -307,7 +307,7 @@ try {
                             
                             <select name="role" class="form-select input-custom w-100" style="cursor: pointer;">
                                 <option value="user" <?php echo ($user['role'] === 'user') ? 'selected' : ''; ?>>USER (Khách hàng)</option>
-                                <option value="admin" <?php echo ($user['role'] === 'admin') ? 'selected' : ''; ?>>SELLER (Quản trị viên toàn quyền)</option>
+                                <option value="admin" <?php echo ($user['role'] === 'seller') ? 'selected' : ''; ?>>SELLER (Người bán hàng)</option>
                             </select>
                         </div>
 
