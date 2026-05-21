@@ -201,7 +201,6 @@ try {
                 </button>
 
                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'seller'): ?>
-                    <div class="separator-custom my-2"></div> <div class="small text-muted px-3 mb-1 text-uppercase fw-bold" style="font-size: 11px;">Quản lý cửa hàng</div>
                     <a href="?tab=add-product" class="tab-link <?php echo $tab === 'add-product' ? 'active' : ''; ?>">
                         <i class="fa-solid fa-plus-circle me-1"></i> Đăng sản phẩm mới
                     </a>
