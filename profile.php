@@ -333,17 +333,14 @@ try {
             <div class="tab-pane fade" id="v-pills-supply" role="tabpanel" aria-labelledby="v-pills-supply-tab">
                 <?php if (($user['role'] ?? '') === 'seller' || ($user['role'] ?? '') === 'admin'): ?>
                     <h3 class="fw-bold mb-3" style="color: var(--text-main);">Đăng sản phẩm mới</h3>
-
                         <?php include 'includes/supply_product.php'; ?>
+                <?php endif; ?>
+            </div>
 
             <div class="tab-pane fade" id="v-pills-stock" role="tabpanel" aria-labelledby="v-pills-stock-tab">
                 <?php if (($user['role'] ?? '') === 'seller' || ($user['role'] ?? '') === 'admin'): ?>
                     <h3 class="fw-bold mb-3" style="color: var(--text-main);">Kho hàng của tôi</h3>
-                    
-                    <div class="table-responsive">
-                        <table class="table table-dark table-hover align-middle small" style="background-color: #111214;">
-
-                    </div>
+                    <?php include 'includes/stock_management.php'; ?>
                 <?php endif; ?>
             </div>
 
