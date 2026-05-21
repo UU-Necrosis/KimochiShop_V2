@@ -42,17 +42,17 @@ try {
                 <?php if (!empty($products)): ?>
                     <?php foreach ($products as $prod): ?>
                         <?php 
-                            // 1. Ảnh mặc định dự phòng ban đầu nếu không có ảnh
-                            $img_url = query("SELECT * FROM products WHERE img_url");; 
+                            // 1. Ảnh mặc định dự phòng ban đầu nếu sản phẩm không có ảnh
+                            $img_src = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500'; 
                             
-                            // 2. Xử lý cột image_url duy nhất sau khi đã xóa bỏ các cột thừa
+                            // 2. Lấy luôn dữ liệu image_url từ $prod đã select ở trên đầu file
                             if (!empty($prod['image_url'])) {
-                                // Nếu là đường link URL tuyệt đối (http:// hoặc https://)
+                                // Nếu là đường link URL tuyệt đối từ mạng (http:// hoặc https://)
                                 if (strpos($prod['image_url'], 'http://') === 0 || strpos($prod['image_url'], 'https://') === 0) {
                                     $img_src = $prod['image_url'];
                                 } else {
-                                    // Nếu là tên file cục bộ (như prod_1779346175_6174.png), tự nối thư mục uploads/
-                                    $img_src = 'uploads/' . $prod['image_url'];
+                                    // Nếu là file cục bộ, nối chuẩn thư mục assets/uploads/ của ông giáo vào
+                                    $img_src = 'assets/uploads/' . $prod['image_url'];
                                 }
                             }
                         ?>
@@ -60,7 +60,7 @@ try {
                         <div class="col">
                             <div class="card h-100 shadow-sm border-0 product-card">
                                 <div class="position-relative" style="padding-top: 100%; overflow: hidden; background: #222;">
-                                    <img src="<?php echo htmlspecialchars($img_url); ?>" 
+                                    <img src="<?php echo htmlspecialchars($img_src); ?>" 
                                          class="card-img-top position-absolute top-0 start-0 w-100 h-100" 
                                          style="object-fit: cover;" 
                                          alt="<?php echo htmlspecialchars($prod['name']); ?>">
@@ -96,7 +96,8 @@ try {
                     
                 <?php endif; ?>
                 
-            </div> </div>
+            </div> 
+        </div>
     </div>
 </div>
 
