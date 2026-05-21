@@ -16,17 +16,7 @@ require_once __DIR__ . '/functions.php';
         <link href="assets/vendor/fontawesome/css/all.min.css" rel="stylesheet" /*FontAwesome_CSS*/>
         <link href="assets/css/main.css" rel="stylesheet" /*Custom_CSS*/>
     <style>
-            .nav-icon-link {
-                color: #f8f9fa !important; /* Đổi màu trắng sáng cho rõ nét */
-                font-size: 1.25rem; /* Phóng to icon lên nhìn cho dễ */
-                transition: all 0.2s ease;
-                text-decoration: none;
-            }
-            
-            .nav-icon-link:hover {
-                color: var(--brand) !important; /* Di chuột vào đổi màu hồng/xanh tùy theme */
-                transform: scale(1.1); /* Hiệu ứng phóng to nhẹ khi hover */
-            }
+
         </style>
     </head>
     <body>
