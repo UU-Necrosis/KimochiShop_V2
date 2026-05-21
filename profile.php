@@ -330,20 +330,6 @@ try {
                 </div>
             </div>
 
-            <div class="tab-pane fade" id="v-pills-supply" role="tabpanel" aria-labelledby="v-pills-supply-tab">
-                <?php 
-                if (($user['role'] ?? '') === 'seller' || ($user['role'] ?? '') === 'admin') {
-                    // Nhúng file supply_product.php vào làm nguồn đọc
-                    if (file_exists('supply_product.php')) {
-                        include_once 'supply_product.php';
-                    } else {
-                        echo "<p class='text-muted text-center py-4'>Chưa tìm thấy file supply_product.php</p>";
-                    }
-                } else {
-                    echo "<div class='alert alert-danger m-3'>Bạn không có quyền sử dụng chức năng này!</div>";
-                }
-                ?>
-            </div>
 
             <div class="tab-pane fade" id="v-pills-stock" role="tabpanel" aria-labelledby="v-pills-stock-tab">
                 <?php if (($user['role'] ?? '') === 'seller' || ($user['role'] ?? '') === 'admin'): ?>
