@@ -5,23 +5,20 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 require_once 'config/db_connect.php'; 
-require_once 'vendor/autoload.php'; // Nạp Composer một lần duy nhất ở đây
+require_once 'vendor/autoload.php'; 
 
 // Xác định tab giao diện đang hiển thị
 $tab = isset($_GET['tab']) ? $_GET['tab'] : 'login';
 $errors = [];
 $success = "";
 
-// ==================== XỬ LÝ LOGIC ĐĂNG KÝ GỬI OTP ====================
-
+// ==================== XỬ LÝ LOGIC ĐĂNG KÝ (KHÔNG GỬI MAIL TẠI ĐÂY) ====================
 if (isset($_POST['btn-register'])) { 
-    // 1. Nhận dữ liệu nhập vào từ Form
     $username = trim($_POST['reg_username'] ?? '');
     $email = trim($_POST['reg_email'] ?? '');
     $password = $_POST['reg_password'] ?? '';
     $password_confirm = $_POST['reg_password_confirm'] ?? '';
 
-    // 2. Validate dữ liệu đầu vào (Giữ nguyên các logic check của ông giáo)
     if (strlen($username) < 5) {
         $errors['username'] = "Tên đăng nhập tối thiểu 5 ký tự!";
     }
@@ -29,20 +26,17 @@ if (isset($_POST['btn-register'])) {
         $errors['email'] = "Địa chỉ email không đúng định dạng!";
     }
     if ($password !== $password_confirm) {
-        $errors['password_confirm'] = "Mật khẩu xác nhận không trùng khớp!";
+        $errors['password_confirm'] = "Mật khẩu xác nhận không khớp!";
     }
 
-    // Chặn spam & Check trùng: Kiểm tra Username hoặc Email trong PostgreSQL
     if (empty($errors)) {
         try {
-            // 1. Kiểm tra Username trước
             $check_user = $conn->prepare("SELECT id FROM users WHERE username = :username");
             $check_user->execute([':username' => $username]);
             if ($check_user->fetch()) {
                 $errors['username'] = "Tên đăng nhập này đã có người sử dụng rồi!";
             }
 
-            // 2. Kiểm tra Email sau
             $check_email = $conn->prepare("SELECT id FROM users WHERE email = :email");
             $check_email->execute([':email' => $email]);
             if ($check_email->fetch()) {
@@ -53,46 +47,40 @@ if (isset($_POST['btn-register'])) {
         }
     }
 
-    // 3. Tiến hành bùa chú Postgres + Gửi Mail OTP nếu không có lỗi
     if (empty($errors)) {
         try {
-            // Tạo mã OTP ngẫu nhiên 6 chữ số
             $otp_code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
             $hashed_password = password_hash($password, PASSWORD_DEFAULT); 
 
-            // Đẩy dữ liệu vào PostgreSQL ở trạng thái chưa xác thực (FALSE)
-            $sql = "INSERT INTO users (username, email, password, verification_code, is_verified, role) 
-                    VALUES (:username, :email, :password, :otp, FALSE, 'customer')";
+            $sql = "INSERT INTO users (username, email, password, verification_code, is_verified) 
+                    VALUES (:username, :email, :password, :otp, FALSE)";
             
             $stmt = $conn->prepare($sql);
             $stmt->execute([
                 ':username' => $username,
                 ':email'    => $email,
                 ':password' => $hashed_password,
-                ':otp'      => $otp_code
+                ':otp'      => $otp_code 
             ]);
 
-            // Lưu thông tin vào Session để verify.php nhận diện
+            // BẬT CỜ BÁO HIỆU: Lưu thông tin vào session để trang verify.php gửi mail hộ
             $_SESSION['verify_email'] = $email;
             $_SESSION['verify_username'] = $username;
-            $_SESSION['verify_otp'] = $otp_code; // Lưu tạm OTP vào session để lát gửi mail
-            $_SESSION['verify_action'] = 'register'; 
-            $_SESSION['need_send_mail'] = true; // BẬT CỜ: Báo cho trang verify biết cần phải gửi mail
+            $_SESSION['verify_otp'] = $otp_code;
+            $_SESSION['verify_action'] = 'register';
+            $_SESSION['need_send_mail'] = true; // Bật công tắc gửi xích ngầm
 
-            // Sút ngay sang trang verify.php (Mất chưa tới 0.5 giây!)
             header("Location: verify.php");
             exit();
 
-        } catch (\Exception $e) {
-            $errors['register'] = "Có lỗi xảy ra trong quá trình xử lý: " . $e->getMessage();
+        } catch (PDOException $e) {
+            $errors['register'] = "Có lỗi xảy ra: " . $e->getMessage();
         }
     }
 }
 
 // ==================== XỬ LÝ LOGIC ĐĂNG NHẬP POSTGRESQL ====================
-
 if (isset($_POST['btn-login'])) {
-    // 1. Dùng trim() triệt để cho cả 2 đầu dữ liệu để loại bỏ dấu cách thừa
     $login_input = isset($_POST['username']) ? trim($_POST['username']) : ''; 
     $password = isset($_POST['password']) ? trim($_POST['password']) : '';
 
@@ -108,26 +96,21 @@ if (isset($_POST['btn-login'])) {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user && password_verify($password, $user['password'])) {
-                
-                // Kiểm tra trạng thái kích hoạt tài khoản linh hoạt hơn
                 if ($user['is_verified'] === false || $user['is_verified'] === 'f' || $user['is_verified'] == 0) {
                     $_SESSION['verify_email'] = $user['email'];
+                    $_SESSION['verify_username'] = $user['username'];
+                    $_SESSION['verify_otp'] = $user['verification_code']; // Lấy otp cũ trong db
                     $_SESSION['verify_action'] = 'register';
-                    $errors['login'] = "Tài khoản chưa kích hoạt! <a href='verify.php' class='text-pink fw-bold'>Nhấp vào đây để kích hoạt</a>";
+                    $_SESSION['need_send_mail'] = true; // Cho gửi lại mail kích hoạt
+                    
+                    $errors['login'] = "Tài khoản chưa kích hoạt! <a href='verify.php' class='text-pink fw-bold'>Nhập vào đây để kích hoạt</a>";
                 } else {
-                    // ĐĂNG NHẬP THÀNH CÔNG
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['role'] = $user['role'] ?? 'customer';
 
-                    // 2. GIẢI PHÁP AN TOÀN: Dùng JavaScript làm phương án dự phòng nếu header() bị lỗi đã gửi content trước
-                    if (!headers_sent()) {
-                        header("Location: index.php");
-                        exit();
-                    } else {
-                        echo "<script>window.location.href='index.php';</script>";
-                        exit();
-                    }
+                    header("Location: index.php");
+                    exit();
                 }
             } else {
                 $errors['login'] = "Tên đăng nhập/Email hoặc mật khẩu không chính xác!";
@@ -139,7 +122,6 @@ if (isset($_POST['btn-login'])) {
 }
 
 // ==================== XỬ LÝ LOGIC QUÊN MẬT KHẨU ====================
-
 if (isset($_POST['btn-forgot'])) {
     $email = trim($_POST['forgot_email'] ?? '');
 
@@ -149,37 +131,35 @@ if (isset($_POST['btn-forgot'])) {
 
     if (empty($errors)) {
         try {
-            // 1. Kiểm tra xem Email có tồn tại trong hệ thống PostgreSQL không
             $sql = "SELECT * FROM users WHERE email = :email";
             $stmt = $conn->prepare($sql);
             $stmt->execute([':email' => $email]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user) {
-                // 2. Nếu có tồn tại, sinh mã OTP mới 6 chữ số
                 $otp_code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
 
-                // Cập nhật mã OTP này vào cột verification_code của user đó
                 $update_sql = "UPDATE users SET verification_code = :otp WHERE email = :email";
                 $update_stmt = $conn->prepare($update_sql);
                 $update_stmt->execute([':otp' => $otp_code, ':email' => $email]);
 
-                // 3. Gửi Mail chứa OTP về cho khách
-                $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
-                $mail->isSMTP();
-                $mail->Host       = $_ENV['SMTP_HOST'] ?? 'smtp.gmail.com';
-                $mail->SMTPAuth   = true;
-                $mail->Username   = $_ENV['SMTP_USER'] ?? '';
-                $mail->Password   = $_ENV['SMTP_PASS'] ?? '';
-                $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port       = $_ENV['SMTP_PORT'] ?? 587;
-                $mail->CharSet    = 'UTF-8';
+                $_SESSION['verify_email'] = $email;
+                $_SESSION['verify_username'] = $user['username'];
+                $_SESSION['verify_otp'] = $otp_code;
+                $_SESSION['verify_action'] = 'forgot_password'; 
+                $_SESSION['need_send_mail'] = true;
 
-                $mail->setFrom($mail->Username, 'Kimochi Shop');
-                $mail->addAddress($email);
-
-                $mail->isHTML(true);
-                $mail->Subject = ' Reset lại mật khẩu ' . ($_ENV['SHOP_NAME'] ?? 'Kimochi Shop');
+                header("Location: verify.php");
+                exit();
+            } else {
+                $errors['forgot'] = "Địa chỉ email này không tồn tại trên hệ thống!";
+            }
+        } catch (\Exception $e) {
+            $errors['forgot'] = "Có lỗi xảy ra: " . $e->getMessage();
+        }
+    }
+}
+?>
                 $mail->Body    = "
                     <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #f0f0f0; padding: 25px; border-radius: 12px;'>
                         <h2 style='color: #ff69b4; text-align: center;'>Kimochi Shop</h2>
