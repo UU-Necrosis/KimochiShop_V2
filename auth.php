@@ -71,6 +71,15 @@ if (isset($_POST['btn-register'])) {
                 ':password' => $hashed_password,
                 ':otp'      => $otp_code
             ]);
+            // Lưu thông tin vào Session để verify.php nhận diện
+            $_SESSION['verify_email'] = $email;
+            $_SESSION['verify_username'] = $username;
+            $_SESSION['verify_otp'] = $otp_code; // Lưu tạm OTP vào session để lát gửi mail
+            $_SESSION['verify_action'] = 'register'; 
+            $_SESSION['need_send_mail'] = true; // BẬT CỜ: Báo cho trang verify biết cần phải gửi mail
+
+            // Sút ngay sang trang verify.php (Mất chưa tới 0.5 giây!)
+            header("Location: verify.php");
 
             // Triệu hồi PHPMailer gửi thư (Dùng mảng $_ENV chuẩn của ông)
             $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
