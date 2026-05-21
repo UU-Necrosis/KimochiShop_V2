@@ -7,9 +7,12 @@ if (session_status() == PHP_SESSION_NONE) {
 // Gọi thư viện PHPMailer theo chuẩn cấu hình dự án
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+// Đảm bảo đường dẫn này đúng với thư mục vendor của ông, hoặc dùng require nếu cài thủ công
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+}
 
 require_once 'config/db_connect.php'; 
-require_once 'vendor/autoload.php'; // Nạp Composer một lần duy nhất ở đây
 
 // Xác định tab giao diện đang hiển thị
 $tab = isset($_GET['tab']) ? $_GET['tab'] : 'login';
