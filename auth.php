@@ -87,55 +87,6 @@ if (isset($_POST['btn-register'])) {
             $errors['register'] = "Có lỗi xảy ra trong quá trình xử lý: " . $e->getMessage();
         }
     }
-
-            // Triệu hồi PHPMailer gửi thư (Dùng mảng $_ENV chuẩn của ông)
-            $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
-            
-            $mail->isSMTP();
-            $mail->Host       = $_ENV['SMTP_HOST'] ?? 'smtp.gmail.com';
-            $mail->SMTPAuth   = true;
-            $mail->Username   = $_ENV['SMTP_USER'] ?? '';
-            $mail->Password   = $_ENV['SMTP_PASS'] ?? '';
-            $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port       = $_ENV['SMTP_PORT'] ?? 587;
-            $mail->CharSet    = 'UTF-8';
-
-            // Người nhận & Người gửi
-            $mail->setFrom($mail->Username, $_ENV['SHOP_NAME'] ?? 'Kimochi Shop');
-            $mail->addAddress($email, $username);
-
-            // Tạo đường link bấm xác thực nhanh tự động truyền OTP qua URL sang verify.php
-            $verify_link = "http://" . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/verify.php?otp=" . $otp_code;
-
-            // Nội dung bức thư gửi OTP dạng HTML đồng bộ giao diện
-            $mail->isHTML(true);
-            $mail->Subject = ' Mã xác thực tài khoản Kimochi Shop';
-            $mail->Body    = "
-                <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #f0f0f0; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);'>
-                    <h2 style='color: white; text-align: center; font-size: 26px; margin-bottom: 5px;'>Kimochi <span style='color:pink'>Shop</span></h2>
-                    <p style='color: #555; font-size: 14px;'>Xin chào <strong>$username</strong>,</p>
-                    <p style='color: #555; font-size: 14px;'>Cảm ơn bạn vì đã tin tưởng và lựa chọn Kimochi Shop. Mã xác thực tài khoản của bạn là: <strong>$otp_code</strong></p>
-                    <p style='color: #dbdee1; font-size: 14px; text-align: center;'>Hoặc bạn có thể click trực tiếp vào nút bên dưới để kích hoạt nhanh tài khoản:</p>
-                    <div style='text-align: center; margin: 35px 0;'>
-                        <a href='$verify_link' style='font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #222; background: #fff5f8; padding: 12px 25px; border-radius: 8px; border: 2px dashed #c0c0c0; display: inline-block;'>
-                            <p style='margin: 0;'>
-                                Xác nhận Mã OTP
-                            </p>
-                        </a>
-                    </div>
-                    <p style='font-size: 12px; color: #999; text-align: center;'>
-                        Nếu bạn không yêu cầu đăng ký, vui lòng bỏ qua email này. Mã này có hiệu lực trong vòng 15 phút. Tuyệt đối không chia sẻ mã này cho ai.
-                    </p>
-                </div>
-            ";
-
-            $mail->send();
-            exit();
-
-        } catch (\Exception $e) {
-            $errors['register'] = "Có lỗi xảy ra trong quá trình xử lý: " . $e->getMessage();
-        }
-    }
 }
 
 // ==================== XỬ LÝ LOGIC ĐĂNG NHẬP POSTGRESQL ====================
