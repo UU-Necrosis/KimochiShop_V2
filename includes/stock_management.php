@@ -12,7 +12,7 @@
                             <tbody>
                                 <?php
                                 try {
-                                    $prod_stmt = $conn->prepare("SELECT * FROM products WHERE seller_id = :seller_id ORDER BY id DESC");
+                                    $prod_stmt = $conn->prepare("SELECT * FROM products WHERE seller_id = :seller_id AND status = 1 ORDER BY id DESC");
                                     $prod_stmt->execute([':seller_id' => $user['id']]);
                                     $my_prods = $prod_stmt->fetchAll(PDO::FETCH_ASSOC);
 
