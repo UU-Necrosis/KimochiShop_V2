@@ -58,7 +58,7 @@ if (isset($_POST['btn-register'])) {
         try {
             // Tạo mã OTP ngẫu nhiên 6 chữ số
             $otp_code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT); 
 
             // Đẩy dữ liệu vào PostgreSQL ở trạng thái chưa xác thực (FALSE)
             $sql = "INSERT INTO users (username, email, password, verification_code, is_verified, role) 
@@ -71,6 +71,7 @@ if (isset($_POST['btn-register'])) {
                 ':password' => $hashed_password,
                 ':otp'      => $otp_code
             ]);
+
             // Lưu thông tin vào Session để verify.php nhận diện
             $_SESSION['verify_email'] = $email;
             $_SESSION['verify_username'] = $username;
@@ -78,11 +79,14 @@ if (isset($_POST['btn-register'])) {
             $_SESSION['verify_action'] = 'register'; 
             $_SESSION['need_send_mail'] = true; // BẬT CỜ: Báo cho trang verify biết cần phải gửi mail
 
-            // Đẩy người dùng sang trang nhập OTP
-            header("Location: verify.php");
-
             // Sút ngay sang trang verify.php (Mất chưa tới 0.5 giây!)
             header("Location: verify.php");
+            exit();
+
+        } catch (\Exception $e) {
+            $errors['register'] = "Có lỗi xảy ra trong quá trình xử lý: " . $e->getMessage();
+        }
+    }
 
             // Triệu hồi PHPMailer gửi thư (Dùng mảng $_ENV chuẩn của ông)
             $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
@@ -105,7 +109,7 @@ if (isset($_POST['btn-register'])) {
 
             // Nội dung bức thư gửi OTP dạng HTML đồng bộ giao diện
             $mail->isHTML(true);
-            $mail->Subject = '🔑 Mã xác thực tài khoản Kimochi Shop';
+            $mail->Subject = ' Mã xác thực tài khoản Kimochi Shop';
             $mail->Body    = "
                 <div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #f0f0f0; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);'>
                     <h2 style='color: white; text-align: center; font-size: 26px; margin-bottom: 5px;'>Kimochi <span style='color:pink'>Shop</span></h2>
