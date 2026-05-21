@@ -139,58 +139,38 @@ try {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* CSS Variables hỗ trợ chế độ Light/Dark Mode linh hoạt */
-        :root[data-theme="dark"] {
-            --bg-body: #111214;
-            --bg-sidebar: #2b2d31;
-            --bg-main: #313338;
-            --bg-card: #1e1f22;
-            --bg-input: #111214;
-            --text-main: #f2f3f5;
-            --text-muted: #949ba4;
-            --border-color: #2b2d31;
-            --sidebar-active: #404249;
+        /* Khóa cứng chiều cao trang chuẩn app Desktop phẳng */
+        html, body { 
+            height: 100%; 
+            overflow: hidden; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
         }
-        :root[data-theme="light"] {
-            --bg-body: #f0f2f5;
-            --bg-sidebar: #e3e5e8;
-            --bg-main: #ffffff;
-            --bg-card: #f2f3f5;
-            --bg-input: #ffffff;
-            --text-main: #060607;
-            --text-muted: #4e5058;
-            --border-color: #cbd5e1;
-            --sidebar-active: #c9ccd1;
-        }
-
-        html, body { height: 100%; overflow: hidden; background-color: var(--bg-body); color: var(--text-main); font-family: 'Segoe UI', Tahoma, sans-serif; transition: background 0.2s, color 0.2s; }
+        
         .page-wrapper { display: flex; flex-direction: column; height: 100vh; }
         .discord-container { flex: 1; display: flex; height: calc(100vh - 56px); }
 
-        /* --- CỘT TRÁI (1/5): SIDEBAR TABS --- */
-        .discord-sidebar { flex: 0 0 20%; background-color: var(--bg-sidebar); padding: 40px 10px 20px 30px; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; }
-        .sidebar-title { color: var(--text-muted); font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; padding-left: 10px; }
+        /* CỘT TRÁI (1/5) Layout định hình */
+        .discord-sidebar { flex: 0 0 20%; padding: 40px 10px 20px 30px; display: flex; flex-direction: column; justify-content: space-between; }
+        .sidebar-title { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; padding-left: 10px; }
         
-        /* Chuyển các nút thành nav-link của Bootstrap */
-        .sidebar-menu-item { display: flex; align-items: center; padding: 8px 12px; color: var(--text-muted); text-decoration: none; border-radius: 4px; font-size: 14px; font-weight: 500; margin-bottom: 4px; border: none; background: transparent; width: 100%; text-align: left; transition: 0.2s; }
+        .sidebar-menu-item { display: flex; align-items: center; padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 14px; font-weight: 500; margin-bottom: 4px; border: none; background: transparent; width: 100%; text-align: left; transition: 0.2s; }
         .sidebar-menu-item i { margin-right: 8px; width: 16px; text-align: center; }
-        .sidebar-menu-item:hover { background-color: var(--sidebar-active); color: var(--text-main); }
-        .sidebar-menu-item.active { background-color: var(--sidebar-active); color: var(--text-main); font-weight: bold; }
 
-        /* --- CỘT PHẢI (4/5): MAIN CORE --- */
-        .discord-main-panel { flex: 0 0 80%; background-color: var(--bg-main); padding: 40px 40px 20px 40px; overflow-y: auto; }
-        .discord-card { background-color: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); width: 100%; max-width: 660px; }
+        /* CỘT PHẢI (4/5) Layout định hình */
+        .discord-main-panel { flex: 0 0 80%; padding: 40px 40px 20px 40px; overflow-y: auto; }
+        .discord-card { border-radius: 8px; overflow: hidden; width: 100%; max-width: 660px; }
         .discord-banner { height: 80px; background: linear-gradient(135deg, #ff69b4, #b9bbbe); position: relative; }
         
         .discord-avatar-container { position: relative; display: inline-block; margin-top: -40px; margin-left: 20px; }
-        .discord-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 4px solid var(--bg-card); background-color: var(--bg-sidebar); }
+        .discord-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 4px solid var(--bg-card); }
         
         .avatar-edit-badge { position: absolute; top: 0; right: 0; background: #313338; border: 2px solid #1e1f22; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: #dbdee1; cursor: pointer; }
-        .discord-body { padding: 20px; background-color: var(--bg-card); }
-        .discord-info-box { background-color: var(--bg-sidebar); border-radius: 8px; padding: 16px; margin-top: 12px; }
+        .discord-body { padding: 20px; }
+        .discord-info-box { border-radius: 8px; padding: 16px; margin-top: 12px; }
         
-        .input-custom { background-color: var(--bg-input) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; border-radius: 4px; padding: 8px 12px; font-size: 14px; }
-        .form-label-custom { color: var(--text-muted); font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 6px; }
+        .input-custom { border-radius: 4px; padding: 8px 12px; font-size: 14px; }
+        .input-custom:focus { border-color: #5865f2 !important; box-shadow: none !important; }
+        .form-label-custom { font-size: 11px; font-weight: bold; text-transform: uppercase; margin-bottom: 6px; }
         
         .btn-discord-save { background-color: #248046; color: white; font-weight: 500; border: none; padding: 8px 24px; border-radius: 3px; font-size: 14px; }
         .btn-discord-save:hover { background-color: #1a6535; }

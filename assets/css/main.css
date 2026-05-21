@@ -214,7 +214,7 @@ html[data-theme="light"] {
     box-shadow: none;
 }
 
-/* ---CÁC CLASS ĐIỀU HƯỚNG THEO THEME (DÙNG CHO PROFILE & CÁC TRANG KHÁC)
+/* --- CÁC CLASS ĐIỀU HƯỚNG THEO THEME (DÙNG CHO PROFILE & CÁC TRANG KHÁC) --- */
 html, body {
     background-color: var(--bg-body) !important;
     color: var(--text-main) !important;
