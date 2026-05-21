@@ -105,6 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn-delete-product'])
         }
     }
 }
+
 // ================= PROCESSING FORM SUBMISSION =================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
