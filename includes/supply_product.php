@@ -11,7 +11,6 @@ try {
 }
 ?>
 
-
 <div class="p-2">
     <div class="text-start mb-4">
         <h3 class="fw-bold text-white"><i class="fa-solid fa-box-open text-pink me-2"></i>Đăng sản phẩm mới</h3>
